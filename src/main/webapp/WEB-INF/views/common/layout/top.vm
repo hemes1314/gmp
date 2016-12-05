@@ -1,0 +1,29 @@
+#parse("common/header.vm")
+    <div class='GomeProjectCommonHeader'>
+    	<div class="header_left">
+	    	<span class='header_topLogo'><img src="static/images/logo_top.png" style="vertical-align:bottom;"></span>
+	    	<span class='header_line'><img src="static/images/vertical_line.png" style="vertical-align:bottom;"></span>
+	    	<span class='header_txt'>国美在线管理系统</span>
+	    </div>
+        <ul class="GomeProjectCommonHeaderOp">
+            <li><a href="javascript:void(0)" id="hello" style="cursor:default;">XX你好</a></li>
+            <li><a href="javascript:void(0)" style="cursor:default"></a></li>
+            <li><a href="javascript:void(0)" id="changePassword">修改密码</a></li>
+            <li><a href="javascript:void(0)" id="loginout" style="">退出</a></li>
+        </ul>
+    </div>
+    
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.cookie.js'></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#hello").html(JSON.parse($.cookie("user")).userName + ': 你好');
+	var userId = JSON.parse($.cookie("user")).userId;
+	if(userId != 'admin'){
+		$("#changePassword").parent().remove();
+	}
+	
+	
+	
+})
+</script>

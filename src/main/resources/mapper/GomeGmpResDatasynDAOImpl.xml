@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResDatasynDAO">
+	
+	<insert id="saveGomeGmpResDatasynBO" parameterType="GomeGmpResDatasynBO">
+		INSERT INTO gome_gmp_res_datasyn(id,file_name,file_path,physical_path,pro_id,need_id,pro_type,upload_user_id,upload_time,update_time) 
+		VALUES(#{id},#{fileName},#{filePath},#{physicalPath},#{proId},#{needId},#{proType},#{uploadUserId},#{uploadTime},#{updateTime})
+	</insert>
+	
+	<delete id="deleteGomeGmpResDatasynBOById" parameterType="long">
+		DELETE FROM gome_gmp_res_datasyn WHERE id=#{id}
+	</delete>
+	
+	<delete id="deleteGomeGmpResDatasynBOByProId" parameterType="String">
+		DELETE FROM gome_gmp_res_datasyn WHERE pro_id=#{proId}
+	</delete>
+	
+	<delete id="deleteGomeGmpResDatasynBOByIds" parameterType="GomeGmpResDatasynVO">
+		DELETE FROM gome_gmp_res_datasyn WHERE pro_id = #{proId} and id not in
+		<foreach collection="deleteIds" item="item" index="index" 
+				open="(" separator="," close=")">#{item}</foreach> 
+		
+	</delete>
+	<delete id="deleteGomeGmpResDatasynBOByNeedId" parameterType="String">
+		DELETE FROM gome_gmp_res_datasyn WHERE need_id=#{needId}
+	</delete>
+	
+	<delete id="deleteGomeGmpResDatasynBOByIdsByNeedId" parameterType="GomeGmpResDatasynVO">
+		DELETE FROM gome_gmp_res_datasyn WHERE need_id = #{needId} and id not in
+		<foreach collection="deleteIds" item="item" index="index" 
+				open="(" separator="," close=")">#{item}</foreach> 
+		
+	</delete>
+	<update id="updateGomeGmpResDatasynBOById" parameterType="GomeGmpResDatasynBO">
+		UPDATE gome_gmp_res_datasyn
+		SET update_time=#{updateTime}
+		<if test="fileName!=null and fileName!=''">,file_name=#{fileName}</if>
+		<if test="filePath!=null and filePath!=''">,file_path=#{filePath}</if>
+		<if test="physicalPath!=null and physicalPath!=''">,physical_path=#{physicalPath}</if>
+		<if test="proId!=null and proId!=''">,pro_id=#{proId}</if>
+		<if test="needId!=null and needId!=''">,need_id=#{needId}</if>
+		<if test="proType!=null">,pro_type=#{proType}</if>
+		<if test="uploadUserId!=null">,upload_user_id=#{uploadUserId}</if>
+		<if test="uploadTime!=null">,upload_time=#{uploadTime}</if>
+ 		WHERE id=#{id}
+	</update>
+	
+	<select id="findGomeGmpResDatasynBOById" parameterType="long" resultType="GomeGmpResDatasynBO">
+		SELECT id,file_name,file_path,physical_path,pro_id,need_id,pro_type,upload_user_id,upload_time,update_time 
+		FROM gome_gmp_res_datasyn 
+		WHERE id=#{id}
+	</select>
+	<select id="findNewDatasynBOByUserId" parameterType="long" resultType="GomeGmpResDatasynBO">
+		SELECT id,file_name,file_path,physical_path,pro_id,need_id,pro_type,upload_user_id,upload_time,update_time 
+		FROM gome_gmp_res_datasyn 
+		WHERE upload_user_id=#{userId}
+		ORDER BY upload_time DESC LIMIT 0,1
+	</select>
+	
+	<select id="findGomeGmpResDatasynBOByCondition" parameterType="GomeGmpResDatasynVO" resultType="GomeGmpResDatasynVO">
+		SELECT 	project_t.pro_id,
+				project_t.title,
+				datasyn_t.id,
+				datasyn_t.file_name,
+				datasyn_t.file_path,
+				datasyn_t.update_time,
+				DATE_FORMAT(datasyn_t.update_time,'%Y-%m-%d')	AS strUploadTime,
+				user_t.id AS upload_user_id,
+				user_t.user_name
+		FROM 	gome_gmp_res_project AS project_t
+		LEFT JOIN	(SELECT	pro_id,
+							MAX(update_time) AS order_time 
+					FROM 	gome_gmp_res_datasyn 
+					GROUP BY pro_id) AS order_t
+		ON project_t.pro_id = order_t.pro_id
+		RIGHT JOIN 	gome_gmp_res_datasyn AS datasyn_t
+		ON project_t.pro_id = datasyn_t.pro_id
+		LEFT JOIN gome_gmp_res_user AS user_t
+		ON datasyn_t.upload_user_id = user_t.id
+		WHERE project_t.pro_type = #{proType} 
+		<if test="strSearch != null and strSearch!=''">AND (project_t.title LIKE CONCAT('%', #{strSearch},'%')    OR datasyn_t.file_name LIKE CONCAT('%', #{strSearch},'%') )</if>
+		ORDER BY order_t.order_time DESC,
+				datasyn_t.update_time DESC
+	</select>
+	
+	<select id="findGomeGmpResDatasynProjectBOByCondition" parameterType="GomeGmpResDatasynVO" resultType="GomeGmpResDatasynVO">
+		SELECT 	DISTINCT(project_t.pro_id) AS pro_id,
+				project_t.title,
+				order_t.order_time AS update_time,
+				DATE_FORMAT(order_t.order_time,'%Y-%m-%d')	AS strUploadTime
+		FROM 	gome_gmp_res_project AS project_t
+		RIGHT JOIN	(SELECT pro_id,
+							file_name,
+							MAX(update_time) AS order_time 
+					FROM gome_gmp_res_datasyn 
+					GROUP  BY pro_id) AS order_t
+					ON project_t.pro_id = order_t.pro_id
+		LEFT JOIN gome_gmp_res_datasyn AS data_t
+		ON data_t.pro_id = project_t.pro_id
+		WHERE 	project_t.pro_type = #{proType} 
+		<if test="strSearch != null and strSearch!=''">AND 	(project_t.title LIKE CONCAT('%', #{strSearch},'%') OR data_t.file_name LIKE CONCAT('%' , #{strSearch}, '%'))</if>
+		ORDER BY order_t.order_time DESC
+	</select>
+	<select id="findGomeGmpResDatasynFileBOByCondition" parameterType="GomeGmpResDatasynVO" resultType="GomeGmpResDatasynVO">
+		SELECT 	datasyn_t.file_name, 
+				datasyn_t.file_path, 
+				datasyn_t.id, 
+				datasyn_t.upload_user_id, 
+				datasyn_t.update_time ,
+				DATE_FORMAT(datasyn_t.update_time,'%Y-%m-%d')	AS strUploadTime,
+				user_t.user_name 
+		FROM 	gome_gmp_res_datasyn AS datasyn_t
+		LEFT JOIN gome_gmp_res_user AS user_t
+		ON datasyn_t.upload_user_id = user_t.id
+		WHERE 1=1
+		<if test="proId != null and proId!=''">AND pro_id = #{proId}</if>
+		<if test="proId == null or proId ==''">AND pro_id IS NULL</if>
+		<if test="needId != null and needId!=''">AND need_id = #{needId}</if>
+		<if test="strSearch != null and strSearch!=''">AND file_name LIKE CONCAT('%', #{strSearch},'%')</if>
+		ORDER BY datasyn_t.update_time DESC
+	</select>
+	
+</mapper>

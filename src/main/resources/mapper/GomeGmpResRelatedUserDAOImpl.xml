@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResRelatedUserDAO">
+	
+	<insert id="saveGomeGmpResRelatedUserBO" parameterType="GomeGmpResRelatedUserBO">
+		INSERT INTO gome_gmp_res_related_user(id,pro_id,user_id,role_id,pro_type,related_user_type) 
+		VALUES(#{id},#{proId},#{userId},#{roleId},#{proType},#{relatedUserType})
+	</insert>
+	
+	<delete id="deleteGomeGmpResRelatedUserBOById" parameterType="long">
+		DELETE FROM gome_gmp_res_related_user WHERE id=#{id}
+	</delete>
+	
+	<delete id="deleteGomeGmpResRelatedUserBOByProId" parameterType="String">
+		DELETE FROM gome_gmp_res_related_user WHERE pro_id=#{proId}
+	</delete>
+	
+	<update id="updateGomeGmpResRelatedUserBOById" parameterType="GomeGmpResRelatedUserBO">
+		UPDATE gome_gmp_res_related_user
+		SET update_time=#{updateTime}
+		<if test="proId!=null and proId!=''">,pro_id=#{proId}</if>
+		<if test="userId!=null">,user_id=#{userId}</if>
+		<if test="roleId!=null">,role_id=#{roleId}</if>
+		<if test="proType!=null">,pro_type=#{proType}</if>
+ 		WHERE id=#{id}
+	</update>
+	
+	<select id="findGomeGmpResRelatedUserBO" parameterType="GomeGmpResRelatedUserVO" resultType="GomeGmpResRelatedUserVO">
+		SELECT id,pro_id,
+		(select title from gome_gmp_res_project where pro_id = u.pro_id) pro_name,
+		user_id,
+		CONCAT('(',(select user_id from gome_gmp_res_user where id = u.user_id),')',(select user_name from gome_gmp_res_user where id = u.user_id)) user_name,
+		role_id,
+		(select role_name from gome_gmp_res_role where id = u.role_id) role_name,
+		pro_type
+		FROM gome_gmp_res_related_user u
+		WHERE (related_user_type = 0 or related_user_type is null)
+		<if test="proId != null">
+			and pro_id = #{proId}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,96 @@
+</body>
+</html>
+#set($contextPath=${request.contextPath})
+<script src="${contextPath}/static/js/jquery-2.0.0.min.js"></script>
+<script src='${contextPath}/static/js/laydate.js'></script>
+<script src='${contextPath}/static/js/jquery.selectlist.js'></script>
+<script src='${contextPath}/static/js/laypage.js'></script>
+<script src='${contextPath}/static/js/dialog-plus.js'></script>
+<script src='${contextPath}/static/js/common.js'></script>
+<script src='${contextPath}/static/js/layer.js'></script>
+<script src='${contextPath}/static/js/plugins/jquery.easing.1.3.js'></script>
+<script src='${contextPath}/static/js/plugins/jquery.jBreadCrumb.1.1.js'></script>
+<script src='${contextPath}/static/js/smoke.js'></script>
+
+<script>
+// for crumb start
+function initCrumb(crumbRootDom){
+	if(parent.NavStack.length == 0){
+		var homeCrumbTxt = $('.GomeProject_tab_title .selected').text();
+		parent.NavStack.push(homeCrumbTxt);
+	}
+	
+    parent.buildCrumbs(crumbRootDom,function(){
+        $(".breadCrumb").jBreadCrumb({'liCallback':function(index){
+        	parent.popNavStack(index);
+        }});
+    });
+}
+
+$('.GomeProject_tab_title .big_tab,.GomeProject_tab_title .small_tab').off('click').on('click',function(){
+	parent.NavStack = [];
+	parent.NavStack.push($(this).text());
+});
+// for crumb end
+
+
+function banBackSpace(e) {
+	var ev = e || window.event;//获取event对象 
+	var obj = ev.target || ev.srcElement;//获取事件源 
+	var t = obj.type || obj.getAttribute('type');//获取事件源类型 
+	//获取作为判断条件的事件类型 
+	var vReadOnly = obj.getAttribute('readonly');
+	var vEnabled = obj.getAttribute('enabled');
+	//处理null值情况 
+	vReadOnly = (vReadOnly == null) ? false : vReadOnly;
+	vEnabled = (vEnabled == null) ? true : vEnabled;
+	//当敲Backspace键时，事件源类型为密码或单行、多行文本的， 
+	//并且readonly属性为true或enabled属性为false的，则退格键失效 
+	var flag1 = (ev.keyCode == 8
+			&& (t == "password" || t == "text" || t == "textarea") && (vReadOnly == true || vEnabled != true)) ? true
+			: false;
+	//当敲Backspace键时，事件源类型非密码或单行、多行文本的，且 contenteditable不为true时 则退格键失效 
+	var contenteditable = obj.getAttribute('contenteditable');
+	var flag2 = (ev.keyCode == 8 && t != "password" && t != "text" && t != "textarea" && (contenteditable != "true") ) ? true
+			: false;
+	//判断 
+	if (flag2) {
+		return false;
+	}
+	if (flag1) {
+		return false;
+	}
+}
+
+function myBrowser() {
+	var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+	var isOpera = userAgent.indexOf("Opera") > -1;
+	if (isOpera) {
+		return "Opera"
+	}
+	; //判断是否Opera浏览器
+	if (userAgent.indexOf("Firefox") > -1) {
+		return "FF";
+	} //判断是否Firefox浏览器
+	if (userAgent.indexOf("Chrome") > -1) {
+		return "Chrome";
+	}
+	if (userAgent.indexOf("Safari") > -1) {
+		return "Safari";
+	} //判断是否Safari浏览器
+	if (userAgent.indexOf("compatible") > -1
+			&& userAgent.indexOf("MSIE") > -1 && !isOpera) {
+		return "IE";
+	}
+	; //判断是否IE浏览器
+}
+
+var mb = myBrowser();
+if ("FF" == mb) {
+	document.onkeypress=banBackSpace;
+} else if ("Chrome" == mb) {
+	document.onkeydown=banBackSpace;
+} else {
+	document.onkeydown=banBackSpace;
+}
+</script>

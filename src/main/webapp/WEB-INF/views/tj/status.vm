@@ -1,0 +1,88 @@
+#parse("common/header.vm")
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class="big_tab"><a href="${contextPath}/datas/toProTJ">总数据统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toOnlineTJ">上线分布统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toUnitTJ">各部门数据表现</a></span>
+                    <span class="selected small_tab"><a href="javascript:void(0)" onclick="location.href='${contextPath}/tj/status';return false;">状态分布</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/hourCount/scheduleStatistics;return false'">工时统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/todataList">提报需求统计</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                	
+                	<div class='GomeProject_nav_title'>
+<div class="breadCrumbHolder module">
+						    <div class="breadCrumb module">
+						        <ul  id="statusCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+						<a href="${contextPath}/tj/status/export" class='export_data button'>导出</a>				
+	                 	<div class="clear"></div>
+	                </div>
+                
+                    <!-- searchBar -->
+                    <form action="">
+                        <div class='project_search_bar' style="height:122px;"><!-- 注意要-2 （减掉border的宽度）  -->
+                            <div class="form_div">
+                                <!-- <div class="form-group">
+                                    <label for="req">时间周期:</label>
+                                    <input type="text" class="form-control laydate-icon" id='start' name="startCreateTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.startCreateTime})" use='laydate'>
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">至:</label>
+                                    <input type="text" class="form-control  laydate-icon" id='end' name="endCreateTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.endCreateTime})" use='laydate'>
+                                </div> -->
+                                <div class="form-group">
+                                    <label for="req">类型:</label>
+                                    <select name="proType" id="type" data-wdith='165'>
+                                        <option value="1">项目</option>
+                                        <option value="2">敏捷</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="department">部门:</label>
+                                    <select name="orgId" id="orgId">
+                                    
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="branch">子部门:</label>
+                                    <select name="childOrgId" id="childOrgId">
+                                  		<option>全部</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="team">小组:</label>
+                                    <select name="groupId" id="groupId">
+                                 		<option>全部</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="float:right">
+                      		      <a href="javascript:void(0)" class='search_project searchBtn search_data'>查询</a>
+                           		</div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- searchbar end-->
+                    <!-- charts -->
+                    <div class='inner_round'></div>
+                    <div id="main" style="height:400px">
+                    </div>
+                    <!-- chartsEnd -->
+                    <div class='project_info_table data_statistics_table'  style="margin-top:12px">
+                        <table class="detail">
+                        </table>
+                    </div>
+                    <!--  tableend  -->
+                    <div id='GomeProjectPage' class='GomeProjectPage'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/echarts.js'></script>
+<script src='${contextPath}/static/js/data_statistics_charts.js'></script>
+<script src='${contextPath}/static/js/common.js'></script>

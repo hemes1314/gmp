@@ -1,0 +1,41 @@
+.GomeProject_nav_title select{
+	width: 80px;
+    height: 30px;
+    padding: 3px 10px;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+    border-top: 1px solid #c0c0c0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor:pointer;
+}
+.calendar-calendar table tr td:last-child {
+	border-right: 1px solid #EBEBEB;
+}
+.calendar-calendar table tr td:first-child {
+	border-left: 1px solid #EBEBEB;
+}
+/* .work_hour_content {
+    width: 98%;
+    padding-top: 10px;
+    padding-left: 7px;
+    padding-right: 23px;
+    border-top: 1px solid #ccc;
+}
+.work_hour_content table {
+    width: 100%;
+    display: none;
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+}
+.work_hour_content table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.work_hour_content table tr td {
+    text-align: left;
+    padding: 0 26px;
+    border: 1px solid #e8e8e8;
+} */

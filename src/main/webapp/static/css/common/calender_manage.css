@@ -1,0 +1,247 @@
+.calendar {
+    float: left;
+}
+
+.calendar table {
+    margin: 0 auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar table tr {
+    height: 95px;
+    border: 1px solid #e8e8e8;
+    border-right: none;
+}
+
+.calendar table tr:nth-child(1) {}
+
+.calendar table td {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+}
+
+.calendar table .today_selected {
+    border: 2px solid purple;
+}
+.calendar table .click_selected {
+    border: 2px solid green;
+}
+
+.calendar table .selected {
+    background: url(../images/calender_bg.png) no-repeat;
+    background-position: 40px -1px;
+}
+
+.calendar table th {
+    text-align: center;
+}
+
+.calendar a {
+    text-decoration: none;
+    color: #666;
+}
+
+.calendar td a {
+    height: 20px;
+    display: block;
+    width: 125px;
+    background-color: white;
+    position: relative;
+    top: -20px;
+}
+
+.calendar {
+    margin: 50px 15px;
+    padding-top: 10px;
+    border: 1px solid #E6E6E6;
+    /* border-radius: 6px; */
+    width: 900px;
+    margin-right: 0px;
+    background: #fff;
+    /* border-right: none; */
+}
+
+.calendar .calendar_date {
+    color: #000;
+    font-weight: bold;
+}
+
+.calendar .disable {
+    color: #ccc;
+    font-weight: bold;
+}
+
+.calendar .calendar_content {
+    color: #96A0F0;
+    font-weight: bold;
+}
+
+.today {
+    background-color: #C1D9FF;
+    color: red;
+}
+
+.recentEvent {
+    height: 140px;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.recentEvent-Date {
+    float: left;
+    padding: 10px 10px;
+}
+
+.recentEvent-Day {
+    font-size: 66px;
+    color: #333;
+}
+
+.recentEvent-Month {
+    font-size: 22px;
+    color: #bfbfbf;
+    margin-left: 10px;
+}
+
+.recentEvent-content {
+    width: 60%;
+    float: left;
+}
+
+.recentEvent-content p {
+    margin-top: 50px;
+    color: #656565;
+}
+
+.recentEvent-content a:hover {
+    text-decoration: underline;
+}
+
+.calendar-title {
+    border-radius: 5px;
+    margin: 14px 15px;
+    width: 80px;
+    display: table;
+    font-size: 15px;
+    border: 1px solid #e6e6e6;
+}
+
+.calendar-title-date {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.nextMonth {
+    display: table-cell;
+    vertical-align: middle;
+    border-left: 1px solid #e6e6e6;
+}
+
+.lastMonth {
+    display: table-cell;
+    vertical-align: middle;
+    border-right: 1px solid #e6e6e6;
+}
+
+.bubble {
+    background: #fff;
+    border: 1px solid #d0cfd2;
+    border-radius: 3px;
+    height: auto;
+    width: 125px;
+    position: relative;
+    top: 10px;
+    font-size: 10px;
+    background: #54B74A;
+    color: #fff;
+    color: #fff;
+}
+
+.bubble:after {
+    content: '';
+    position: absolute;
+    border: 1px solid rgba(51, 51, 51, 0.19);
+}
+
+.bubble:before {
+    content: '';
+    position: absolute;
+}
+
+.bubble.top:after {
+    border-color: #5aBA4A transparent;
+    border-width: 0 13px 12px 13px;
+    top: -12px;
+    left: 45%;
+}
+
+.bubble.top:before {
+    border-color: #999 transparent;
+    border-width: 0 13px 11px 13px;
+    top: -13px;
+    left: 45%;
+}
+
+.right_info {
+    float: left;
+    width: 200px;
+    margin-top: 50px;
+    border: 1px solid #e8e8e8;
+    border-left: none;
+    height: 726px;
+    background: #fff;
+}
+
+.right_info h3 {
+    line-height: 55px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.right_info dl dd {
+    line-height: 25px;
+    padding-left: 20px;
+    background: url(../images/round_bg.png) no-repeat;
+    background-position: 5px 10px;
+}
+
+.right_info dl dt a {
+    float: right;
+    color: #69B1E4;
+}
+
+.infogroup {
+    margin: 15px 20px;
+}
+
+.first_group {
+    margin-top: 40px;
+}
+
+.infogroup h1 {
+    line-height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.infogroup p {
+    line-height: 20px;
+}
+
+.infogroup p a {
+    color: #3295da;
+    padding-right: 5px;
+}
+.calendar-calendar select {
+    width: 80px;
+    height: 30px;
+    padding: 3px 10px;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+    border-top: 1px solid #c0c0c0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}

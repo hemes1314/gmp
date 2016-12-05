@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResProCalendarDAO">
+
+	<select id="findGomeGmpResProjectBOList" resultType="GomeGmpResProjectBO">
+		SELECT pro_id,title,demand_id,systems,bp_id,unit_bs_id,key_user_id,svn_addr,status_id,priority_id,schedule_id,actualize,remark,near_work_done,near_work_plan,risk_remark,pro_type,start_time,plan_time,finish_time,percentage,pro_period,create_user,creat_time
+		FROM gome_gmp_res_project
+	</select>
+
+	<select id="findGomeGmpResProjectBOListByDate" parameterType="GomeGmpTJCalendarVO" resultType="GomeGmpTJCalendarVO">
+			SELECT 
+				p.pro_id proId, p.title, '项目启动' AS actionState FROM gome_gmp_res_project p
+			<where>
+				<if test="strDate!=null and strDate!='' ">
+					and DATE_FORMAT(start_time,'%Y-%m-%d') = STR_TO_DATE(#{strDate},'%Y-%m-%d')
+				</if>
+				<!-- 查部门的 -->
+		        <if test="orgIds != null and orgIds.length > 0">
+		        	and exists
+		        	(
+		        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and  
+			        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+			        		o.org_id like CONCAT(#{item},'%') 
+			        	</foreach> 
+			        	<if test="bpId != null and bpId != ''">
+		        			and p.bp_id = #{bpId}
+		        		</if>
+		        	)
+		        </if>
+			</where>
+		UNION
+			SELECT 
+				pro_id, title, '计划上线' AS actionState FROM gome_gmp_res_project p
+			<where>
+				<if test="strDate!=null and strDate!='' ">
+					and DATE_FORMAT(plan_time,'%Y-%m-%d') = STR_TO_DATE(#{strDate},'%Y-%m-%d')
+				</if>
+				<!-- 查部门的 -->
+		        <if test="orgIds != null and orgIds.length > 0">
+		        	and exists
+		        	(
+		        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and  
+			        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+			        		o.org_id like CONCAT(#{item},'%') 
+			        	</foreach> 
+			        	<if test="bpId != null and bpId != ''">
+		        			and p.bp_id = #{bpId}
+		        		</if>
+		        	)
+		        </if>
+			</where>
+		UNION
+			SELECT 
+				p.pro_id, p.title, '上线' AS actionState FROM gome_gmp_res_project p
+			<where>
+				<if test="strDate!=null and strDate!='' ">
+					and DATE_FORMAT(p.finish_time,'%Y-%m-%d') = STR_TO_DATE(#{strDate},'%Y-%m-%d')
+				</if>
+				<!-- 查部门的 -->
+		        <if test="orgIds != null and orgIds.length > 0">
+		        	and exists
+		        	(
+		        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and  
+			        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+			        		o.org_id like CONCAT(#{item},'%') 
+			        	</foreach> 
+			        	<if test="bpId != null and bpId != ''">
+		        			and p.bp_id = #{bpId}
+		        		</if>
+		        	)
+		        </if>
+			</where>
+		UNION
+			SELECT
+				project_t.pro_id, project_t.title, '延期' AS actionState 
+			FROM 
+				gome_gmp_res_project AS project_t
+			<where>
+				<if test="strDate!=null and strDate!='' ">
+					and DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') = STR_TO_DATE(#{strDate},'%Y-%m-%d') <![CDATA[AND DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') <= CURDATE() ]]>
+				</if>
+				<!-- 查部门的 -->
+		        <if test="orgIds != null and orgIds.length > 0">
+		        	and exists
+		        	(
+		        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = project_t.bp_id and  
+			        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+			        		o.org_id like CONCAT(#{item},'%') 
+			        	</foreach> 
+			        	<if test="bpId != null and bpId != ''">
+		        			and project_t.bp_id = #{bpId}
+		        		</if>
+		        	)
+		        </if>
+			</where>
+			AND project_t.pro_id NOT IN (
+					SELECT project_t.pro_id 
+					FROM gome_gmp_res_project AS project_t
+					INNER JOIN (
+							SELECT 
+								pro_id,MAX(create_time) AS online_time 
+							FROM gome_gmp_res_log
+							WHERE 
+								operate_column = 'scheduleId' AND column_val = '5'
+							GROUP BY pro_id
+						) AS log_t
+					ON log_t.pro_id = project_t.pro_id AND DATE_FORMAT(log_t.online_time,'%Y-%m-%d') = STR_TO_DATE(#{strDate},'%Y-%m-%d')
+					WHERE project_t.schedule_id = '5' AND DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') = STR_TO_DATE(#{strDate},'%Y-%m-%d') 
+			)
+	</select>
+
+	<select id="findGomeGmpResScheduleCountListByMonth" parameterType="GomeGmpTJCalendarVO" resultType="GomeGmpTJCalendarVO">
+			SELECT 
+				DATE_FORMAT(actionDate,'%Y-%c-%e') AS actionDate,
+				SUM(startCount) AS startCount,
+				SUM(planCount) AS planCount ,
+				SUM(onlineCount) AS onlineCount,
+				SUM(delayCount) AS delayCount 
+			FROM (
+					SELECT 
+						DATE_FORMAT(start_time,'%Y-%m-%d') AS actionDate,COUNT(start_time) AS startCount, 0 AS planCount , 0 AS onlineCount, 0 AS delayCount 
+					FROM 
+						gome_gmp_res_project p
+					<where>
+						<if test="strMonth!=null and strMonth!='' ">
+							and <![CDATA[ start_time >= STR_TO_DATE(#{strMonth},'%Y-%m') AND DATE_FORMAT(start_time,'%Y-%m-%d') <= LAST_DAY(STR_TO_DATE(#{strMonth},'%Y-%m')) ]]>	
+						</if>
+						<!-- 查部门的 -->
+				        <if test="orgIds != null and orgIds.length > 0">
+				        	and exists
+				        	(
+				        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and  
+					        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+					        		o.org_id like CONCAT(#{item},'%') 
+					        	</foreach> 
+					        	<if test="bpId != null and bpId != ''">
+				        			and p.bp_id = #{bpId}
+				        		</if>
+				        	)
+				        </if>
+					</where>
+					GROUP BY 
+						DATE_FORMAT(start_time,'%Y-%m-%d')
+				UNION
+					SELECT 
+						DATE_FORMAT(plan_time,'%Y-%m-%d') AS actionDate,0 AS startCount, COUNT(plan_time) AS planCount , 0 AS onlineCount, 0 AS delayCount 
+					FROM 
+						gome_gmp_res_project p
+					<where>
+						<if test="strMonth!=null and strMonth!='' ">
+							and <![CDATA[plan_time >= STR_TO_DATE(#{strMonth},'%Y-%m') AND DATE_FORMAT(plan_time,'%Y-%m-%d') <= LAST_DAY(STR_TO_DATE(#{strMonth},'%Y-%m'))]]>
+						</if>
+						<!-- 查部门的 -->
+				        <if test="orgIds != null and orgIds.length > 0">
+				        	and exists
+				        	(
+				        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and  
+					        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+					        		o.org_id like CONCAT(#{item},'%') 
+					        	</foreach> 
+					        	<if test="bpId != null and bpId != ''">
+				        			and bp_id = #{bpId}
+				        		</if>
+				        	)
+				        </if>
+					</where>
+					GROUP BY 
+						DATE_FORMAT(plan_time,'%Y-%m-%d')
+				UNION
+					SELECT 
+						DATE_FORMAT(finish_time,'%Y-%m-%d') AS actionDate,0 AS startCount, 0 AS planCount , COUNT(finish_time) AS onlineCount, 0 AS delayCount 
+					FROM 
+						gome_gmp_res_project p
+					<where>
+						<if test="strMonth!=null and strMonth!='' ">
+							and <![CDATA[finish_time >= STR_TO_DATE(#{strMonth},'%Y-%m') AND DATE_FORMAT(finish_time,'%Y-%m-%d') <= LAST_DAY(STR_TO_DATE(#{strMonth},'%Y-%m'))]]>
+						</if>
+						<!-- 查部门的 -->
+				        <if test="orgIds != null and orgIds.length > 0">
+				        	and exists
+				        	(
+				        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and  
+					        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+					        		o.org_id like CONCAT(#{item},'%') 
+					        	</foreach>
+					        	<if test="bpId != null and bpId != ''">
+				        			and bp_id = #{bpId}
+				        		</if>
+				        	)
+				        </if>
+					</where>
+					GROUP BY 
+						DATE_FORMAT(finish_time,'%Y-%m-%d')
+						
+				UNION
+					SELECT actionDate,0 AS startCount, 0 AS planCount , 0 AS onlineCount, COUNT(isDelay) AS delayCount 
+					FROM(
+						SELECT 
+							DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') AS actionDate,<![CDATA[ IFNULL(DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') < DATE_FORMAT(online_t.online_time,'%Y-%m-%d'),1) AS isDelay ]]>
+							FROM 
+								gome_gmp_res_project AS project_t
+							LEFT JOIN 
+								(
+									SELECT pro_id,MAX(create_time) AS online_time 
+									FROM gome_gmp_res_log
+									WHERE operate_column = 'scheduleId' AND column_val = '5'
+									GROUP BY pro_id
+								) AS online_t
+							ON online_t.pro_id = project_t.pro_id AND project_t.schedule_id = '5'
+							<where>
+								<if test="strMonth!=null and strMonth!='' ">
+									and <![CDATA[ plan_time >= STR_TO_DATE(#{strMonth},'%Y-%m') AND DATE_FORMAT(plan_time,'%Y-%m-%d') <= LAST_DAY(STR_TO_DATE(#{strMonth},'%Y-%m')) ]]>
+								</if>
+								<!-- 查部门的 -->
+						        <if test="orgIds != null and orgIds.length > 0">
+						        	and exists
+						        	(
+						        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = project_t.bp_id and  
+							        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+							        		o.org_id like CONCAT(#{item},'%') 
+							        	</foreach>
+							        	<if test="bpId != null and bpId != ''">
+						        			and project_t.bp_id = #{bpId}
+						        		</if>
+						        	)
+						        </if>
+							</where> 
+						) as result_t
+					WHERE <![CDATA[ DATE_FORMAT(actionDate,'%Y-%m-%d') <= CURDATE()]]>
+					GROUP BY actionDate
+			) AS count_t
+			GROUP BY actionDate
+	</select>
+
+	<select id="findGomeGmpResPlanScheduleBOListByDate" parameterType="GomeGmpResTaskVO" resultType="GomeGmpResTaskVO">
+		<![CDATA[
+			SELECT start_time,end_time, ROUND(plan_time/(DATEDIFF(end_time, start_time) + 1),1) AS avgPlanTime
+			FROM gome_gmp_res_task
+			WHERE DATE_FORMAT(end_time,'%Y-%m-%d') > STR_TO_DATE(#{strStartDate},'%Y-%m-%d')
+			AND DATE_FORMAT(start_time,'%Y-%m-%d') <= STR_TO_DATE(#{strEndDate},'%Y-%m-%d')
+			AND user_id = #{userId}
+		]]>	
+	</select>
+
+</mapper>

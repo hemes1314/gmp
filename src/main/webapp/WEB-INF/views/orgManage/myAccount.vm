@@ -1,0 +1,52 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/business/org.css" type="text/css"/>
+  <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab" style="position:relative">
+                <div class="GomeProject_tab_title">
+                    <span class="selected small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/orgManage/myAccount;return false'">我的账户</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/orgManage/myOrganization;return false'">我的组织</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                	<div class='GomeProject_nav_title'>
+<div class="breadCrumbHolder module">
+				    		<div  class="breadCrumb module">
+			                    <ul id="myAccountCrumbUl">
+			                    
+			                    </ul>
+			            	</div>
+			            </div>
+                     	<div class="clear"></div>
+                    </div>
+                    <div class="account">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td colspan='3'><span class="org_title">基本资料</span></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="org_title">用户名</span>$!{gomeGmpResUserVO.userName}</td>
+                                    <td><span class="org_title">最后登录时间</span>${gomeGmpResUserVO.lastLogtime}</td>
+                                    <td><span class="org_title">所属分组</span>${gomeGmpResUserVO.orgGroup}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan='3'><span class="org_title">Email</span>${gomeGmpResUserVO.email}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/dialog-min.js'></script>
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#myAccountCrumbUl'));
+	// add for crumb end
+});
+</script>

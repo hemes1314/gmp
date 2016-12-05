@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
+http://www.springframework.org/schema/task
+http://www.springframework.org/schema/task/spring-task.xsd"
+>
+
+	<task:scheduled-tasks>
+		<!-- 凌晨3点执行 -->
+		<!-- <task:scheduled ref="organizationService" method="takeDataForAgent"
+			cron="0 0 2 * * ?" /> -->
+		<task:scheduled ref="personService" method="takeDataForAgent"
+			cron="0 0 3 * * ?" />
+	</task:scheduled-tasks>
+
+	<!-- 	
+	<task:scheduled-tasks scheduler="cacheScheduler">
+		每3个小时执行
+		<task:scheduled ref="gomeGmpDictItemBS" method="freshCache"
+			cron="0 0 0/3 * * ?" />
+	</task:scheduled-tasks> 
+
+	<task:scheduler id="cacheScheduler" />
+	-->
+</beans>

@@ -1,0 +1,637 @@
+@charset 'utf-8';
+
+/* common_header */
+
+.wrapper {
+    width: 1280px;
+    margin: 0 0;
+}
+
+.GomeProjectCommonHeader {
+    width: 1280px;
+    height: 117px;
+    background: url(../images/common_header.png) no-repeat;
+}
+
+.GomeProjectCommonHeader .GomeProjectCommonHeaderOp {
+    margin-top: 70px;
+    float: right;
+}
+
+.GomeProjectCommonHeader .GomeProjectCommonHeaderOp li {
+    float: left;
+    margin: 0 10px;
+}
+
+.GomeProjectCommonHeader .GomeProjectCommonHeaderOp li a {
+    color: #fff;
+}
+
+.GomeProjectCommonLeftBar {
+    float: left;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl {
+    width: 116px;
+    height: 856px;
+    background: url(../images/left_bar_bg.png) repeat-y;
+    border: 1px solid #ccc;
+}
+
+.GomeProjectContent {
+    width: 1162px;
+    height: 856px;
+    float: left;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li {
+    height: 59px;
+    text-align: center;
+    margin: 20px 0px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li a.active {
+    background: #E0E0E0;
+    border: 1px solid #D8D8D8;
+    border-radius: 15px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li a {
+    display: inline-block;
+    width: 99px;
+    height: 59px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li a i {
+    display: inline-block;
+    margin-top: 35px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(1) {
+    margin-top: 30px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(1) a {
+    background-image: url(../images/icon1.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(1) a.active {
+    background-image: url(../images/icon1active.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(2) a {
+    background-image: url(../images/icon1.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(2) a.active {
+    background-image: url(../images/icon1active.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(3) a {
+    background-image: url(../images/icon1.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(3) a.active {
+    background-image: url(../images/icon1active.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(4) a {
+    background-image: url(../images/icon1.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(4) a.active {
+    background-image: url(../images/icon1active.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(5) a {
+    background-image: url(../images/icon1.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(5) a.active {
+    background-image: url(../images/icon1active.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(6) a {
+    background-image: url(../images/icon1.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectCommonLeftBar .GomeProjectCommonLeftBarUl li:nth-child(6) a.active {
+    background-image: url(../images/icon1active.png);
+    background-repeat: no-repeat;
+    background-position: 32px 8px;
+}
+
+.GomeProjectContent .GomeProject_sidebar_tab {
+    overflow: hidden;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 {
+    color: #666;
+    font-size: 15px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 .selected {
+    color: #549df6;
+    background: #fff;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 span a {
+    color: #fff;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 .selected a {
+    color: #000;
+    font-weight: bold;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 span {
+    cursor: pointer;
+    background: #291C1C;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+    color: #fff;
+}
+
+.GomeProjectContent .GomeProject_tab-content .hide {
+    display: none;
+}
+
+
+/* searchBar */
+
+.GomeProjectContent .data_statistics_serach {
+    height: 66px;
+    display: table;
+    line-height: 66px;
+}
+
+.GomeProjectContent .data_statistics_serach li {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 11px;
+    padding: 0 10px;
+}
+
+.GomeProjectContent .data_statistics_serach li .searchCondition {
+    width: 260px;
+    height: 28px;
+    border: 1px solid #e8e8e8;
+}
+
+.GomeProjectContent .data_statistics_serach li .search_button {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 68px;
+    text-align: center;
+    border-radius: 15px;
+    background: url(../images/serach_button.png) no-repeat;
+    background-position: 6px
+}
+
+.GomeProjectContent .data_statistics_serach li .export {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 68px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.GomeProjectContent .data_statistics_serach li .new_built {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 110px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.GomeProjectContent .data_statistics_serach li .sb {
+    border: solid 1px #cfcfcf;
+    cursor: pointer;
+    background-color: #ffffff;
+    position: relative;
+    float: none;
+    margin: 0 10px 0 0;
+    display: inline-block;
+    /* border-radius: 4px; */
+    -moz-border-radius: 4px;
+    /* -webkit-border-radius: 4px; */
+    top: 11px;
+}
+
+
+/* 饼图 */
+
+.inner_round {
+    background: url(../images/inner_round.png) no-repeat;
+    width: 192px;
+    height: 190px;
+    position: absolute;
+    top: 270px;
+    left: 490px;
+    z-index: 11;
+}
+
+#tab-content ul {
+    padding: 5px 10px;
+    overflow: hidden;
+}
+
+#tab-content ul li {
+    padding-top: 5px;
+    height: 20px;
+}
+
+.data_statistics_table table {
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.data_statistics_table table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.data_statistics_table table .tr_title {
+    font-weight: bold;
+}
+
+.data_statistics_table table .tr_title td {
+    font-weight: bold;
+}
+
+.data_statistics_table table tr td {
+    text-align: left;
+    padding: 0 26px;
+    border: 1px solid #e8e8e8;
+    
+    
+}
+.data_statistics_table table tr td  {
+       color: #647EEE;
+    cursor: pointer;
+
+}
+.data_statistics_table table tr td a:hover {
+     color: #ff0080;
+    cursor: pointer;
+
+}
+/* 项目表格 */
+
+.data_statistics_project_num_table {
+    width: 1100px;
+}
+
+.data_statistics_project_num_table table {
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    background: #fff;
+}
+
+.data_statistics_project_num_table table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.data_statistics_project_num_table table tr td {
+    text-align: left;
+    padding: 0 10px;
+    border: 1px solid #e8e8e8;
+}
+.data_statistics_project_num_table table tr td {
+    color: #004040;
+    cursor: pointer;
+}
+
+.data_statistics_project_num_table table tr td a:hover {
+    color: #ff0080;
+    cursor: pointer;
+}
+
+
+/* 工时表格 */
+
+.work_hours_table {
+    width: 1150px;
+    padding-top: 10px;
+}
+
+.team_table {
+    width: 400px;
+    border-top: none;
+}
+
+.work_hours_table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.work_hours_table table thead tr td {
+    font-weight: bold;
+}
+
+.work_hours_table table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.work_hours_table table tr td {
+    text-align: left;
+    padding: 0 26px;
+    border: 1px solid #e8e8e8;
+}
+
+.work_hours_table table tr .td_01 {
+    font-weight: bold;
+}
+
+.work_hours_table table tr td a {
+    color: #b6bcf4;
+}
+
+
+/* 工时标题 */
+
+.work_hours {
+    line-height: 66px;
+    font-size: 15px;
+    font-weight: bold;
+    text-indent: 2em;
+    color: #44444E;
+    border-bottom: 1px solid #F6F6F6;
+}
+
+
+/*form group */
+
+.form-group label {
+    padding: 0 0 5px 0;
+    display: inline-block;
+    line-height: 18px;
+    font-size: 13px;
+    float: left;
+    font-weight: bolder;
+    margin-top: 7px;
+    margin-right: 5px;
+}
+
+.form-group {
+    float: left;
+    margin: 0 5px;
+}
+
+.form-group:after {
+    clear: both;
+    display: block;
+}
+
+.form-control {
+    height: 28px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+}
+
+.form_div {
+    height: 50px;
+    /* margin-left: 30px; */
+}
+
+.GomeProject_tab-content {
+    min-height: 400px;
+}
+
+.form-control .search_project {
+    width: 80px;
+    display: inline-block;
+    border: 1px solid #f0f;
+    margin-left: 50px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 10px;
+    background: url(../images/serach_button.png) no-repeat;
+    border: 1px solid #E8E8E8;
+    background-position: 10px 8px;
+}
+
+.data_search_bar {
+    background: #fff;
+    margin: 10px;
+    padding-top: 20px;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+}
+
+.data_search_bar select {
+    width: 70px;
+    height: 30px;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+}
+
+.laydate-icon,
+.laydate-icon-default,
+.laydate-icon-danlan,
+.laydate-icon-dahong,
+.laydate-icon-molv {
+    width: 90px;
+}
+
+.search_data {
+    width: 55px;
+    display: inline-block;
+    border: 1px solid #f0f;
+    margin-left: 50px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 10px;
+    background: url(../images/serach_button.png) no-repeat;
+    border: 1px solid #E8E8E8;
+    background-position: 1px 8px;
+}
+
+.export_data {
+    width: 55px;
+    display: inline-block;
+    border: 1px solid #f0f;
+    text-align: center;
+   /*  height: 30px;
+    line-height: 30px; */
+    border-radius: 10px;
+    border: 1px solid #E8E8E8;
+    background-position: 1px 8px;
+}
+
+/* 项目列表 */
+
+.view_project_list {
+    width: 1150px;
+    margin-top: 30px;
+}
+
+.view_project_list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.view_project_list table thead tr td {
+    font-weight: bold;
+}
+
+.view_project_list table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.view_project_list table tr td {
+    text-align: left;
+    padding: 0 26px;
+}
+
+.view_project_list table tr .td_01 {
+    font-weight: bold;
+}
+
+.view_project_list table tr td a {
+    color: #3d90f6;
+}
+
+.demand_statistics_table {
+    width: 1150px;
+}
+
+.demand_statistics_table table tr td a {
+    color: #647EEE;
+    cursor: pointer;
+}
+
+.demand_statistics_table table tr td a:hover {
+    color: #0000ff;
+    cursor: pointer;
+}
+.demand_statistics_table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.demand_statistics_table table thead tr td {
+    font-weight: bold;
+}
+
+.demand_statistics_table table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.demand_statistics_table table tr td {
+    text-align: left;
+    padding: 0 26px;
+}
+
+.demand_statistics_table table tr .td_01 {
+    font-weight: bold;
+}
+
+.demand_statistics_table table tr td a {
+    color: #3d90f6;
+}
+
+
+/* 提报需求子页面 */
+
+.department_person_demand_title {
+    line-height: 60px;
+    text-indent: 2em;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.demand_show_table {
+    width: 1150px;
+}
+
+.demand_show_table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.demand_show_table table thead tr td {
+    font-weight: bold;
+}
+
+.demand_show_table table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.demand_show_table table tr td {
+    text-align: left;
+    padding: 0 26px;
+}
+
+.demand_show_table table tr .td_01 {
+    font-weight: bold;
+}
+
+.demand_show_table table tr td a {
+    color: #3d90f6;
+}

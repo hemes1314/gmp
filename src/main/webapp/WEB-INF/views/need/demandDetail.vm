@@ -1,0 +1,147 @@
+#parse("common/header.vm")
+    <link rel="stylesheet" href="${contextPath}/static/css/demand_management.css">
+    <link rel="stylesheet" href="${contextPath}/static/css/validate.css">
+    <div class='wrapper'>
+      
+        <div class="GomeProjectContent" style="-webkit-box-shadow:#dbdeea 0px 0px 0px;-moz-box-shadow: #dbdeea 0px 0px 0px;box-shadow: #dbdeea 0px 0px 0px;margin-top:-1px;">
+        	<input type="hidden" style="display:none;" id="nid" value="$!{gomeGmpResNeedVO.needId}" />
+            <div class="GomeProject_tab_title_zw">
+		    </div>
+		    <div class="GomeProject_tab-content">
+	            <div class="GomeProject_nav_title" style="width:50%;">
+	              	  <div class="breadCrumbHolder module">
+				    		<div  class="breadCrumb module">
+			                    <ul id="demandDetailCrumbUl">
+			                    </ul>
+			            	</div>
+			            </div>	
+			     </div>
+		     <div>      
+            <h3 style="margin-top: -50px;">
+            	 	#if($!{gomeGmpResNeedVO.payUserId} == $!{gomeGmpResNeedVO.createUser})
+              		#if($!{gomeGmpResNeedVO.states} == 4 || $!{gomeGmpResNeedVO.states} == 5 )
+	                 <a href="javascript:void(0)" class='refuse'>拒绝</a>
+	                 <script id='refuse' type="text/html">
+                        <ul id='refuse_ul'>
+                            <li>拒绝原因：
+                                <select name="deny" id="deny">
+                                <option value="deny">请选择</option>
+                                <option value="deny">需求不合理</option>
+                                <option value="deny">重复需求</option>
+                                <option value="deny">已协商不做修改</option>
+                                <option value="deny">其他</option>
+                                </select>
+                            </li>
+                            <li>
+                                <div class='reason'>原因说明:</div>
+                                <div contenteditable="true" class='dialog_editbox'></div>   
+                            </li>
+                        </ul>                    
+                	 </script>
+	                <a href="javascript:void(0)" class='accept'>受理</a>
+	                <script id='accept' type="text/html">
+                    <ul id='accept_ul'>
+                            <li>需求类型：
+                                <select name="type" id="type">
+                                <option value="-1">请选择</option>
+                                <option value="1">项目</option>
+                                <option value="2">敏捷需求</option>
+                                </select>
+                            </li>
+                        </ul>       
+                	</script>
+	                <a href="javascript:void(0)" class='transfer'>转交</a>
+	                <script id='transfer' type="text/html">
+                        <ul id='accept_ul'>
+                            <li>请输入要选择的人员：</li>
+                            <li class='need search'>
+								<input id="userSelect" type="text" class="autocomplete_input">
+								<a href="javascript:void(0)" class="auto_search"></a>
+                            </li>
+                        </ul>   
+                	</script>
+                #end
+                #end
+              </h3>
+            </div>
+            <div class='project_search_bar' style="min-height:580px;max-height:auto;"><!-- 注意要-2 （减掉border的宽度）  -->
+            <div class='demand_details'>
+                <table>
+                    <thead>
+                        <tr>
+                            <td colspan='6'>
+                            	状态：$!{gomeGmpResNeedVO.statesName}
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>标题</td>
+                            <td id="ntitle" title="$!{gomeGmpResNeedVO.title}">$!{gomeGmpResNeedVO.title}</td>
+                            <td>优先级</td>
+                            <td>$!{gomeGmpResNeedVO.priorityName}</td>
+                            <td>期望上线时间</td>
+                            <td>$!date.format('yyyy-MM-dd',$!{gomeGmpResNeedVO.planTime})</td>
+                        </tr>
+                        <tr>
+                            <td>业务部门</td>
+                            <td style="width:220px;" title="$!{gomeGmpResNeedVO.unitBsName}">$!{gomeGmpResNeedVO.unitBsName}</td>
+                            <td>0A审批号</td>
+                            <td>$!{gomeGmpResNeedVO.oaId}</td>
+                            <td>关键用户</td>
+                            <td>$!{gomeGmpResNeedVO.keyUser}</td>
+                        </tr>
+                        <tr>
+                        	<td>交付部门</td>
+                            <td>$!{gomeGmpResNeedVO.payUnitName}</td>
+                            <td>交付人员</td>
+                            <td>$!{gomeGmpResNeedVO.payUserName}</td>
+                            <td>附件</td>
+                            <td style="word-break:keep-all;" class="file">
+	                    	 	#foreach($item in $gomeGmpResNeedVO.uploadFileInfo)  
+	                            	<a href="${contextPath}/$!{item.id}/download" target='downloadIframe' class='word_type'>$!{item.fileName}</a>
+	                            #end
+	                            <iframe name="downloadIframe" style="display: none;"></iframe>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5>
+                	关联项目：<a href="${contextPath}/project/detail/$!{gomeGmpResNeedVO.proId}" onclick="demandDetailBuildCrumb(this);">$!{gomeGmpResNeedVO.proTitle}</a>
+            </h5>
+            <div class='Requirements_content_details'>
+                <table>
+                    <tr>
+                        <td class='td_width'>需求简述</td>
+                        <td>$!{gomeGmpResNeedVO.proRemark}</td>
+                    </tr>
+                    <tr>
+                        <td>功能描述</td>
+                        <td>$!{gomeGmpResNeedVO.functionDesc}</td>
+                    </tr>
+                    <tr>
+                        <td>需求目标</td>
+                        <td>$!{gomeGmpResNeedVO.needTarget}</td>
+                    </tr>
+                    #if($!{gomeGmpResNeedVO.states} == 2)
+	                    <tr>
+	                        <td>拒绝原因</td>
+	                        <td>$!{gomeGmpResNeedVO.deny}</td>
+	                    </tr>
+	                    <tr>
+	                        <td>原因说明</td>
+	                        <td>$!{gomeGmpResNeedVO.reason}</td>
+	                    </tr>
+                    #end
+                </table>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/dialog-plus.js'></script>
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/demand_infodetail.js'></script>

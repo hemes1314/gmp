@@ -1,0 +1,55 @@
+#parse("common/header.vm")
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class="big_tab"><a href="javascript:void(0)">总数据统计</a></span>
+                    <span class="big_tab"><a href="javascript:void(0)">上线分布统计</a></span>
+                    <span class="big_tab"><a href="javascript:void(0)">各部门数据表现</a></span>
+                    <span class="small_tab"><a href="${contextPath}/tj/status">状态分布</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='/gmp/hourCount/scheduleStatistics;return false'">工时统计</a></span>
+                    <span class="selected big_tab"><a href="javascript:void(0)">提报需求统计</a></span>
+                </div>
+
+                <div class="GomeProject_tab-content">
+                    <!-- searchBar -->
+                    <div class="GomeProject_nav_title">
+						<div class="breadCrumbHolder module">
+						    <div class="breadCrumb module">
+						        <ul  id="findReadNeedCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+              	  	</div>
+                    <!-- searchbar end-->
+                    <!-- charts -->
+                    <!-- chartsEnd -->
+                    <div class='project_info_table demand_show_table' style="margin-top:12px">
+                        <table>
+                            <thead>
+                                <tr>
+                           
+                                    <td>需求名称</td>
+                                    <td>优先级</td>
+                                    <td>提出时间</td>
+                                    <td>计划上线时间</td>
+                                    <td>状态</td>
+                                </tr>
+                            </thead>
+                      		<tbody></tbody>
+                        </table>
+                        
+                    </div>
+                    <input type="hidden" id="needId" name="needId" value="$!{gomeGmpResNeedVO.needId}" />
+                    <input type="hidden" id="createUser" name="createUser" value="$!{gomeGmpResNeedVO.createUser}" />
+                    <input type="hidden" id="orgIds" name="orgIds" value="$!{gomeGmpResNeedVO.orgIds[0]}" />
+                    <!--  tableend  -->
+                    <div id='GomeProjectPage' class='GomeProjectPage'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/demand_list.js'></script>
+

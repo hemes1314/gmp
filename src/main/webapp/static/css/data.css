@@ -1,0 +1,152 @@
+@charset 'utf-8';
+
+.form-control {
+    height: 28px;
+    font-size: 12px;
+    width:250px;
+    line-height: 1.42857143;
+    color: #99999E;
+    background-color: #FFFFFF;
+    border: 1px solid #EBEBEB;
+}
+
+
+/* select */
+
+.data_accordion{
+	margin: 0 12px;
+    width: 98%;
+    border-collapse: inherit;
+    margin-bottom: 10px;
+    background: #FFFFFF;
+    border: 1px solid #EBEBEB;
+    border-bottom:0 none;
+    border-radius: 8px 8px 0 0;
+}
+
+.data_accordion li {
+    width: 100%;
+    border-top: 1px solid #e8e8e8;
+    line-height: 35px;
+    text-align: center;
+	color: #44444E;
+    font-size: 12px!important;
+}
+
+.data_accordion li>ul {
+    display: none;
+}
+
+.data_accordion span {
+    font-size: 12px!important;
+    display: inline-block;
+    text-align: center;
+}
+
+.data_accordion p span {
+    display: inline-block;
+}
+
+.data_accordion p .file_name {
+    position: relative;
+    border-right: 1px solid #EBEBEB;
+}
+
+.data_accordion  p .file_name a {
+    position: absolute;
+    left: -20px;
+    width: 50px;
+    height: 50px;
+}
+
+.add_toggle {
+    background: url(../images/plus_sign.png) no-repeat;
+    background-position: 35px 11px;
+}
+
+.reduce_toggle {
+    background: url(../images/reduce_sign.png) no-repeat;
+    background-position: 35px 11px;
+}
+
+.data_accordion .file_name {
+	width: 350px;
+    text-align: left;
+    border-right: 1px solid #EBEBEB;
+}
+.data_accordion .file_name div {
+	padding-left:2em;
+}
+
+.flie_time {
+    width: 250px;
+}
+
+.file_project {
+    width: 250px;
+}
+
+.file_person {
+    width: 250px;
+}
+
+.file_op {
+    width: 250px;
+}
+
+/*.file_op a {
+    color: #778CEF;
+    margin: 0 5px;
+}*/
+
+.dialog_file {
+    font-size: 15px;
+    padding-top: 50px;
+}
+
+.dialog_file p {
+    height: 60px;
+}
+
+.dialog_file p span {
+    margin: 0 20px;
+}
+
+.dialog_file p input {
+    height: 30px;
+    width: 250px;
+}
+
+.dialog_file .shade {
+    display: inline-block;
+    width: 250px;
+    height: 32px;
+    background: #ccc;
+    line-height: 32px;
+    text-align: center;
+}
+
+.dialog_file .file_shade {
+    position: relative;
+}
+
+.dialog_file .modal_file {
+    opacity: 0;
+    position: absolute;
+    z-index: 10;
+    width: 249px;
+    height: 31px;
+    left: 95px;
+    top: 120px;
+}
+.dialog_file .file_error_tips{
+    width:307px;
+    height: 40px;
+    margin-right: 70px;
+    padding-top: 5px;
+    display: inline-block; 
+    margin:0 auto;
+    float: right;
+    color: #ef6565;
+    font-size: 12px;
+}

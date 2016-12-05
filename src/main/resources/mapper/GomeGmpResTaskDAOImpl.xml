@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResTaskDAO">
+	
+	<insert id="saveGomeGmpResTaskBO" parameterType="GomeGmpResTaskBO">
+		INSERT INTO gome_gmp_res_task(id,pro_id,task_name,work_period,start_time,end_time,pre_task_num,schedule,bug_id,plan_time,user_id,rebuke,pro_type,task_num,update_time) 
+		VALUES(#{id},#{proId},#{taskName},#{workPeriod},#{startTime},#{endTime},#{preTaskNum},#{schedule},#{bugId},#{planTime},#{userId},#{rebuke},#{proType},#{taskNum},now())
+	</insert>
+	
+	<delete id="deleteGomeGmpResTaskBOByProId" parameterType="String">
+		DELETE FROM gome_gmp_res_task WHERE pro_id=#{proId}
+	</delete>
+	
+	<update id="updateGomeGmpTaskById" parameterType="GomeGmpResTaskBO">
+		UPDATE gome_gmp_res_task SET update_time = now()
+			<if test="proId!=null and proId!=''">,pro_id=#{proId}</if>
+			<if test="taskNum!=null">,task_num=#{taskNum}</if>
+			<if test="taskName!=null and taskName!=''">,task_name=#{taskName}</if>
+			<if test="workPeriod!=null and workPeriod!=''">,work_period=#{workPeriod}</if>
+			<if test="startTime!=null">,start_time=#{startTime}</if>
+			<if test="endTime!=null">,end_time=#{endTime}</if>
+			,pre_task_num=#{preTaskNum}
+			<if test="schedule!=null">,schedule=#{schedule}</if>
+			,bug_id=#{bugId}
+			<if test="planTime!=null">,plan_time=#{planTime}</if>
+			<if test="userId!=null">,user_id=#{userId}</if>
+			<if test="rebuke!=null">,rebuke=#{rebuke}</if>
+			<if test="proType!=null">,pro_type=#{proType}</if>
+ 		WHERE id=#{id}
+	</update>
+	
+	<select id="findGomeGmpResTaskBO" parameterType="GomeGmpResTaskVO" resultType="GomeGmpResTaskVO">
+		SELECT id,pro_id,task_num,task_name,work_period,start_time,end_time,date_format(start_time,'%Y-%m-%d') strStartDate,date_format(end_time,'%Y-%m-%d') strEndDate,pre_task_num,
+		(
+			SELECT
+				task_name
+			FROM
+				gome_gmp_res_task s
+			WHERE
+				s.task_num = u.pre_task_num and s.pro_id = u.pro_id
+		) pre_task_name,
+		(
+			SELECT
+				id
+			FROM
+				gome_gmp_res_task s
+			WHERE
+				s.task_num = u.pre_task_num and s.pro_id = u.pro_id
+		) pre_task_id,
+		schedule,bug_id,plan_time,
+		user_id,
+		CONCAT('(',(select user_id from gome_gmp_res_user where id = u.user_id),')',(select user_name from gome_gmp_res_user where id = u.user_id)) user_name,
+		rebuke,
+		pro_type 
+		FROM gome_gmp_res_task u
+		WHERE 1=1
+		<if test="proId !=null and proId!=''">
+			and pro_id = #{proId}
+		</if>
+		order by task_num
+	</select>
+	
+	<select id="getProTasksByParms"  parameterType="java.util.Map" resultType="GomeGmpResTaskBO">
+		SELECT 
+			rt.id,
+			rt.pro_id proId,
+			rt.task_name taskName,
+			rt.task_num taskNum,
+			rt.work_period workPeriod,
+			rt.start_time startTime,
+			rt.end_time endTime,
+			rt.schedule
+		FROM gome_gmp_res_task rt
+		<where>
+			<if test="proId != null and proId!=''">
+				and rt.pro_id = #{proId}
+			</if>
+			<if test="userId != null">
+				and rt.user_id = #{userId}
+			</if>
+		</where>
+		order by task_num
+	</select>
+</mapper>

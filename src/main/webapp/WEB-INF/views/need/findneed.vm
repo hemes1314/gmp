@@ -1,0 +1,139 @@
+#parse("common/header.vm")
+        <link rel="stylesheet" href="${contextPath}/static/css/demand_management.css">
+    <div class='wrapper'>
+    	<div class="GomeProjectContent">
+		    <div class="GomeProject_tab_title_zw">
+		    </div>
+	        <div class="GomeProject_tab-content">
+	        		<div class='GomeProject_nav_title'>
+	        			<div class="breadCrumbHolder module">
+				    		<div  class="breadCrumb module">
+			                    <ul id="findneedCrumbUl">
+			                    
+			                    </ul>
+			            	</div>
+			            </div>	
+                    	<a href="${contextPath}/demand/toSave" onclick="findneedBuildCrumb(this);" class='button'>新建</a>
+                     	<div class="clear"></div>
+                    </div>
+                    
+	                <form id='search'>
+	                	<div class='project_search_bar' style="height:72px;"><!-- 注意要-2 （减掉border的宽度）  -->
+                            <div class="form_div">
+                                <div class="form-group">
+                                	<label for="req">检索</label>
+                                	<input type="text" name="title" class='form-control' placeholder='请输入需求名称'/>
+                                	<input type="hidden" id="loginUserId" value='$!{loginUser.id}'/>
+                                	<input type="hidden" id="isAdmin" value='$!{loginUser.authority}'/>
+                                </div>
+                                
+                                <div class="form-group">
+                                	<label for="req">状态</label>
+                                	<select name="states" id="states">
+	                                     	<option value="">全部</option>
+	                                        #foreach($item in $gomeGmpResNeedVO.StatusV)
+	                                        <option value="$!{item.itemId}">$!{item.itemName}</option>
+	                                        #end
+	                                    </select>
+	                            </div>
+                                
+                                <div class="form-group">
+                                	<label for="req">计划上线时间</label>
+                                	<input type="text" class="laydate-icon" id="start" name="startTime" style="width:100px; margin-right:10px;" placeholder=""> 至
+	                        		<input type="text" class="laydate-icon" id="end" name="endTime" style="width:100px;" placeholder="">
+                                </div>
+                            
+                            	<div class="form-group">
+                                    <a href="javascript:void(0)" 
+                                    	class='search_project searchBtn'>查询</a>
+                                </div>
+                            </div>
+                        </div>
+	                </form>
+	                
+	            <div class='project_info_table' style="margin-top:12px">
+                     <table class="detail">
+		                <thead>
+		                    <tr>
+		                        <td style="width:100px;">需求名称</td>
+		                        <td style="width:100px;">业务部门</td>
+		                        <td style="width:60px;">提报人</td>
+		                        <td style="width:40px;">优先级</td>
+		                        <td style="width:60px;">提出时间</td>
+		                        <td style="width:60px;">计划上线时间</td>
+		                        <td style="width:40px;">状态</td>
+		                        <td style="width:40px;">交付人</td>
+		                        <td style="width:120px;">操作</td>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                </tbody>
+	           		</table>
+	            </div>
+	
+	            <div id="page"></div>
+	     			<script id='record_temp' type='text/html'>
+                        <tr >
+							<td style="display:none;">$needId$</td>
+                            <td>#marker#<a href="${contextPath}/demand/toDetail/$needId$" onclick="findneedBuildCrumb(this);">$title$</a></td>
+                            <td>$unitBsName$</td>
+                            <td>$createUserName$</td>
+                            <td>$priorityName$</td>
+                            <td>$createTime$</td>
+                            <td>$planTime$</td>
+                       		<td>$statesName$</td>
+							<td>$payUserName$</td>
+                </script>
+	        </div>
+        </div>
+    </div>
+    <script id='refuse' type="text/html">
+        <ul id='refuse_ul'>
+            <li>拒绝原因：
+                <select name="deny" id="deny">
+                    <option value="">请选择</option>
+                    <option value="">需求不合理</option>
+                    <option value="">重复需求</option>
+                    <option value="">已协商不做修改</option>
+                    <option value="">其他</option>
+                </select>
+            </li>
+            <li>
+                <div class='reason'>原因说明:</div>
+                <div contenteditable="true" class='dialog_editbox'></div>
+            </li>
+        </ul>
+    </script>
+    <script id='accept' type="text/html">
+        <ul id='accept_ul'>
+            <li>需求类型：
+                <select name="type" id="type">
+                    <option value="-1">请选择</option>
+                    <option value="1">项目</option>
+                    <option value="2">敏捷需求</option>
+                </select>
+            </li>
+        </ul>
+    </script>
+    <script id='transfer' type="text/html">
+        <ul id='accept_ul'>
+            <li>请输入要选择的人员：</li>
+            <li class='need search'>
+                <input id="userSelect" type="text" class="autocomplete_input">
+				<a href="javascript:void(0)" class="auto_search"></a>
+            </li>
+        </ul>
+    </script>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/demand_management.js'></script>
+<script src='${contextPath}/static/js/demand_detail.js'></script>
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#findneedCrumbUl'));
+	// add for crumb end
+});
+
+</script>

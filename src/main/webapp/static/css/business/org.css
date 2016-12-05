@@ -1,0 +1,153 @@
+/** 组织管理 start **/
+.account {
+    width: 98%;
+    margin: 0px 10px;
+    background: #FFFFFF;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.account table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.account table thead {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.account table tr {
+    height: 56px;
+    line-height: 38px;
+}
+
+.account table tr td {
+    text-align: left;
+    padding: 0 26px;
+}
+
+.account table tr td .org_title {
+    margin: 0 30px;
+    color: #44444E;
+    font-weight: bold;
+}
+
+
+
+.org_op {
+    width: 98%;
+    min-height: 493px;
+    background: #FFFFFF;
+    margin: 0px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.org_op h3 {
+    line-height: 38px;
+    font-size: 14px;
+    font-weight: bold;
+    text-indent: 2em;
+}
+
+.org_op .org_op_ul {
+    float: left;
+    margin-left: 10px;
+    width: 215px;
+}
+
+.org_op .org_op_ul li {
+    padding: 5px 30px;
+    border: 1px solid #e8e8e8;
+    border-top: 0px;
+}
+
+.org_op .org_op_ul .title {
+    border-top: 1px solid #e8e8e8;
+    height: 53px;
+    line-height: 53px;
+}
+
+.org_op .org_op_ul .title a {
+    background: #7A91F1;
+    border-radius: 15px;
+    padding: 2px 5px;
+    color: #fff;
+}
+
+.org_op .org_op_ul li p {
+    line-height: 25px;
+}
+
+.org_op .org_op_ul .org_op_p_preson {
+/*     text-indent: 2em; 
+    background: url(../images/user_name.png) no-repeat;*/
+    background-position: -5px;
+}
+
+.org_op .org_op_ul .org_op_p {
+    line-height: 53px;
+    display: none;
+}
+
+.org_op .org_op_ul .org_op_p a {
+    background: #7A91F1;
+    border-radius: 5px;
+    color: #fff;
+    margin: 0 2px;
+    display: inline-block;
+    line-height: 30px;
+    width: 30px;
+    text-align: center;
+}
+
+.dialog_org {
+    font-size: 15px;
+    padding-top: 50px;
+}
+
+.dialog_org p {
+    height: 60px;
+}
+
+.dialog_org p span {
+    margin: 0 20px;
+}
+
+.dialog_org p input {
+    height: 30px;
+    width: 250px;
+}
+
+.org_op_p span {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -moz-binding: url('ellipsis.xml#ellipsis');
+    overflow: hidden;
+    display: inline-block;
+    width: 80px;
+    float: left;
+    height: 25px;
+    line-height: 30px;
+}
+
+.cur {
+	background:rgb(220,220,220);
+}
+.error_tips{
+    width:307px;
+    height: 40px;
+    margin-right: 70px;
+    padding-top: 5px;
+    display: inline-block; 
+    margin:0 auto;
+    float: right;
+    color: #ef6565;
+    font-size: 12px;
+}
+/** 组织管理 end **/

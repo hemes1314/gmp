@@ -1,0 +1,249 @@
+#parse("common/header.vm")
+    <link rel="stylesheet" href="${contextPath}/static/css/detail.css">
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+			#parse("project/projectHeader.vm")
+            #if($gomeGmpResProjectVO.returnData == '0901000000')
+            <div style="height:1200px;">
+           	<span style="color:red;">查询详情失败，请检查是否正确调用接口！</span>
+           	<a onclick="history.go(-1);" style="cursor: pointer;">返回</a>
+           	</div>
+           	#else
+        	<div class="GomeProject_nav_title">
+        	
+              
+			 <div class="breadCrumbHolder module">
+				    <div  class="breadCrumb module">
+		        		<ul id="detailProjectCrumbUl">
+			                    
+			            </ul>
+	            	</div>
+	            </div>         
+        		##if($gomeGmpResProjectVO.finishHour > 0)
+        		<a href="javascript:void(0);" onclick="detailProjectBuildCrumb(this);location.href='${contextPath}/tj/workHour/${gomeGmpResProjectVO.proType}/${proId}'" style="margin-right:10px" class="detail_button">工时统计</a>
+        		##else
+        		##<a href="javascript:void(0);" onclick="layer.msg('无工时数据，无法显示！')" style="margin-right:10px" class="detail_button">工时统计</a>
+        		##end 
+              	<a href="${contextPath}/log/${proId}" onclick="detailProjectBuildCrumb(this);" style="margin-right:15px" class="detail_button">变更记录</a>  
+              	<div class="clear"></div>
+        	</div>
+            <div class="basic_content">
+                <h2>基本内容
+                #if($gomeGmpResProjectVO.isAuth == 1)
+                <a href="${contextPath}/project/toUpdate/${proId}" onclick="detailProjectBuildCrumb(this);" class="details_edit">
+                	编辑
+                </a>
+                #end
+                </h2>
+                <table>
+                    <tr>
+                        <td class='table_name'>项目名称</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.title}</td>
+                        <td class='table_name'>项目ID</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.proId}</td>
+                        <td class='table_name'>涉及系统</td>
+                        <td>$!{gomeGmpResProjectVO.systemNames}</td>
+                    </tr>
+                    <tr>
+                        <td class='table_name'>项目经理</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.bpName}</td>
+                        <td class='table_name'>优先级</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.priorityName}</td>
+                        <td class='table_name'>SVN路径</td>
+                        <td>$!{gomeGmpResProjectVO.svnAddr}</td>
+                    </tr>
+                    <tr>
+                        <td class='table_name'>业务部门</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.unitBsName}</td>
+                        <td class='table_name'>关键用户</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.keyUserName}</td>
+                        <td class='table_name'>相关需求</td>
+                        <td>
+	                        #if($gomeGmpResProjectVO.demandId)
+	                        <a href="${contextPath}/demand/toDetail/${gomeGmpResProjectVO.demandId}" onclick="detailProjectBuildCrumb(this);" style="text-decoration: underline; color: blue;">
+	                        #end
+                        	$!{gomeGmpResProjectVO.demandName}
+	                        #if($gomeGmpResProjectVO.demandId)
+	                        </a>
+	                        #end
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='table_name'>项目简述</td>
+                        <td colspan="7">$!{gomeGmpResProjectVO.remark}</td>
+                    </tr>
+                    #foreach($item in $gomeGmpResProjectVO.relatedUsers)
+                    	#if($!velocityCount % 3 == 0)
+	                    <tr>
+	                    #end
+	                        <td class='table_name'>$!{item.roleName}</td>
+	                        <td colspan="2">$!{item.userName}</td>
+	                    #if($!velocityCount % 3 == 2)
+	                    </tr>
+	                    #end
+                    #end
+                    <tr>
+                        <td class='table_name'>实际工时</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.finishHour}h</td>
+                        <td class='table_name'>计划工时</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.planHour}h</td>
+                        <td class='table_name'>实际工时/计划工时</td>
+                        <td colspan="2">$!{gomeGmpResProjectVO.finishPlan}%</td>
+                        <!-- <td class='table_name'></td>
+                        <td></td>  -->
+                    </tr>
+                    <tr>
+                        <td class='table_name'>附件资料</td>
+                        <td colspan="7">
+                        	#foreach($item in $gomeGmpResProjectVO.uploadFileInfo)  
+                            <a href="${contextPath}/$!{item.id}/download" target='downloadIframe' class='word_type'>$!{item.fileName}</a>
+                            #end
+                            <iframe name="downloadIframe" style="display: none;"></iframe>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="main_area">
+                <div class="project_scheduling">
+	                <h2>项目排期
+	                <a href="javascript:void(0);" onclick="showGantt('${gomeGmpResProjectVO.proType}','${proId}');" class="gantt_pic">甘特图 </a>
+	                </h2>
+                <table>
+                    <tr>
+                        <td class="table_name">任务状态</td>
+                        <td>$!{gomeGmpResProjectVO.statusName}</td>
+                        <td class="table_name">进度状态</td>
+                        <td>$!{gomeGmpResProjectVO.scheduleName}</td>
+                        <td class="table_name">实施阶段</td>
+                        <td>$!{gomeGmpResProjectVO.actualizeName}</td>
+                        <td class="table_name">完成百分比</td>
+                        <td>$!{gomeGmpResProjectVO.percentage}</td>
+                    </tr>
+                    <tr>
+                        <td class="table_name">开始时间</td>
+                        <td>$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.startTime})</td>
+                        <td class="table_name">计划上线时间</td>
+                        <td>$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.planTime})</td>
+                        <td class="table_name">完成时间</td>
+                        <td>$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.finishTime})</td>
+                        <td class="table_name">项目工期</td>
+                        <td>$!{gomeGmpResProjectVO.proPeriod}天</td>
+                    </tr>
+                </table>
+
+                <table class='project_scheduling_detail_info'>
+                <thead>
+                    <tr>
+                        <td>任务号</td>
+                        <td>任务名称</td>
+                        <td>开始时间</td>
+                        <td>结束时间</td>
+                        <td>工期</td>
+                        <td>前置任务</td>
+                        <td>进度</td>
+                        <td>BUG号</td>
+                        <td>计划工时</td>
+                        <td>人员名称</td>
+                        <td>项目职责</td>
+                    </tr>
+                </thead>                
+                <tbody>
+                	#foreach($item in $gomeGmpResProjectVO.relatedTasks)
+                    <tr>
+                        <td>#set($velocityCount=$velocityCount+1) $!{velocityCount}</td>
+                        <td>$!{item.taskName}</td>
+                        <td>$!date.format('yyyy-MM-dd',$!{item.startTime})</td>
+                        <td>$!date.format('yyyy-MM-dd',$!{item.endTime})</td>
+                        <td>
+                        #if(${item.workPeriod})
+                        	${item.workPeriod}天
+						#end
+						</td>
+                        <td>$!{item.preTaskNum}</td>
+                        <td>
+                        #if(${item.schedule})
+                        	${item.schedule}%
+                        #end
+                        </td>
+                        <td>$!{item.bugId}</td>
+                        <td>
+                        #if(${item.planTime})
+                        	${item.planTime}h
+                        #end
+                        </td>
+                        <td>$!{item.userName}</td>
+                        <td>$!{item.rebuke}</td>
+                    </tr>
+                    #end
+                </tbody>
+                </table>
+            </div>
+            <!-- <div class='project_resume'>
+                <dl>
+                    <dt>项目简述</dt>
+                    <dd>
+                        <div class="edit_box" contenteditable="false">
+                        	$!{gomeGmpResProjectVO.remark}
+                        </div>
+                    </dd>
+                </dl>
+            </div> -->
+            <div class='recent_work'>
+                <dl>
+                    <dt>近期完成工作</dt>
+                    <dd>
+                        <div class="small_edit_box" contenteditable="false">
+                        	$!{gomeGmpResProjectVO.nearWorkDone}
+                        </div>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>近期计划工作</dt>
+                    <dd>
+                        <div class="small_edit_box" contenteditable="false">
+                        	$!{gomeGmpResProjectVO.nearWorkPlan}
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+            <div style="clear:both"></div>
+            <div class='project_resume'>
+                <dl>
+                    <dt>风险说明</dt>
+                    <dd>
+                        <div class="edit_box" contenteditable="false">
+                        	$!{gomeGmpResProjectVO.riskRemark}
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+            </div>
+            <h3 class='bootom_op'>
+                <!-- <a href="javascript:void(0)">发送项目周报</a> -->
+                <iframe name="downloadIframe" style="display: none;"></iframe>
+                <a href="${contextPath}/project/detail/export/${proId}" target="downloadIframe">数据导出</a><!-- ${contextPath}/project/detail/export/${proId} -->
+            </h3>
+            #end
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#detailProjectCrumbUl'));
+	// add for crumb end
+});
+function detailProjectBuildCrumb(dom){
+	parent.pushNavStack($(dom).text());
+}
+//显示甘特图
+function showGantt(proType, proId) {
+	var url = contextPath + '/project/gantt/' + proType + '/' + proId;
+	parent.dialog({
+        url: url,
+        title: '甘特图',
+        width: 1200,
+        height: 380
+    }).showModal();
+}
+</script>

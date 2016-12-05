@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpDictItemDAO">
+	
+	<select id="findGomeGmpDictItemBO" parameterType="GomeGmpDictItemBO" resultType="GomeGmpDictItemBO">
+		 select g.* from (		
+		 		select i.group_type,i.item_id,i.item_name,i.sort
+		 				from gome_gmp_dict_item i
+		 				union ALL
+		 				select 'userId' group_type, u.id item_id, CONCAT('(', u.user_id,')', u.user_name) item_name, u.id sort from gome_gmp_res_user u
+		 		) g where g.group_type is not null
+		 order by g.group_type,g.sort;
+	</select>
+	
+	<select id="holidayDates" resultType="java.lang.String" parameterType="GomeGmpDictItemVO">
+		SELECT DATE_FORMAT(date, '%Y-%m-%d')
+		  FROM gome_gmp_conf_date t
+		<where>
+		<if test="isHoliday != null">
+			t.is_holiday = #{isHoliday}
+		</if>
+		<if test="startDate != null and endDate != null">
+			<![CDATA[
+			AND t.date >= STR_TO_DATE(#{startDate},'%Y-%m-%d') 
+			AND t.date <= STR_TO_DATE(#{endDate},'%Y-%m-%d') 
+			]]>
+		</if>
+		<if test="startDate == null or endDate == null">
+			AND DATE_FORMAT(date, '%Y') = DATE_FORMAT(now(), '%Y')
+		</if>
+		</where>
+		ORDER BY date
+	</select>	
+	
+	<select id="getDailyType" resultType="GomeGmpDictItemBO">
+		SELECT id,group_type,item_id,item_name,sort
+			FROM gome_gmp_dict_item 
+			WHERE group_type = 'dailyType' 
+			ORDER BY item_id
+	</select>
+	
+</mapper>

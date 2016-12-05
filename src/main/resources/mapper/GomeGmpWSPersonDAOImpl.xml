@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpWSPersonDAO">
+	
+	<delete id="deleteGomeGmpResUserBOByPernr" parameterType="String">
+		delete from gome_gmp_res_user where user_id in (${value}) or user_id is null
+	</delete>
+	
+	<select id="findGomeGmpResUserBOByPernr" parameterType="String" resultType="String">
+		select user_id from gome_gmp_res_user where user_id in (${value})
+	</select>
+	
+	<insert id="saveGomeGmpResUserBO" parameterType="java.util.List">
+		INSERT INTO
+		gome_gmp_res_user(pernr, user_id, user_name, unit_id, email) 
+		VALUES
+		<foreach collection="list" item="obj" index="index" separator="," >  
+       	(#{obj.pernr},#{obj.userId},#{obj.userName},#{obj.unitId},#{obj.email})
+    	</foreach> 
+	</insert>
+	
+	<update id="updateGomeGmpResUserBO" parameterType="GomeGmpResUserBO">
+       	update gome_gmp_res_user 
+       		set pernr = #{pernr},
+       		    user_name=#{userName},
+       		    unit_id=#{unitId},
+       		    email=#{email},
+       		    update_time=now() 
+       	 where user_id=#{userId}
+	</update>
+	
+	<update id="updatePernrForUserName" parameterType="GomeGmpResUserBO">
+		update gome_gmp_res_user set pernr=#{pernr} where user_id=#{userId} and pernr is null
+	</update>
+</mapper>

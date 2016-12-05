@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResUserOrgDAO">
+
+	<insert id="addGmpResUserOrg" parameterType="GomeGmpResUserOrgBO">
+		INSERT INTO gome_gmp_res_user_org(id,user_tid,org_id) VALUES(#{id},#{userTid},#{orgId})
+	</insert>
+	
+	<delete id="delUserOrgRelationByOrgId" parameterType="String">
+		DELETE FROM gome_gmp_res_user_org WHERE org_id=#{orgId}
+	</delete>
+	
+	<update id="upeUserOrgRelation" parameterType="GomeGmpResUserOrgBO">
+		UPDATE gome_gmp_res_user_org SET user_tid = #{userTid} WHERE org_id=#{orgId}
+	</update>
+	
+</mapper>

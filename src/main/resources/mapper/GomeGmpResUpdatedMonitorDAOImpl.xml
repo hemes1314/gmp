@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResUpdatedMonitorDAO">
+	
+	<select id="getGomeGmpResUpdatedCountBO" parameterType="GomeGmpResProjectVO" resultType="java.util.LinkedHashMap">
+		SELECT 	org_id,
+				org_name,
+				SUM(no_updated_count) AS no_updated_count,
+				(SUM(updated_count) + SUM(updated_close_count)) AS updated_count,
+				ROUND(( (SUM(updated_count) + SUM(updated_close_count)) / (SUM(no_updated_count) + SUM(updated_count) + SUM(updated_close_count))),2)*100 AS update_pct,
+				SUM(updated_pause_count) AS updated_pause_count,
+				SUM(updated_close_count) AS updated_close_count
+		  FROM  (
+					SELECT 	
+						project_t.pro_id,user_t.user_id,user_t_1.org_id,user_t_1.org_name,
+						<![CDATA[IF(log_t.pro_id IS NOT NULL OR (project_t.create_time <= #{endTime} AND project_t.create_time >= #{startTime}),1,0)]]> AS updated_count,
+						<![CDATA[IF(log_t.pro_id IS NULL AND (project_t.create_time > #{endTime} or project_t.create_time < #{startTime}),1,0)]]> AS no_updated_count,
+						0 AS updated_pause_count,
+						0 AS updated_close_count
+				  	FROM  (
+								SELECT  
+									DISTINCT(log_t.pro_id),project_t.bp_id,project_t.create_time  
+								FROM 	
+									gome_gmp_res_log AS log_t 
+								JOIN (
+									 SELECT 	
+										pro_id,MAX(create_time) AS create_time 
+									  FROM 
+									  	gome_gmp_res_log 
+									  WHERE <![CDATA[create_time <= #{endTime}  AND operate_column = 'statusId']]> 
+									  GROUP BY pro_id
+									) AS final_status_t
+		 					    	ON log_t.pro_id = final_status_t.pro_id AND log_t.create_time = final_status_t.create_time AND log_t.column_val = '2'
+						 		LEFT JOIN 
+						 			gome_gmp_res_project AS project_t ON project_t.pro_id = log_t.pro_id
+							UNION
+								SELECT
+									project_t.pro_id,project_t.bp_id,project_t.create_time
+								FROM  
+									gome_gmp_res_project AS project_t
+							 	WHERE  
+							 		project_t.status_id = '2' AND project_t.is_commit = 1 
+							<![CDATA[AND now() >= project_t.start_time AND project_t.schedule_id <> '9' AND project_t.create_time <= #{endTime}  AND project_t.create_time >= #{startTime}]]> 
+						) AS project_t
+					LEFT JOIN ( SELECT 	u.id AS user_id,u.org_id,o.org_name FROM gome_gmp_res_user u LEFT JOIN  gome_gmp_res_org o ON u.org_id = o.org_id) AS user_t
+				    	ON user_t.user_id = project_t.bp_id
+					LEFT JOIN gome_gmp_res_org AS user_t_1
+						ON  1=1
+						<if test="orgIds != null and orgIds.length > 0">
+				  			AND (
+		        				<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+		        				 	(LEFT (user_t.org_id,LENGTH(#{item})) = user_t_1.org_id AND user_t_1.org_id = #{item})
+								</foreach> 
+		        			)
+		        		</if>
+			 		LEFT JOIN (
+							SELECT 	pro_id ,COUNT(create_time) FROM gome_gmp_res_log
+							WHERE 	<![CDATA[ create_time <= #{endTime} AND 	create_time >= #{startTime} ]]> 
+						  	GROUP BY pro_id
+						) AS log_t
+					   ON log_t.pro_id = project_t.pro_id
+			 	 WHERE 1 = 1
+				 <if test="orgIds != null and orgIds.length > 0">
+				  AND (  
+		        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+		        		user_t.org_id LIKE CONCAT(#{item},'%')
+					</foreach> 
+		        	)
+		         </if>
+			UNION
+				SELECT 	project_t.pro_id,
+						user_t.user_id, 
+						user_t_1.org_id,
+						user_t_1.org_name,
+						0 AS updated_count,
+						0 AS no_updated_count,
+						1 AS updated_pause_count,
+						0 AS updated_close_count 
+				FROM (
+						SELECT 	DISTINCT(log_t.pro_id),project_t.bp_id	
+						FROM (
+								SELECT project_t.* FROM gome_gmp_res_project AS project_t
+								INNER JOIN ( 
+										SELECT pro_id,MAX(create_time) AS create_time 
+										FROM gome_gmp_res_log
+										WHERE 	
+											<![CDATA[create_time >= #{startTime} AND create_time <= #{endTime}]]> 
+										AND OPERATE_COLUMN = 'scheduleId' and COLUMN_VAL = '9'
+										GROUP BY pro_id
+									) AS final_status_t
+								ON project_t.pro_id = final_status_t.pro_id
+							)AS log_t
+						LEFT JOIN gome_gmp_res_project AS project_t
+							ON project_t.pro_id = log_t.pro_id	
+					) AS project_t
+				LEFT JOIN (
+						SELECT 	gome_gmp_res_user.id AS user_id,
+								gome_gmp_res_user.org_id, 
+								gome_gmp_res_org.org_name  
+						FROM 	gome_gmp_res_user 
+						LEFT JOIN gome_gmp_res_org 
+						ON gome_gmp_res_user.org_id = gome_gmp_res_org.org_id
+					) AS user_t
+					ON project_t.bp_id = user_t.user_id
+				LEFT JOIN gome_gmp_res_org AS user_t_1
+					ON  1=1
+					<if test="orgIds != null and orgIds.length > 0">
+			  				AND (  
+	        			<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+	        				 (LEFT (user_t.org_id,LENGTH(#{item})) = user_t_1.org_id
+								AND user_t_1.org_id = #{item})
+						</foreach> 
+	        			)
+	        		</if>
+			 	LEFT JOIN (
+						SELECT 	pro_id , 
+								COUNT(create_time) 
+						  FROM 	gome_gmp_res_log 
+	  					 WHERE 	
+	  					 <![CDATA[
+	  					 		create_time <= #{endTime}
+						   AND 	create_time >= #{startTime}
+						 ]]> 
+					  GROUP BY pro_id
+						) AS log_t
+					   ON log_t.pro_id = project_t.pro_id
+			 	 WHERE 1 = 1
+				 <if test="orgIds != null and orgIds.length > 0">
+				  AND (  
+		        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+		        		user_t.org_id LIKE CONCAT(#{item},'%')
+					</foreach> 
+		        	)
+		        </if>
+		UNION
+			SELECT 	project_t.pro_id,
+					user_t.user_id, 
+					user_t_1.org_id,
+					user_t_1.org_name,
+					0 AS updated_count,
+					0 AS no_updated_count,
+					0 AS updated_pause_count,
+					1 AS updated_close_count  
+			FROM (
+					SELECT 	DISTINCT(log_t.pro_id),project_t.bp_id
+					FROM 	
+						(
+							SELECT project_t.* FROM gome_gmp_res_project AS project_t
+							INNER JOIN (
+										SELECT 	pro_id,
+												MAX(create_time) AS create_time 
+										FROM 	gome_gmp_res_log 
+							WHERE 	<![CDATA[
+									create_time >= #{startTime}
+							AND		create_time <= #{endTime}
+									]]>  
+							AND 	OPERATE_COLUMN = 'statusId' and COLUMN_VAL = '3'
+							GROUP BY pro_id
+							) AS final_status_t
+							ON project_t.pro_id = final_status_t.pro_id 
+						)AS log_t
+					LEFT JOIN gome_gmp_res_project AS project_t
+						ON project_t.pro_id = log_t.pro_id	
+				) AS project_t
+			LEFT JOIN (
+						SELECT 	gome_gmp_res_user.id AS user_id,
+								gome_gmp_res_user.org_id, 
+								gome_gmp_res_org.org_name  
+						FROM gome_gmp_res_user 
+						LEFT JOIN gome_gmp_res_org 
+						ON gome_gmp_res_user.org_id = gome_gmp_res_org.org_id
+					) AS user_t
+				ON project_t.bp_id = user_t.user_id
+			LEFT JOIN gome_gmp_res_org AS user_t_1
+				ON  1=1
+				<if test="orgIds != null and orgIds.length > 0">
+		  				AND (  
+        			<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+        				 (LEFT (user_t.org_id,LENGTH(#{item})) = user_t_1.org_id
+							AND user_t_1.org_id = #{item})
+					</foreach> 
+        			)
+        		</if>
+			WHERE 1 = 1
+			<if test="orgIds != null and orgIds.length > 0">
+			  AND (  
+	        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+	        		user_t.org_id LIKE CONCAT(#{item},'%')
+				</foreach> 
+	        	)
+	        </if>
+		) AS count_t
+		GROUP BY org_id,org_name
+		ORDER BY update_pct DESC
+	</select>	
+	<select id="getUpdatedProjectsById" parameterType="GomeGmpResProjectVO" resultType="java.util.LinkedHashMap">
+	SELECT 	project_t.pro_id,
+		project_t.title,
+		project_t.statusName,
+		project_t.priorityName,
+		project_t.scheduleName,
+		project_t.actualizeName,
+		project_t.task_completion,
+		DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') AS plan_time,
+		user_t.user_name
+	FROM (
+		SELECT  DISTINCT(log_t.pro_id), 
+			project_t.bp_id ,
+			project_t.title,
+			project_t.status_id,
+			project_t.priority_id,
+			project_t.schedule_id,
+			project_t.actualize,
+			project_t.create_time,
+			item_1.item_name AS statusName,
+			item_2.item_name AS priorityName,
+			item_3.item_name AS scheduleName,
+			item_4.item_name AS actualizeName, 
+			completion_t.task_completion,
+			project_t.plan_time,
+			log_t.create_time create_time_log
+		FROM gome_gmp_res_project project_t join
+			(
+				SELECT  DISTINCT(log_t.pro_id), 
+						log_t.create_time
+				  FROM 	gome_gmp_res_log AS log_t
+			      JOIN (
+							SELECT 	pro_id,
+									MAX(create_time) AS create_time
+							  FROM 	gome_gmp_res_log
+							 WHERE 	1=1
+						 	<![CDATA[
+							   AND create_time <= #{endTime}
+						 	]]> 
+							   AND operate_column = 'statusId'
+						  GROUP BY pro_id
+						) AS final_status_t
+					    ON log_t.pro_id = final_status_t.pro_id 
+					   AND log_t.create_time = final_status_t.create_time
+					   AND log_t.column_val = '2'
+				
+				 UNION
+
+				SELECT  project_t.pro_id, 
+						project_t.create_time
+				  FROM  gome_gmp_res_project AS project_t
+				 WHERE  project_t.status_id = '2' 
+				<![CDATA[
+				   AND project_t.create_time <= #{endTime}
+				   AND project_t.create_time >= #{startTime}
+				]]> 
+			) log_t 
+			ON project_t.pro_id = log_t.pro_id 
+			<if test="statusId!=null"> AND project_t.status_id=#{statusId}</if>
+			<if test="scheduleId!=null"> AND project_t.schedule_id=#{scheduleId}</if>
+			<if test="priorityId!=null"> AND project_t.priority_id=#{priorityId}</if>
+			<if test="actualize!=null"> AND project_t.actualize=#{actualize}</if>
+			LEFT JOIN gome_gmp_dict_item AS item_1
+			ON item_1.group_type = 'statusId' AND item_1.item_id = project_t.status_id
+			LEFT JOIN gome_gmp_dict_item AS item_2
+			ON item_2.group_type = 'priorityId' AND item_2.item_id = project_t.priority_id
+			LEFT JOIN gome_gmp_dict_item AS item_3
+			ON item_3.group_type = 'scheduleId' AND item_3.item_id = project_t.schedule_id
+			LEFT JOIN gome_gmp_dict_item AS item_4
+			ON item_4.group_type = 'actualize' AND item_4.item_id = project_t.actualize
+			LEFT JOIN (SELECT pro_id, 
+					ROUND(SUM(IFNULL(`schedule`,0) * IFNULL(work_period,1)   ) /SUM(IFNULL(work_period,1)),1) AS task_completion
+				FROM gome_gmp_res_task
+				GROUP BY pro_id) AS completion_t
+			ON completion_t.pro_id = project_t.pro_id
+		) AS project_t
+	LEFT JOIN (
+			SELECT 	gome_gmp_res_user.id AS user_id,
+					gome_gmp_res_user.user_name,
+					gome_gmp_res_user.org_id, 
+					gome_gmp_res_org.org_name  
+			  FROM 	gome_gmp_res_user 
+	     LEFT JOIN 	gome_gmp_res_org 
+			    ON 	gome_gmp_res_user.org_id = gome_gmp_res_org.org_id
+				) AS user_t
+		ON project_t.bp_id = user_t.user_id
+	LEFT JOIN (
+						SELECT 	pro_id , 
+								COUNT(create_time) 
+						  FROM 	gome_gmp_res_log 
+	  					 WHERE 	
+	  					 <![CDATA[
+	  					 		create_time <= #{endTime}
+						   AND 	create_time >= #{startTime}
+						 ]]> 
+					  GROUP BY pro_id
+						) AS log_t
+		   ON log_t.pro_id = project_t.pro_id
+		WHERE (log_t.pro_id IS NOT NULL 
+		  or 
+		<![CDATA[
+			  (project_t.create_time_log >= #{startTime} and project_t.create_time_log <= #{endTime})
+			]]>)
+	<if test="orgIds != null and orgIds.length > 0">
+	  	AND
+       	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+       		user_t.org_id LIKE CONCAT(#{item},'%')
+		</foreach> 
+    </if>
+	</select>   
+	<select id="getNoUpdatedProjectsById" parameterType="GomeGmpResProjectVO" resultType="java.util.LinkedHashMap">
+	SELECT 	project_t.pro_id,
+		project_t.title,
+		project_t.statusName,
+		project_t.priorityName,
+		project_t.scheduleName,
+		project_t.actualizeName,
+		project_t.task_completion,
+		DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') AS plan_time,
+		user_t.user_name
+	FROM (
+		SELECT  DISTINCT(log_t.pro_id), 
+			project_t.bp_id ,
+			project_t.title,
+			project_t.status_id,
+			project_t.priority_id,
+			project_t.schedule_id,
+			project_t.actualize,
+			project_t.create_time,
+			item_1.item_name AS statusName,
+			item_2.item_name AS priorityName,
+			item_3.item_name AS scheduleName,
+			item_4.item_name AS actualizeName, 
+			completion_t.task_completion,
+			project_t.plan_time,
+			log_t.create_time create_time_log
+		FROM gome_gmp_res_project project_t join
+			(
+				SELECT  DISTINCT(log_t.pro_id), 
+						log_t.create_time
+				  FROM 	gome_gmp_res_log AS log_t
+			      JOIN (
+							SELECT 	pro_id,
+									MAX(create_time) AS create_time
+							  FROM 	gome_gmp_res_log
+							 WHERE 	1=1
+						 	<![CDATA[
+							   AND create_time <= #{endTime}
+						 	]]> 
+							   AND operate_column = 'statusId'
+						  GROUP BY pro_id
+						) AS final_status_t
+					    ON log_t.pro_id = final_status_t.pro_id 
+					   AND log_t.create_time = final_status_t.create_time
+					   AND log_t.column_val = '2'
+				
+				 UNION
+
+				SELECT  project_t.pro_id, 
+						project_t.create_time
+				  FROM  gome_gmp_res_project AS project_t
+				 WHERE  project_t.status_id = '2' 
+				<![CDATA[
+				   AND project_t.is_commit = 1
+				   AND now() >= project_t.start_time
+				   AND project_t.schedule_id <> '9'
+				   AND project_t.create_time <= #{endTime}
+				   AND project_t.create_time >= #{startTime}
+				]]> 
+			) log_t 
+			ON project_t.pro_id = log_t.pro_id 
+			<if test="statusId!=null"> AND project_t.status_id=#{statusId}</if>
+			<if test="scheduleId!=null"> AND project_t.schedule_id=#{scheduleId}</if>
+			<if test="priorityId!=null"> AND project_t.priority_id=#{priorityId}</if>
+			<if test="actualize!=null"> AND project_t.actualize=#{actualize}</if>
+			LEFT JOIN gome_gmp_dict_item AS item_1
+			ON item_1.group_type = 'statusId' AND item_1.item_id = project_t.status_id
+			LEFT JOIN gome_gmp_dict_item AS item_2
+			ON item_2.group_type = 'priorityId' AND item_2.item_id = project_t.priority_id
+			LEFT JOIN gome_gmp_dict_item AS item_3
+			ON item_3.group_type = 'scheduleId' AND item_3.item_id = project_t.schedule_id
+			LEFT JOIN gome_gmp_dict_item AS item_4
+			ON item_4.group_type = 'actualize' AND item_4.item_id = project_t.actualize
+			LEFT JOIN (SELECT pro_id, 
+					ROUND(SUM(IFNULL(`schedule`,0) * IFNULL(work_period,1)   ) /SUM(IFNULL(work_period,1)),1) AS task_completion
+				FROM gome_gmp_res_task
+				GROUP BY pro_id) AS completion_t
+			ON completion_t.pro_id = project_t.pro_id
+		) AS project_t
+	LEFT JOIN (
+			SELECT 	gome_gmp_res_user.id AS user_id,
+					gome_gmp_res_user.user_name,
+					gome_gmp_res_user.org_id, 
+					gome_gmp_res_org.org_name  
+			  FROM 	gome_gmp_res_user 
+	     LEFT JOIN 	gome_gmp_res_org 
+			    ON 	gome_gmp_res_user.org_id = gome_gmp_res_org.org_id
+				) AS user_t
+		ON project_t.bp_id = user_t.user_id
+	LEFT JOIN (
+						SELECT 	pro_id , 
+								COUNT(create_time) 
+						  FROM 	gome_gmp_res_log 
+	  					 WHERE 	
+	  					 <![CDATA[
+	  					 		create_time <= #{endTime}
+						   AND 	create_time >= #{startTime}
+						 ]]> 
+					  GROUP BY pro_id
+						) AS log_t
+		   ON log_t.pro_id = project_t.pro_id
+		WHERE (log_t.pro_id IS NULL 
+		  AND 
+		<![CDATA[
+			  (project_t.create_time_log < #{startTime} or project_t.create_time_log > #{endTime})
+			]]>)
+		<if test="orgIds != null and orgIds.length > 0">
+		  	AND
+	       	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+	       		user_t.org_id LIKE CONCAT(#{item},'%')
+			</foreach> 
+	    </if>
+	</select>  
+	
+	<select id="getPauseProjectsById" parameterType="GomeGmpResProjectVO" resultType="java.util.LinkedHashMap">
+	SELECT 	project_t.pro_id,
+	project_t.title,
+	project_t.statusName,
+	project_t.priorityName,
+	project_t.scheduleName,
+	project_t.actualizeName,
+	project_t.task_completion,
+	DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') AS plan_time,
+	user_t.user_name
+	FROM (
+		SELECT 	DISTINCT(log_t.pro_id), 
+				project_t.bp_id ,
+				project_t.title,
+				project_t.status_id,
+				project_t.priority_id,
+				project_t.schedule_id,
+				project_t.actualize,
+				item_1.item_name AS statusName,
+				item_2.item_name AS priorityName,
+				item_3.item_name AS scheduleName,
+				item_4.item_name AS actualizeName, 
+				completion_t.task_completion,
+				project_t.plan_time
+		FROM 	(SELECT project_t.* FROM gome_gmp_res_project AS project_t
+					INNER JOIN (
+								SELECT 	pro_id,
+										MAX(create_time) AS create_time 
+								FROM 	gome_gmp_res_log
+					WHERE 	<![CDATA[
+							create_time >= #{startTime}
+					AND		create_time <= #{endTime}
+							]]> 
+					AND 	OPERATE_COLUMN = 'scheduleId' and COLUMN_VAL = '9'
+					GROUP BY pro_id
+					) AS final_status_t
+					ON project_t.pro_id = final_status_t.pro_id 	
+				)AS log_t
+				LEFT JOIN gome_gmp_res_project AS project_t
+				ON project_t.pro_id = log_t.pro_id
+				<if test="statusId!=null"> AND project_t.status_id=#{statusId}</if>
+				<if test="scheduleId!=null"> AND project_t.schedule_id=#{scheduleId}</if>
+				<if test="priorityId!=null"> AND project_t.priority_id=#{priorityId}</if>
+				<if test="actualize!=null"> AND project_t.actualize=#{actualize}</if>
+				LEFT JOIN gome_gmp_dict_item AS item_1
+				ON item_1.group_type = 'statusId' AND item_1.item_id = project_t.status_id
+				LEFT JOIN gome_gmp_dict_item AS item_2
+				ON item_2.group_type = 'priorityId' AND item_2.item_id = project_t.priority_id
+				LEFT JOIN gome_gmp_dict_item AS item_3
+				ON item_3.group_type = 'scheduleId' AND item_3.item_id = project_t.schedule_id
+				LEFT JOIN gome_gmp_dict_item AS item_4
+				ON item_4.group_type = 'actualize' AND item_4.item_id = project_t.actualize
+				LEFT JOIN (SELECT pro_id, ROUND(SUM(IFNULL(`schedule`,0) * IFNULL(work_period,1)   ) /SUM(IFNULL(work_period,1)),1) AS task_completion FROM gome_gmp_res_task GROUP BY pro_id) AS completion_t
+				ON completion_t.pro_id = project_t.pro_id
+		) AS project_t
+		LEFT JOIN (
+			SELECT gome_gmp_res_user.id AS user_id,gome_gmp_res_user.user_name,gome_gmp_res_user.org_id,gome_gmp_res_org.org_name FROM gome_gmp_res_user 
+			LEFT JOIN gome_gmp_res_org ON gome_gmp_res_user.org_id = gome_gmp_res_org.org_id
+		) AS user_t
+		ON project_t.bp_id = user_t.user_id
+		<where>
+			<if test="orgIds != null and orgIds.length > 0">
+			  AND (  
+	        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+	        		user_t.org_id LIKE CONCAT(#{item},'%')
+				</foreach> 
+	        	)
+	         </if>
+        </where> 
+	</select>
+	<select id="getCloseProjectsById" parameterType="GomeGmpResProjectVO" resultType="java.util.LinkedHashMap">
+	SELECT 	project_t.pro_id,
+	project_t.title,
+	IFNULL(project_t.statusName,'') AS statusName,
+	IFNULL(project_t.priorityName,'') AS priorityName,
+	IFNULL(project_t.scheduleName,'') AS scheduleName,
+	IFNULL(project_t.actualizeName,'') AS actualizeName,
+	IFNULL(project_t.task_completion,0) AS task_completion,
+	DATE_FORMAT(project_t.plan_time,'%Y-%m-%d') AS plan_time,
+	user_t.user_name
+	FROM (
+		SELECT 	DISTINCT(log_t.pro_id), 
+		project_t.bp_id ,
+		project_t.title,
+		project_t.status_id,
+		project_t.priority_id,
+		project_t.schedule_id,
+		project_t.actualize,
+		item_1.item_name AS statusName,
+		item_2.item_name AS priorityName,
+		item_3.item_name AS scheduleName,
+		item_4.item_name AS actualizeName, 
+		completion_t.task_completion,
+		project_t.plan_time
+		FROM 	
+				(SELECT project_t.* FROM gome_gmp_res_project AS project_t
+				INNER JOIN (
+							SELECT 	pro_id,
+									MAX(create_time) AS create_time 
+							FROM 	gome_gmp_res_log 
+				WHERE 	<![CDATA[
+						create_time >= #{startTime}
+				AND		create_time <= #{endTime}
+						]]>  
+				AND 	OPERATE_COLUMN = 'statusId' and COLUMN_VAL = '3'
+				GROUP BY pro_id
+				) AS final_status_t
+				ON project_t.pro_id = final_status_t.pro_id 	
+		) AS log_t
+		LEFT JOIN gome_gmp_res_project AS project_t
+		ON project_t.pro_id = log_t.pro_id
+		<if test="statusId!=null"> AND project_t.status_id=#{statusId}</if>
+		<if test="scheduleId!=null"> AND project_t.schedule_id=#{scheduleId}</if>
+		<if test="priorityId!=null"> AND project_t.priority_id=#{priorityId}</if>
+		<if test="actualize!=null"> AND project_t.actualize=#{actualize}</if>
+		LEFT JOIN gome_gmp_dict_item AS item_1
+		ON item_1.group_type = 'statusId' AND item_1.item_id = project_t.status_id
+		LEFT JOIN gome_gmp_dict_item AS item_2
+		ON item_2.group_type = 'priorityId' AND item_2.item_id = project_t.priority_id
+		LEFT JOIN gome_gmp_dict_item AS item_3
+		ON item_3.group_type = 'scheduleId' AND item_3.item_id = project_t.schedule_id
+		LEFT JOIN gome_gmp_dict_item AS item_4
+		ON item_4.group_type = 'actualize' AND item_4.item_id = project_t.actualize
+		LEFT JOIN (SELECT pro_id, ROUND(SUM(IFNULL(`schedule`,0) * IFNULL(work_period,1)   ) /SUM(IFNULL(work_period,1)),1) AS task_completion FROM gome_gmp_res_task GROUP BY pro_id) AS completion_t 
+		ON completion_t.pro_id = project_t.pro_id
+	) AS project_t
+	LEFT JOIN (SELECT gome_gmp_res_user.id AS user_id, gome_gmp_res_user.user_name, gome_gmp_res_user.org_id, gome_gmp_res_org.org_name FROM gome_gmp_res_user LEFT JOIN gome_gmp_res_org ON gome_gmp_res_user.org_id = gome_gmp_res_org.org_id ) AS user_t
+	ON project_t.bp_id = user_t.user_id
+	<where>
+	 	<if test="orgIds != null and orgIds.length > 0">
+		  AND (  
+        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+        		user_t.org_id LIKE CONCAT(#{item},'%')
+			</foreach> 
+        	)
+         </if>
+    </where>
+	</select>      
+</mapper>

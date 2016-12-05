@@ -1,0 +1,296 @@
+#parse("common/header.vm")
+#parse("common/pager.vm")
+<style>
+.ml10{
+	margin-left:10px;
+}
+.smoke-base .dialog{
+	top:30%;
+}
+</style>
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab" style="position:relative">
+				#parse("project/projectHeader.vm")
+                <div class="GomeProject_tab-content">
+                    <div class='GomeProject_nav_title'>
+                    	<div class="breadCrumbHolder module">
+							<div class="breadCrumb module">
+			                    <ul id="findProjectCrumbUl"></ul>
+			            	</div>
+						</div>
+						#if($gomeGmpResProjectVO.proType == 1)
+							<a class="button" href="javascript:void(0)" style="margin-right:10px" onclick="window.location.href='${contextPath}/daily/getDaily'">写日报</a>
+						#end
+                        <a class="export_data button" style="margin-right:10px" href="${contextPath}/project/exportFile?pageNum=$!{pageModel.pageNum}">
+							#if($gomeGmpResProjectVO.proType == 1)
+								导出项目
+							#else
+								导出需求
+							#end
+						</a>
+                    	<a class="button" style="margin-right:10px" href="${contextPath}/project/toSaveProjectView?proType=${gomeGmpResProjectVO.proType}" onclick='findProjectBuildCrumb(this);'>
+							#if($gomeGmpResProjectVO.proType == 1)
+								新建项目
+							#else
+								新建需求
+							#end
+						</a>
+                     	<div class="clear"></div>
+                    </div>
+                    <form id="search_form" method="post" action="${contextPath}/project/toProjectView" style="padding: 0px; margin: 0px;">
+                        <div class='project_search_bar' style="height:auto;"><!-- 注意要-2 （减掉border的宽度）  -->
+								#* 管理员权限 *#
+								#if($!{userPermission} && $!{userPermission}==1)
+									 <div class="form_div">
+    									<div class="form-group">
+                                           <label for="center">中心</label>
+                                             <select name="centerOrg" id="centerOrg">
+												<option value="">全部</option>
+        			                            #foreach($item in $gomeGmpResProjectVO.userCenterOrgList)
+    												<option value="$!{item.orgId}">$!{item.orgName}</option>
+        			                            #end
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="orgIds">部门</label>
+                                            <select name="orgIds" id="orgIds" initShow="1">
+    											#foreach($item in $gomeGmpResProjectVO.userOrgBoList)
+    												<option value="$!{item.orgId}">$!{item.orgName}</option>
+												#end
+    										</select>
+                                        </div>
+    									<div class="form-group">
+                                            <label for="branch">子部门</label>
+                                            <select name="childOrgIds" id="childOrgIds">
+                                            	<option value="">全部</option>
+                                            </select>
+    									</div>
+    									<div class="form-group">
+                                            <label for="team">小组</label>
+                                            <select name="groupIds" id="groupIds">
+                                            	<option value="">全部</option>
+                                            </select>
+    									</div>
+									 </div>
+								 #* 非管理员 *#
+								#else
+									#* 有组织 *#
+    								#if($!{gomeGmpResProjectVO.loginUserOrgLevel})
+										<div class="form_div">
+    										#* 部门以上级别 *#
+    										#if($!{gomeGmpResProjectVO.loginUserOrgLevel}<=2)
+    											<div class="form-group">
+                                                    <label for="center">中心</label>
+                                                    <select name="centerOrg" id="centerOrg">
+                			                            #foreach($item in $gomeGmpResProjectVO.userCenterOrgList)
+        													#if($!{item.orgLevel}==1)
+        														<option value="$!{item.orgId}" selected>$!{item.orgName}</option>
+        													#end
+                			                            #end
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="orgIds">部门</label>
+                                                    <select name="orgIds" id="orgIds" initShow="1">
+    													#foreach($item in $gomeGmpResProjectVO.userOrgBoList)
+    														<option value="$!{item.orgId}">$!{item.orgName}</option>
+    													#end
+            										</select>
+                                                </div>
+    											<div class="form-group">
+                                                    <label for="branch">子部门</label>
+                                                    <select name="childOrgIds" id="childOrgIds">
+                                                    	<option value="">全部</option>
+                                                    </select>
+    											</div>
+    										#* 部门以下级别 *#
+        									#elseif($!{gomeGmpResProjectVO.loginUserOrgLevel}>2)
+                                            	<div class="form-group">
+                                                    <label for="center">中心</label>
+                                                    <select name="centerOrg" id="centerOrg">
+                			                            #foreach($item in $gomeGmpResProjectVO.userCenterOrgList)
+        													#if($!{item.orgLevel}==1)
+        														<option value="$!{item.orgId}" selected>$!{item.orgName}</option>
+        													#end
+                			                            #end
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="orgId">部门</label>
+                                                    <select name="orgIds" id="orgIds">
+        												#foreach($item in $gomeGmpResProjectVO.userCenterOrgList)
+        													#if($!{item.orgLevel}==2)
+        														<option value="$!{item.orgId}" selected>$!{item.orgName}</option>
+        													#end
+        												#end
+        											</select>
+                                                </div>
+    											<div class="form-group">
+                                                   <label for="branch">子部门</label>
+                                                    <select name="childOrgIds" id="childOrgIds" initShow="1">
+            											#foreach($item in $gomeGmpResProjectVO.userOrgBoList)
+            												<option value="$!{item.orgId}">$!{item.orgName}</option>
+                			                            #end
+                                                    </select>
+                                                </div>
+    										#end
+    										<div class="form-group">
+                                                <label for="team">小组</label>
+                                                <select name="groupIds" id="groupIds">
+                                                	<option value="">全部</option>
+                                                </select>
+    										</div>
+										</div>
+    								#end
+								#end
+							<!-- start form_div -->
+                            <div class="form_div">
+								<div class="form-group">
+                                    <label for="req">项目名称</label>
+                                    <input type="text" class="form-control" placeholder="请输入项目名称" class='search' id="title" name="title" value="$!{pageModel.params.title}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">计划上线日期</label>
+                                    <input type="text" class="form-control laydate-icon" id='start' placeholder="--请选择--" use='laydate' name='startTime' value="$!{pageModel.params.startTime}">
+                                    <label for="req" style="float: initial;margin-left: 8px;">至</label>
+                                    <input type="text" class="form-control laydate-icon" id='end' placeholder="--请选择--" use='laydate' name="endTime" value="$!{pageModel.params.endTime}">
+                                </div>
+                            </div><!-- end form_div -->
+							<div class="form_div">
+								<div id="queryHideBox" class="btns-box" style="float:right;display:inline-block;line-hight:45px;margin-right:200px;">
+									<input type="hidden" name="proType" value="$!{gomeGmpResProjectVO.proType}"/>
+									<input type="hidden" name="pageNum" value="$!{pageModel.pageNum}" />
+									#* 是否为组员 *#
+									<input type="hidden" name="isMember" value="$!{pageModel.params.isMember}"/>
+									#* 任务状态 *#
+									<input type="hidden" name="taskStatus" value="$!{pageModel.params.taskStatus}"/>
+									#* 优先级  *#
+									<input type="hidden" name="priorityIds" value="$!{pageModel.params.priorityIds}"/>
+									#* 状态进度  *#
+									<input type="hidden" name="scheduleIds" value="$!{pageModel.params.scheduleIds}"/>
+									#* 实施阶段  *#
+									<input type="hidden" name="actualizes" value="$!{pageModel.params.actualizes}"/>
+									#* 项目经理  *#
+									<input type="hidden" name="bpIds" value="$!{pageModel.params.bpIds}" />
+									
+									<input type="hidden" id="unitBsIdAll" value="$!{pageModel.params.unitBsIdAll}"/>
+									
+									<a href="javascript:void(0)" class='search_project searchBtn' id="searchBtn" >查询</a>
+								</div>
+								<div class="form-group" >
+                                    #set ($orgLevelFirst = $gomeGmpResProjectVO.resUnitV)
+			                        #parse("common/unitBsSelect.vm")
+                                </div>
+							</div>
+                        </div>
+                    </form>
+					
+                    <div class='project_info_table' style="margin-top:12px">
+                        <table class="detail">
+                            <thead>
+                                <tr>
+                                    <td>
+										#if($gomeGmpResProjectVO.proType == 1)
+											项目ID
+										#else
+											需求ID
+										#end
+									</td>
+                                    <td>
+										#if($gomeGmpResProjectVO.proType == 1)
+											项目名称
+										#else
+											需求名称
+										#end
+									</td>
+                                    <td class='title_tr_control'>
+										<select id="taskStatus" details="任务状态">
+                                           #foreach($item in $gomeGmpResProjectVO.taskStatusV)
+                                                <option value="$!{item.itemId}" >$!{item.itemName}</option>
+										   #end
+                                        </select>
+									</td>
+                                    <td class='title_tr_control'>
+                                        <select id='priorityIds' details="优先级">
+                                            #foreach($item in $gomeGmpResProjectVO.priorityIdsV)
+                                                <option value="$!{item.itemId}" >$!{item.itemName}</option>
+                                            #end
+                                        </select>
+                                    </td>
+                                    <td class='title_tr_control'>
+                                        <select id='scheduleIds' details="状态进度">
+                                            #foreach($item in $gomeGmpResProjectVO.scheduleIdsV)
+                                                <option value="$!{item.itemId}" >$!{item.itemName}</option>
+                                            #end
+                                        </select>
+                                    </td>
+                                    <td class='title_tr_control'>
+                                        <select id="actualizes" details="实施阶段">
+                                            #foreach($item in $gomeGmpResProjectVO.actualizesV)
+                                                <option value="$!{item.itemId}" >$!{item.itemName}</option>
+                                            #end
+                                        </select>
+                                    </td>
+                                    <td width="60">完成度</td>
+                                    <td>计划上线日期</td>
+                                    <td class='title_tr_control' style="width: 200px;">
+                                        <select id="bpIds" details="项目经理">
+                                            #foreach($item in $gomeGmpResProjectVO.bpIdsV)
+                                                <option value="$!{item.id}">$!{item.userName}</option>
+                                            #end
+                                        </select>
+                                    </td>
+                                    <td>操作</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                				#if(${pageModel.resultData} && $!{pageModel.resultData.size()} > 0)
+                					#foreach($!proInfo in $!pageModel.resultData)
+                    				    <tr>
+                    						<td class='pro_id'>$!proInfo.proId</td>
+											<td style="text-align:left!important;text-indent:6px!important;"><a href='${contextPath}/project/detail/$!proInfo.proId' onclick='findProjectBuildCrumb(this);'>$!proInfo.title</a></td>
+										    <td>$!proInfo.statusName</td>
+                    						<td>$!proInfo.priorityName</td>
+                    						<td>$!proInfo.scheduleName</td>
+                    						<td>$!proInfo.actualizeName</td>
+                    						<td>$!proInfo.percentage</td>
+											<td>$!{dateTool.format("yyyy-MM-dd", $!{proInfo.planTime})}</td>
+											<td>$!proInfo.bpName</td>
+                							<td>
+											#if($!proInfo.isAuth==1 || ($!{userPermission} && $!{userPermission}==1))
+													<a class="edit_project ml10" href="javascript:void(0)" onclick="findProjectBuildCrumb(this);window.location.href='${contextPath}/project/toUpdate/$!proInfo.proId'"> 编辑  </a>
+													#if($!proInfo.statusId == 2)
+														<a class="close_project ml10" href="javascript:void(0)" >关闭</a>
+													#end
+											#end
+											<a class="ml10" href="javascript:void(0)" onclick="showGantt('$!proInfo.proId','$!proInfo.title','$!proInfo.proType');">排期</a>
+											<a class="ml10" href="javascript:void(0)" onclick="findProjectBuildCrumb(this);showWorkHour('$!proInfo.proId','$!proInfo.proType','$!proInfo.finishHour');">工时</a>
+											#* 项目保存未提交的可以直接删除，不用判断时间；已提交的项目在到达开始时间之前可以删除 *#
+											#if($!proInfo.isAuth==1 || ($!{userPermission} && $!{userPermission}==1))
+												#if($!proInfo.isCommit != 1 || ($!proInfo.isCommit == 1 && $!{proInfo.startTime} && $!{dateTool.getDate().getTime()} < $!{proInfo.startTime.getTime()}))
+													<a class="delete_project ml10" href="javascript:void(0)">删除</a>
+												#end
+											#end
+                							</td>
+                    					</tr>
+									#end
+                				#else
+                					<tr>
+                						<td colspan="7" style="text-align: center;">
+                							<h5>根据您的搜索条件，未找到相关数据！</h5>
+                						</td>
+                					</tr>
+                			   #end
+							</tbody>
+                        </table>
+                        #pager($pageModel "${request.contextPath}/project/toProjectView" false "")
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+#parse("common/footer.vm")
+<script src="${contextPath}/static/js/jquery.form.min.js"></script>
+<script src="${contextPath}/static/js/findProject.js"></script>
+<script src='${contextPath}/static/js/orgChangeRadio.js'></script>

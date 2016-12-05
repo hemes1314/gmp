@@ -1,0 +1,381 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/validate.css">
+<link rel="stylesheet" href="${contextPath}/static/css/project_manage.css">
+<link rel="stylesheet" href="${contextPath}/static/css/content_textarea.css">
+
+<div class='wrapper'>
+    <input type="hidden" id="pjPageId" value="updateProject">
+    <div class="GomeProjectContent">
+    	<div class="GomeProjectContent">
+			#parse("project/projectHeader.vm")
+        <div class="GomeProject_nav_title">
+			<div class="breadCrumbHolder module">
+	    		<div  class="breadCrumb module">
+                    <ul id="saveProjectCrumbUl"></ul>
+			    </div>
+			</div>
+        </div>
+        <form id='saveForm' action="${contextPath}/project/update" method="post" enctype="multipart/form-data">
+            <div class="basic_content">
+                <h2>基本内容</h2>
+                <div class="form_div">
+                    <div class='need  form-group'>
+                        <label for="">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题</label>
+                        <input id="proId" name="proId" type="hidden" value="$!{gomeGmpResProjectVO.proId}"/>
+                        <input name="title" type="text" id="flightno" reg="required" value="$!{gomeGmpResProjectVO.title}" maxlength='30'  />
+                        <input id="proType" name="proType" type="hidden" value="$!{gomeGmpResProjectVO.proType}" />
+                        <input id="isCommit" name="isCommit" type="hidden" value="$!{gomeGmpResProjectVO.isCommit}" />
+                        <input id="changeLogs" name="changeLogs" type="hidden" value="" />
+                        <input type="hidden" id="unitBsIdAll" value="$!{gomeGmpResProjectVO.unitBsIdAll}">
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">Bugzilla ID</label>
+                        <input name="bugId" type="text" id="flightno" value="$!{gomeGmpResProjectVO.bugId}" reg="^[0-9]*$" maxlength='10' />
+                    </div>
+                    <div class='form-group'>
+                        <label for="">相关需求</label>
+                        #if($gomeGmpResProjectVO.demandId)
+                        	<input type="hidden" id="demandId" name="demandId" value="$!{gomeGmpResProjectVO.demandId}">
+                        	&nbsp;&nbsp;&nbsp;
+							<label><a href="${contextPath}/demand/toDetail/${gomeGmpResProjectVO.demandId}" style="text-decoration: underline; color: blue;overflow: hidden;text-overflow: ellipsis;display: inline-block;white-space: nowrap;width:170px;" title="$!{gomeGmpResProjectVO.demandName}">$!{gomeGmpResProjectVO.demandName}</a></label>
+                        #end
+                        #if(!$gomeGmpResProjectVO.demandId)
+                        	<input type="text" name="demandName" value="$!{gomeGmpResProjectVO.demandName}" maxlength='30'>
+                        #end
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">涉及系统</label>
+                        <input id="systemNameArr" name="systemNameArr" type="hidden" value="$!{gomeGmpResProjectVO.systemIds}"/>
+                        <select name="systemIds" id="system">
+                            #foreach($item in $gomeGmpResProjectVO.systemsV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                </div>
+                <div class="form_div">
+                    <div class='need search form-group'>
+                        <label for="">项目经理</label>
+                        <input type="hidden" name="bpId" value="$!{gomeGmpResProjectVO.bpId}">
+                        <input type="text" name="bpName" class='autocomplete_input' value="$!{gomeGmpResProjectVO.bpName}">
+                        <a href="javascript:void(0)" class="auto_search"></a>
+                    </div>
+                    <div class='need form-group-unitBs'>
+                        #set ($orgLevelFirst = $gomeGmpResProjectVO.resUnitV)
+                        #*
+                        #if($gomeGmpResProjectVO.demandId)
+							#if($gomeGmpResProjectVO.unitBsId)
+								#set($isDisabled = true)
+							#end
+                        #end
+                        *#
+                        #set ($required = true)
+                        #parse("common/unitBsSelect.vm")
+                    </div>
+                    <div class='search form-group'>
+                        <label for="">关键用户</label>
+                        <input type="hidden" name="keyUserId" value="$!{gomeGmpResProjectVO.keyUserId}">
+                        #if($gomeGmpResProjectVO.demandId)
+                       		<input type="hidden" name="keyUserName" value="$!{gomeGmpResProjectVO.keyUserName}">
+                        #end
+                        <input type="text"  value="$!{gomeGmpResProjectVO.keyUserName}" class='autocomplete_input'
+                        #if($gomeGmpResProjectVO.demandId)
+                        		disabled="disabled"
+                        #end
+                        #if(!$gomeGmpResProjectVO.demandId)
+                        		name="keyUserName"
+                        #end>	
+                        <a href="javascript:void(0)" class="auto_search"></a>
+                    </div>
+                    
+                </div>
+                <div class="form_div">
+                    <div class='need form-group'>
+                        <label for="">任务状态</label>
+                        <select name="statusId" id="task_status" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.taskStatusV)
+                            <option value="$!{item.itemId}"
+                            #if($gomeGmpResProjectVO.statusId == $item.itemId)
+                            	selected
+                            #end
+                            >$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">优先级&nbsp;&nbsp;</label>
+                        <select name="priorityId" id="importantance" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.priorityIdsV)
+                            <option value="$!{item.itemId}"
+                            #if($gomeGmpResProjectVO.priorityId == $item.itemId)
+                            	selected
+                            #end
+                            >$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">进度状态</label>
+                        <select name="scheduleId" id="Schedule_status" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.scheduleIdsV)
+                            <option value="$!{item.itemId}"
+                            #if($gomeGmpResProjectVO.scheduleId == $item.itemId)
+                            	selected
+                            #end
+                            >$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">实施阶段</label>
+                        <select name="actualize" id="Execute" reg="^\d*$">
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.actualizesV)
+                            <option value="$!{item.itemId}"
+                            #if($gomeGmpResProjectVO.actualize == $item.itemId)
+                            	selected
+                            #end
+                            >$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                </div>
+                <div class="form_div">
+                	<div class="span_svn form-group" style="width:100%;">
+                        <label for="">&nbsp;&nbsp;&nbsp;&nbsp;SVN路径</label>
+                        <input type="text" name="svnAddr" value="$!{gomeGmpResProjectVO.svnAddr}" style="width:1000px;">
+                    </div>
+                </div>
+                <div class="form_div">
+                    <div class="form-group form_file">
+                        <label for="upload">&nbsp;&nbsp;&nbsp;上传资料</label>
+                        <iframe name="downloadIframe" style="display: none;"></iframe>
+                        <input type="file" multiple="multiple" id='upload' name='file'>
+                        <p id="content"></p>
+                        <div style="margin-top:20px;margin-left:65px;">
+                        	#foreach($item in $gomeGmpResProjectVO.uploadFileInfo)  
+                        	<span>
+		                        <a href="${contextPath}/$!{item.id}/download" target='downloadIframe' class='word_type'>$!{item.fileName}</a>
+		                        <input type="hidden" name="oldUploadFileInfo[$!{velocityCount}].id" value="$!{item.id}">
+		                        <span class="file_delete">x</span>
+	                        </span> 
+	                        #set($velocityCount=$velocityCount+1)
+	                        #if($velocityCount == $gomeGmpResProjectVO.uploadFileInfo.size()) 
+	                        <br>
+	                        #end
+                        	#end
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='relationEmployee'>
+                <h2>相关人员<a href="javascript:void(0)" class='addEmployee'>添加角色</a></h2>
+                <ul id='employee'>
+                	#foreach($item in $gomeGmpResProjectVO.relatedUsers) 
+                    <li>
+                        <span class='search'>
+                            <a href="javascript:void(0)">
+                            	<input type="hidden" name="relatedUsers[$!{velocityCount}].roleId" value="$!{item.roleId}">
+                            	<input type="hidden" name="relatedUsers[$!{velocityCount}].roleName" value="$!{item.roleName}">
+                            	 
+                            	 $!{item.roleName}
+                            </a>
+                            <input type="hidden" name="relatedUsers[$!{velocityCount}].userId" class="userIds" data="$!{velocityCount}" value="$!{item.userId}">
+                            <input type="text" name="relatedUsers[$!{velocityCount}].userName" class='autocomplete_input' value="$!{item.userName}">
+                            <a href="javascript:void(0)" class="auto_search"></a>
+                        </span>
+                        #if($item.delete == true)
+                        <span class="delete_li">删除</span>
+                        #end
+                    </li>
+                    #end
+                </ul>
+            </div>
+            <div class='main_area'>
+                <div class="Project_schedule">
+                    <h2>项目排期
+                    	<!--<span>
+                    	<a id="importTasksBtn" style="right:65px;position:absolute;cursor:pointerl">导入</a>
+                    	</span>-->
+                    </h2>
+                    <ul class='Project_schedule_header'>
+                        <li>
+                            开始时间
+                            <input type="text" name="startTime" reg="required" readonly="readonly" id="start" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.startTime})" style="width:100px; margin-right:10px;"
+                            #if($gomeGmpResProjectVO.afterStartTime)
+                            	class="laydate-disabled"
+                            #end
+                            > 至
+                        </li>
+                        <li>
+                            计划上线时间
+                            <input type="text" name="planTime" reg="required"  readonly="readonly" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.planTime})" id="plan_date"
+                            #if($gomeGmpResProjectVO.afterStartTime)
+                            	class="laydate-disabled"
+                            #end
+                            >
+                        </li>
+                        <li>
+                            完成时间
+                            <input type="text" name="finishTime"  readonly="readonly" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.finishTime})" id="end" style="width:100px;">
+                        </li>
+                        <li>
+                            完成百分比
+                            <input type="text" id="per" value="$!{gomeGmpResProjectVO.percentage}">
+                        </li>
+                        <li>
+                            项目工期
+                            <input type="text" name="proPeriod"  readonly="readonly" value="$!{gomeGmpResProjectVO.proPeriod}" id="work_days">
+                        </li>
+                    </ul>
+                    <table id="project_table">
+                        <thead>
+                            <tr>
+                                <td>任务号</td>
+                                <td>任务名称</td>
+                                <td>开始时间</td>
+                                <td>结束时间</td>
+                                <td>工期(天)</td>
+                                <td>前置任务</td>
+                                <td>进度</td>
+                                <td>BUG号</td>
+                                <td><font color="red">*</font>计划工时</td>
+                                <td>人员名称</td>
+                                <td>项目职责</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	#foreach($item in $gomeGmpResProjectVO.relatedTasks) 
+                            <tr>
+                                <td class="task_number"><span class="tashNum_dis">$!{item.taskNum} </span>
+                                	<input type="hidden" name="relatedTasks[$!{velocityCount}].id" value="$!{item.id}">
+                                	<input type="hidden" name="relatedTasks[$!{velocityCount}].taskNum" value="$!{item.taskNum}" class="tashNum"></td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].taskName" value="$!{item.taskName}" maxlength="30">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].startTime" value="$!date.format('yyyy-MM-dd',$!{item.startTime})" use='date' class='table_start' readonly="readonly">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].endTime" value="$!date.format('yyyy-MM-dd',$!{item.endTime})" use='date' class="table_end" readonly="readonly">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].workPeriod" value="$!{item.workPeriod}" readonly="readonly" class="workPeriod">
+                                </td>
+                                <td>
+                                    <input type="text" class='pre_task' name="relatedTasks[$!{velocityCount}].preTaskNum" value="$!{item.preTaskNum}">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].schedule" value="$!{item.schedule}"  class="schedule"  style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].bugId" value="$!{item.bugId}">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[$!{velocityCount}].planTime" class="planTime" value="$!{item.planTime}" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="relatedTasks[$!{velocityCount}].userId" value="$!{item.userId}"/>
+                                    <input type="text" class="autocomplete_input" name="relatedTasks[$!{velocityCount}].userName" value="$!{item.userName}">
+                                </td>
+                                <td>
+                                    <input type="text"name="relatedTasks[$!{velocityCount}].rebuke" maxlength="10" value="$!{item.rebuke}">
+                                </td>
+                            </tr>
+                            #end
+                        </tbody>
+                    </table>
+                </div>
+	<script id="tr_tpl" type='text/html'>
+        <tr>
+            <td class="task_number"><span class="tashNum_dis">1</span>
+				<input type="hidden" name="relatedTasks[0].id">
+                <input type="hidden" name="relatedTasks[0].taskNum" value="1" class="tashNum">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].taskName" maxlength="30">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].startTime" use='date' class='table_start' readonly="readonly">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].endTime" use='date' class="table_end" readonly="readonly">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].workPeriod" readonly="readonly" class="workPeriod">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].preTaskNum" class='pre_task'>
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].schedule" class="schedule"  style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].bugId">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].planTime" class="planTime" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+            </td>
+            <td>
+                <input type="hidden" name="relatedTasks[0].userId" />
+                <input type="text" class="autocomplete_input" name="relatedTasks[0].userName">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].rebuke" maxlength="10">
+            </td>
+        </tr>
+    </script>
+                <div class='project_resume'>
+                    <div class="left_desc">项目简述</div>
+                    <div class='right_input'>
+                        <textarea name="remark" id="remark" maxlength="500">$!{gomeGmpResProjectVO.remark}</textarea>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <div class='recent_work'>
+                    <div class="left_desc">近期完成工作</div>
+                    <div class='right_input'>
+                        <textarea name="nearWorkDone" id="nearWorkDone" maxlength="500">$!{gomeGmpResProjectVO.nearWorkDone}</textarea>
+                    </div>
+                    <div class="left_desc left_padding">近期计划工作</div>
+                    <div class='right_input'>
+                        <textarea name="nearWorkPlan" id="nearWorkPlan" maxlength="500">$!{gomeGmpResProjectVO.nearWorkPlan}</textarea>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <div class='project_resume'>
+                    <div class="left_desc">风险说明</div>
+                    <div class='right_input'>
+                        <textarea name="riskRemark" id="riskRemark" value="$!{gomeGmpResProjectVO.riskRemark}" maxlength="500">$!{gomeGmpResProjectVO.riskRemark}</textarea>
+                    </div>
+                </div>
+            </div>
+            <h3 class='bootom_op'>
+            	#*
+    				#if($gomeGmpResProjectVO.isCommit != 1)
+                    <a class="proSaveBtn" href="javascript:void(0)">保存</a>
+    				#end
+				**#
+                <a class="proCommitBtn" href="javascript:void(0)" type="ajax">提交</a>
+                </h3>
+        </form>
+    </div>
+	</div>
+</div>
+
+
+
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/select_default.js'></script>
+<script src='${contextPath}/static/js/jquery.browser.js'></script>
+<script src='${contextPath}/static/js/jquery.bgiframe.min.js'></script>
+<script src='${contextPath}/static/js/easy_validator.pack.js'></script>
+<script src='${contextPath}/static/js/limitTextArea.js'></script>
+<script src="${contextPath}/static/js/jquery.form.js"/></script>
+<script src="${contextPath}/static/js/new_project.js"></script>
+<script src="${contextPath}/static/js/saveProject.js"></script>
+<script src='${contextPath}/static/js/orgChangeRadio.js'></script>

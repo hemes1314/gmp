@@ -1,0 +1,32 @@
+#set($contextPath=${request.contextPath})
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-con trol" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="x-ua-compatible" content="IE=edge" >
+	
+<title>国美项目管理系统</title>
+
+
+<link rel="stylesheet" href="${contextPath}/static/css/common-new.css" type="text/css"/>
+<link rel="stylesheet" href="${contextPath}/static/css/jquery/jquery.selectlist.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/static/css/ui-dialog.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/static/css/jquery/jquery.autocomplete.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/static/css/jquery/jquery-ui.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/static/css/plugins/BreadCrumb.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/static/css/smoke/usualModel.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/static/css/smoke/smoke.css" type="text/css">
+	
+
+<script type="text/javascript">
+	var contextPath = "${request.contextPath}";
+</script>
+</head>
+<body style="background-color:#EBEBEB">
+	
+	

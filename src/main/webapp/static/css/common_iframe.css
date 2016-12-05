@@ -1,0 +1,38 @@
+@charset 'utf-8';
+body {
+    width: 100%;
+    margin: 0 0;
+}
+
+#iframe_top {
+    min-width:100%;
+    height: 117px;
+    margin: 0 0;
+    position:absolute;
+    top:0;
+    left:0;
+    max-width:100%;
+}
+
+#iframe_left {
+    width: 116px;
+    position:absolute;
+    top:90px;
+    left:0;
+    margin-right: -116px;
+    z-index: 2;
+}
+
+#iframe_main_warp{
+	position:relative;
+	top:90px;
+	padding-left: 116px;
+}
+
+#iframe_main {
+    margin-left:0px;
+    min-width:100%;
+    max-width: 100%;
+}
+
+

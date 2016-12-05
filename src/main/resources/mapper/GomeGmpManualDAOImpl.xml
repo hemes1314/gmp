@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpManualDAO">
+	
+	<update id="resetHolidays">
+		update gome_gmp_conf_date set is_holiday = 0 where DATE_FORMAT(date, '%Y') = DATE_FORMAT(now(), '%Y')
+	</update>
+	
+	<update id="update2Holiday" parameterType="java.util.Map">
+		update gome_gmp_conf_date set is_holiday = #{isHoliday} 
+		where date in 
+		<foreach collection="dateList" index="index" item="item" open="(" separator="," close=")">
+        	DATE_FORMAT(#{item},'%Y-%m-%d')
+    	</foreach>  
+	</update>
+	
+</mapper>

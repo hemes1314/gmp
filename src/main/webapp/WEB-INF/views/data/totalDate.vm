@@ -1,0 +1,90 @@
+#parse("common/header.vm")
+#parse("common/explain/explain.vm")
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class='selected big_tab'><a href="${contextPath}/datas/toProTJ">总数据统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toOnlineTJ">上线分布统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toUnitTJ">各部门数据表现</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="location.href='${contextPath}/tj/status';return false;">状态分布</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='/gmp/hourCount/scheduleStatistics;return false'">工时统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/todataList">提报需求统计</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+						<div class='GomeProject_nav_title'>
+						<div class="breadCrumbHolder module">
+						     <div  class="breadCrumb module">
+						    	<ul id="totalDateCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+                 
+                
+                     	<div class="clear"></div>
+	                    </div>
+                    <div class="project_info_table total_data">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td colspan='8' class='title' style="text-align:left;">
+										<input type="hidden" value="proAnnualTotal" class="explainKey">
+										<img src="../static/images/explain.png" class="explainImgLabel explainImgTotal"/>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;项目年度统计表
+                                          <select name="year" id="years">
+    										#foreach($item in $gomeGmpTJDemandVO.years)
+    											<option value="$!{item}">$!{item}</option> 
+    										#end
+    									  </select>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+								
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="project_info_table week_data" style="margin-top:12px">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td colspan='7' style="text-align:left;">
+									<input type="hidden" value="proStateTotal" class="explainKey">
+									<img src="../static/images/explain.png" class="explainImgLabel explainImgTotal"/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;项目状态分布
+                                        <input  style="display: none" type="text" class="laydate-icon" id="start" style="width:100px; margin-right:10px;" >
+                                        <input  style="display: none" type="text" class="laydate-icon" id="end" style="width:100px;" >
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="project_info_table department_data" style="margin-top:12px">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td colspan='11' style="text-align:left;">
+									<input type="hidden" value="orgDatasTotal" class="explainKey">
+									<img src="../static/images/explain.png" class="explainImgLabel explainImgTotal"/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;部门数据统计
+                                        <input type="text" class="laydate-icon" id="start1" style="width:100px; margin-right:10px;" placeholder=''> 至
+                                        <input type="text" class="laydate-icon" id="end1" style="width:100px;" placeholder=''>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                             
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/total_list.js'></script>
+<script src='${contextPath}/static/js/explainDialog.js'></script>

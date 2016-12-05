@@ -1,0 +1,481 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/validate.css">
+<link rel="stylesheet" href="${contextPath}/static/css/project_manage.css">
+<link rel="stylesheet" href="${contextPath}/static/css/content_textarea.css">
+
+<div class='wrapper'>
+    <input type="hidden" id="pjPageId" value="saveProject">
+    <div class="GomeProjectContent">
+    	<div class="GomeProjectContent">
+			#parse("project/projectHeader.vm")
+        <div class="GomeProject_nav_title">
+			<div class="breadCrumbHolder module">
+	    		<div  class="breadCrumb module">
+                    <ul id="saveProjectCrumbUl"></ul>
+		    	</div>
+			</div>
+        </div>
+        <form id='saveForm' action="${contextPath}/project" method="post" enctype="multipart/form-data">
+            <div class="basic_content">
+                <h2>基本内容</h2>
+                <div class="form_div">
+                    <div class='need  form-group'>
+                        <label for="">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题</label>
+                        <input name="title" type="text" id="flightno" reg="required" maxlength='30'  />
+                        <input id="proType" name="proType" type="hidden" value="${gomeGmpResProjectVO.proType}" /> 
+                        <input id="isCommit" name="isCommit" type="hidden"/>
+                        <input id="changeLogs" name="changeLogs" type="hidden" value="" />
+                        #foreach($item in $gomeGmpResProjectVO.relatedUsers)
+                        <input name="relatedUsers[$!{velocityCount}].roleId" type="hidden" value="$!{item.roleId}" /> 
+                        #end
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">Bugzilla ID</label>
+                        <input name="bugId" type="text" id="flightno" reg="required" maxlength='10'  />
+                    </div>
+                    <div class='form-group'>
+                        <label for="">相关需求</label>
+                        #if($gomeGmpResProjectVO.demandId)
+                        	<input type="hidden" id="demandId" name="demandId" value="$!{gomeGmpResProjectVO.demandId}">
+                        	&nbsp;&nbsp;&nbsp;
+							<label><a href="${contextPath}/demand/toDetail/${gomeGmpResProjectVO.demandId}" target="_blank" style="text-decoration: underline; color: blue;overflow: hidden;text-overflow: ellipsis;display: inline-block;white-space: nowrap;width:190px;" title="$!{gomeGmpResProjectVO.demandName}">$!{gomeGmpResProjectVO.demandName}</a></label>
+                        #end
+                        #if(!$gomeGmpResProjectVO.demandId)
+                        	<input type="text" name="demandName" maxlength='30'>
+                        #end
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">涉及系统</label>
+                        <select name="systemIds" reg="required" id="system">
+                            #foreach($item in $gomeGmpResProjectVO.systemsV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                </div>
+                <div class="form_div">
+                    <div class='need search form-group'>
+                        <label for="">项目经理</label>
+                        <input type="hidden" name="bpId" value="$!{gomeGmpResProjectVO.bpId}">
+                        <input type="text" name="bpName" value="$!{gomeGmpResProjectVO.bpName}" reg="required" class='autocomplete_input'>
+                        <a href="javascript:void(0)" class="auto_search"></a>
+                    </div>
+                    <div class='need form-group-unitBs'>
+                        #if($gomeGmpResProjectVO.demandId)
+                        	<input type="hidden" id="unitBsIdAll" value="$!{gomeGmpResProjectVO.unitBsIdAll}"/>
+                        #end
+                        #set ($orgLevelFirst = $gomeGmpResProjectVO.resUnitV)
+                        #*
+                        #if($gomeGmpResProjectVO.demandId)
+                        	#set($isDisabled = true)
+                        #end
+                        #if(!$gomeGmpResProjectVO.demandId)
+                        	#set($isDisabled = false)
+                        #end
+                        *#
+                        #set ($required = true)
+                        #parse("common/unitBsSelect.vm")
+                    </div>
+                    <div class='search form-group'>
+                        <label for="">关键用户</label>
+                        <input type="hidden" name="keyUserId" value="$!{gomeGmpResProjectVO.keyUserId}">
+                        #if($gomeGmpResProjectVO.demandId)
+                       		<input type="hidden" name="keyUserName" value="$!{gomeGmpResProjectVO.keyUserName}">
+                        #end
+                        <input type="text"  value="$!{gomeGmpResProjectVO.keyUserName}" class='autocomplete_input'
+                        #if($gomeGmpResProjectVO.demandId)
+                        		disabled="disabled"
+                        #end
+                        #if(!$gomeGmpResProjectVO.demandId)
+                        		name="keyUserName"
+                        #end>	
+                        <a href="javascript:void(0)" class="auto_search"></a>
+                    </div>
+                    
+                </div>
+                <div class="form_div">
+                    <div class='need form-group'>
+                        <label for="">任务状态</label>
+                        <select name="statusId" id="task_status" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.taskStatusV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">优先级&nbsp;&nbsp;</label>
+                        <select name="priorityId" id="importantance" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.priorityIdsV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">进度状态</label>
+                        <select name="scheduleId" id="Schedule_status" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.scheduleIdsV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class='need form-group'>
+                        <label for="">实施阶段</label>
+                        <select name="actualize" id="Execute" reg="^\d*$" >
+                            <option value="-1">请选择</option>
+                            #foreach($item in $gomeGmpResProjectVO.actualizesV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                </div>
+                <div class="form_div">
+                	<div class='span_svn form-group'>
+                        <label for="">&nbsp;&nbsp;&nbsp;&nbsp;SVN路径</label>
+                        <input type="text" name="svnAddr" style="width:1000px;">
+                    </div>
+                </div>
+                <div class="form_div">
+                    <div class="form-group form_file">
+                        <label for="upload">&nbsp;&nbsp;&nbsp;上传资料</label>
+                        <input type="file" multiple="multiple" id='upload' name='file'>
+                        <p id="content"></p>
+                    </div>
+                </div>
+            </div>
+            <div class='relationEmployee'>
+                <h2>相关人员<a href="javascript:void(0)" class='addEmployee'>添加角色</a></h2>
+                <ul id='employee'>
+                    <li>
+                        <span class='search'>
+                            <a href="javascript:void(0)">
+                              	产品负责人
+                            </a>
+                            <input type="hidden" name="relatedUsers[0].userId" class="userIds" data="0"/>
+                            <input type="text" name="relatedUsers[0].userName" class='autocomplete_input empText'>
+                            <a href="javascript:void(0)" class="auto_search"></a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class='search'>
+                            <a href="javascript:void(0)">
+                               	开发负责人
+                            </a>
+                            <input type="hidden" name="relatedUsers[1].userId" class="userIds" data="1"/>
+                            <input type="text" name="relatedUsers[1].userName" class='autocomplete_input empText'>
+                            <a href="javascript:void(0)" class="auto_search"></a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class='search'>
+                            <a href="javascript:void(0)">
+                              	测试负责人
+                            </a>                            
+                            <input type="hidden" name="relatedUsers[2].userId" class="userIds" data="2"/>
+                            <input type="text" name="relatedUsers[2].userName" class='autocomplete_input empText'>
+                            <a href="javascript:void(0)" class="auto_search"></a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class='search'>
+                            <a href="javascript:void(0)">
+                                UED负责人
+                            </a>      
+                            <input type="hidden" name="relatedUsers[3].userId" class="userIds" data="3"/>                      
+                            <input type="text" name="relatedUsers[3].userName" class='autocomplete_input empText'>
+                       		<a href="javascript:void(0)" class="auto_search"></a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class='search'>
+                            <a href="javascript:void(0)">
+                                PMO负责人
+                            </a>        
+                            <input type="hidden" name="relatedUsers[4].userId" class="userIds" data="4"/>                               
+                            <input type="text" name="relatedUsers[4].userName" class='autocomplete_input empText'>
+                            <a href="javascript:void(0)" class="auto_search"></a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class='main_area'>
+                <div class="Project_schedule">
+                    <h2>项目排期</h2>
+                    <ul class='Project_schedule_header'>
+                        <li>
+                           	 开始时间
+                            <input type="text" name="startTime"  readonly="readonly" reg="required" id="start" style="width:100px; margin-right:10px;"> 至
+                        </li>
+                        <li>
+    						计划上线时间
+                            <input type="text" name="planTime"  readonly="readonly" reg="required" id="plan_date">
+                        </li>
+                        <li>
+                          	完成时间
+                            <input type="text" name="finishTime" readonly="readonly" id="end" style="width:100px;">
+                        </li>
+                        <li>
+                           	 完成百分比
+                            <input type="text" id="per" readonly="readonly">
+                        </li>
+                        <li>
+                          	项目工期
+                            <input type="text"  readonly="readonly" name="proPeriod" id="work_days">
+                        </li>
+                    </ul>
+                    <table id="project_table">
+                        <thead>
+                            <tr>
+                                <td>任务号</td>
+                                <td>任务名称</td>
+                                <td>开始时间</td>
+                                <td>结束时间</td>
+                                <td>工期(天)</td>
+                                <td>前置任务</td>
+                                <td>进度</td>
+                                <td>BUG号</td>
+                                <td><font color="red">*</font>计划工时</td>
+                                <td>人员名称</td>
+                                <td>项目职责</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="task_number"><span class="tashNum_dis">1</span>
+                                	<input type="hidden">
+                                	<input type="hidden" name="relatedTasks[0].taskNum" value="1" class="tashNum"></td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].taskName" maxlength="30">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].startTime" use='date' class='table_start' readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].endTime" use='date' class="table_end" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].workPeriod" readonly="readonly" class="workPeriod">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].preTaskNum" class='pre_task' tip='只可填正整数'>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].schedule" class="schedule" style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].bugId">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].planTime" class="planTime" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="relatedTasks[0].userId"/>
+                                    <input type="text" class="autocomplete_input" name="relatedTasks[0].userName">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[0].rebuke" maxlength="10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="task_number"><span class="tashNum_dis">2</span>
+                                	<input type="hidden">
+                                	<input type="hidden" name="relatedTasks[1].taskNum" value="2" class="tashNum"></td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].taskName" maxlength="30">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].startTime" use='date' class='table_start' readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].endTime" use='date' class="table_end" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].workPeriod" readonly="readonly" class="workPeriod">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].preTaskNum" class='pre_task'>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].schedule" class="schedule" style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].bugId">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].planTime" class="planTime" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="relatedTasks[1].userId">
+                                    <input type="text" class="autocomplete_input" name="relatedTasks[1].userName">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[1].rebuke" maxlength="10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="task_number"><span class="tashNum_dis">3</span>
+									<input type="hidden">
+									<input type="hidden" name="relatedTasks[2].taskNum" value="3" class="tashNum"></td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].taskName" maxlength="30">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].startTime" use='date' class='table_start' readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].endTime" use='date' class="table_end" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].workPeriod" readonly="readonly" class="workPeriod">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].preTaskNum" class='pre_task'>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].schedule" class="schedule" style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].bugId">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].planTime" class="planTime" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="relatedTasks[2].userId">
+                                    <input type="text" class="autocomplete_input" name="relatedTasks[2].userName">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[2].rebuke" maxlength="10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="task_number"><span class="tashNum_dis">4</span>
+									<input type="hidden">
+									<input type="hidden" name="relatedTasks[3].taskNum" value="4" class="tashNum"></td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].taskName" maxlength="30">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].startTime" use='date' class='table_start' readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].endTime" use='date' class="table_end" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].workPeriod" readonly="readonly" class="workPeriod">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].preTaskNum" class='pre_task'>
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].schedule" class="schedule"  style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].bugId">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].planTime" class="planTime" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="relatedTasks[3].userId">
+                                    <input type="text" class="autocomplete_input" name="relatedTasks[3].userName">
+                                </td>
+                                <td>
+                                    <input type="text" name="relatedTasks[3].rebuke" maxlength="10">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+     <script id="tr_tpl" type='text/html'>
+        <tr>
+            <td class="task_number"><span class="tashNum_dis">1</span>
+				<input type="hidden">
+                <input type="hidden" name="relatedTasks[0].taskNum" value="1" class="tashNum">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].taskName" maxlength="30">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].startTime" use='date' class='table_start' readonly="readonly">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].endTime" use='date' class="table_end" readonly="readonly">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].workPeriod" readonly="readonly" class="workPeriod">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].preTaskNum" class='pre_task'>
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].schedule" class="schedule"  style="text-align:right" reg="^(100|[1-9]\d|\d)$">%
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].bugId">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].planTime" class="planTime" reg="^[0-9]+([.][0-9]{1}){0,1}$">
+            </td>
+            <td>
+                <input type="hidden" name="relatedTasks[0].userId" />
+                <input type="text" class="autocomplete_input" name="relatedTasks[0].userName">
+            </td>
+            <td>
+                <input type="text" name="relatedTasks[0].rebuke" maxlength="10">
+            </td>
+        </tr>
+    </script>
+                
+                <div class='project_resume'>
+                    <div class="left_desc">项目简述</div>
+                    <div class='right_input'>
+                        <textarea name="remark" id="remark" maxlength="500"></textarea>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <div class='recent_work'>
+                    <div class="left_desc">近期完成工作</div>
+                    <div class='right_input'>
+                        <textarea name="nearWorkDone" id="nearWorkDone" maxlength="500"></textarea>
+                    </div>
+                    <div class="left_desc left_padding">近期计划工作</div>
+                    <div class='right_input'>
+                        <textarea name="nearWorkPlan" id="nearWorkPlan" maxlength="500"></textarea>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <div class='project_resume'>
+                    <div class="left_desc">风险说明</div>
+                    <div class='right_input'>
+                        <textarea name="riskRemark" id="riskRemark" maxlength="500"></textarea>
+                    </div>
+                </div>
+            </div>
+            <h3 class='bootom_op'>
+				#*
+                	#if($gomeGmpResProjectVO.isCommit != 1)
+    					<a class="proSaveBtn" href="javascript:void(0)" type="ajax">保存</a>
+    				#end
+				**#
+                <a class="proCommitBtn" href="javascript:void(0)" type="ajax">提交</a>
+                </h3>
+        </form>
+    </div>
+</div>
+</div>
+
+
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/select_default.js'></script>
+<script src='${contextPath}/static/js/jquery.browser.js'></script>
+<script src='${contextPath}/static/js/jquery.bgiframe.min.js'></script>
+<script src='${contextPath}/static/js/easy_validator.pack.js'></script>
+<script src='${contextPath}/static/js/limitTextArea.js'></script>
+<script src="${contextPath}/static/js/jquery.form.js"/></script>
+<script src="${contextPath}/static/js/new_project.js"></script>
+<script src="${contextPath}/static/js/saveProject.js"></script>
+<script src='${contextPath}/static/js/orgChangeRadio.js'></script>

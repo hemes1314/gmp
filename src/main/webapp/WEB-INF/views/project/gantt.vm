@@ -1,0 +1,75 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/project_manage.css">
+<link rel="stylesheet" href="${contextPath}/static/css/gantt_chart.css">
+<link rel="stylesheet" href="${contextPath}/static/css/gantt.css">
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+        <div class="GomeProject_sidebar_tab" style="position:relative">
+            <div class='table_info'>
+                <table>
+                    <thead>
+                        <tr>
+	                        <td>任务名称</td>
+	                        <td>开始时间</td>
+	                        <td>结束时间</td>
+	                        <td>工期</td>
+	                        <td>前置任务</td>
+	                        <td>进度</td>
+	                        <td>BUG号</td>
+	                        <td>计划工时</td>
+	                        <td>人员名称</td>
+	                        <td>项目职责</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <script id='table_tpl' type='text/html'>
+                <tr>
+					<td>$taskName$</td>
+                    <td>$strStartDate$</td>
+                    <td>$strEndDate$</td>
+                    <td>$workPeriod$天</td>
+                    <td>$preTaskNum$</td>
+                    <td>$schedule$%</td>
+                    <td>$bugId$</td>
+                    <td>$planTime$h</td>
+                    <td>$userName$</td>
+                    <td>$rebuke$</td>
+                </tr>
+            </script>
+            <div class="charts_wrapper" id='gantt_chart'>
+                <div class='toggle_bar'>
+                    <a href="javascript:void(0)" id="toggle_button" class="toggle_left"></a>
+                </div>
+                <div class='content'>
+                    <div class="gantt"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/gantt.js'></script>
+<script src='${contextPath}/static/js/Gantt_chart.js'></script>
+<script src='${contextPath}/static/js/common.js'></script>
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#ganttCrumbUl'));
+	// add for crumb end
+})
+</script>

@@ -1,0 +1,66 @@
+#parse("common/header.vm")
+<div class='wrapper'>
+<input id="pageId" type="hidden" value="commitPeople">
+        <div class="GomeProjectContent">
+          <div class="GomeProject_tab_title">
+                    <span class="big_tab"><a href="${contextPath}/datas/toProTJ">总数据统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toOnlineTJ">上线分布统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toUnitTJ">各部门数据表现</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="location.href='${contextPath}/tj/status';return false;">状态分布</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='/gmp/hourCount/scheduleStatistics;return false'">工时统计</a></span>
+                    <span class="selected big_tab"><a href="${contextPath}/datas/todataList">提报需求统计</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                    <!-- searchBar -->
+                   <div class="GomeProject_nav_title">
+<div class="breadCrumbHolder module">
+						    <div class="breadCrumb module">
+						        <ul  id="commitPeopleCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+              	  		<div class="clear"></div>
+              	   </div>
+                    <!-- searchbar end-->
+                    <!-- charts -->
+                    <!-- chartsEnd -->
+                    <div class='project_info_table demand_statistics_table' style="margin-top:12px">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>提报人</td>
+                                    <td>提报需求</td>
+                                    <td>已受理需求</td>
+                                    <td>已拒绝需求</td>
+                                    <td>待受理需求</td>
+                                    <td>已完成需求</td>
+                                    <td>月内上线需求</td>
+                                    <td>操作</td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <!--  tableend  -->
+                    <div id='GomeProjectPage' class='GomeProjectPage'></div>
+                    <script id='record_temp' type='text/html'>
+                        <tr>
+                            <td class='td_01'>$userName$</td>
+                            <td>$tbNeed$项</td>
+                            <td>$slNeed$项</td>
+                            <td>$juNeed$项</td>
+                            <td>$dslNeed$项</td>
+                            <td>$wcNeed$项</td>
+                            <td>$yNeed$项</td>
+                       
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/echarts.js'></script>
+<script src='${contextPath}/static/js/jquery.selectlist.js'></script>
+<script src='${contextPath}/static/js/view_demand.js'></script>
+<script src='${contextPath}/static/js/common.js'></script>
+

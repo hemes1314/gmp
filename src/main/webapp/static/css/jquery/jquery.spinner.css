@@ -1,0 +1,40 @@
+.spinner {
+    display: inline-block;
+    font-size: 0px;
+}
+
+.spinner input {
+    width: 50px;
+    height: 26px;
+    text-align: center;
+    border: 1px solid #E6E6E6;
+}
+
+.spinner a {
+    display: inline-block;
+    width: 21px;
+}
+
+.spinner .add {
+    background: url(../../images/add.png) no-repeat;
+    background-position: -3px 6px;
+}
+
+.spinner .reduce {
+    background: url(../../images/reduce.png) no-repeat;
+    background-position: 3px 6px;
+}
+
+.clockpicker {
+    display: inline-block;
+    height: 27px;
+}
+
+.clockpicker input {
+    height: 27px;
+    background: url(../../images/clock_icon.png) no-repeat;
+    background-position: right 0px;
+    border: 1px solid #e8e8e8;
+}
+
+

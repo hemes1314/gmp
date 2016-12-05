@@ -1,0 +1,15 @@
+    <label for="">业务部门</label>
+    <select id="unitBsId1" #if($required) reg="required" #end #if($isDisabled) disabled="disabled" #end >
+        <option value="">选择中心</option>
+            #foreach($item in $orgLevelFirst)
+				<option value="$!{item.orgId}" >$!{item.orgName}</option>
+            #end
+    </select>
+    &nbsp;&nbsp;&nbsp;
+    <select id="unitBsId2" #if($required) reg="required" #end #if($isDisabled) disabled="disabled" #end>
+        <option value="">选择部门</option>
+    </select>
+    &nbsp;&nbsp;&nbsp;
+    <select id="unitBsId3" #if($required) reg="required" #end #if($isDisabled) disabled="disabled" #end name="unitBsId" >
+        <option value="">选择子部门</option>
+    </select>

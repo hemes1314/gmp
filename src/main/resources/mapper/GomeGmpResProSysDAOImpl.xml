@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResProSysDAO">
+	
+	<insert id="saveGomeGmpResProSysBO" parameterType="GomeGmpResProSysVO">
+		INSERT INTO gome_gmp_res_pro_sys(pro_id,sys_id) 
+		VALUES(#{proId},#{sysId})
+	</insert>
+	
+	<delete id="deleteGomeGmpResProSysBOById" parameterType="long">
+		DELETE FROM gome_gmp_res_pro_sys WHERE id=#{id}
+	</delete>
+	
+	<delete id="deleteGomeGmpResProSysBOByProId" parameterType="String">
+		DELETE FROM gome_gmp_res_pro_sys WHERE pro_id=#{proId}
+	</delete>
+	
+	<update id="updateGomeGmpResProSysBOById" parameterType="GomeGmpResProSysBO">
+		UPDATE gome_gmp_res_pro_sys
+		SET update_time=#{updateTime}
+		<if test="proId!=null and proId!=''">,pro_id=#{proId}</if>
+		<if test="sysId!=null">,sys_id=#{sysId}</if>
+ 		WHERE id=#{id}
+	</update>
+	
+	<select id="findGomeGmpResProSysBO" parameterType="GomeGmpResProSysVO" resultType="GomeGmpResProSysVO">
+		SELECT s.id,pro_id,sys_id,
+		i.item_name sys_name 
+		FROM gome_gmp_res_pro_sys s , gome_gmp_dict_item i
+		WHERE s.sys_id = i.item_id and i.group_type = 'system'
+		<if test="proId!=null and proId!=''">
+			and pro_id = #{proId}
+		</if>
+		order by i.sort
+	</select>
+</mapper>

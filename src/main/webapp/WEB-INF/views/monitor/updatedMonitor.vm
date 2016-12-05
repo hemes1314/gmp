@@ -1,0 +1,130 @@
+#parse("common/header.vm")
+#parse("common/explain/explain.vm")
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/proMonitor/toProMonitor;return false'">项目监控</a></span>
+                    <span class="selected small_tab"><a href="${contextPath}/proMonitor/toUpeProMonitor"><i>更新监控</i></a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                	<div class='GomeProject_nav_title'>
+					<input type="hidden" value="upeMonitor" class="explainKey">
+					<img src="../static/images/explain.png" class="explainImgLabel"/>
+						<div class="breadCrumbHolder module">
+    			    		<div  class="breadCrumb module">
+    			                    <ul id="updatedMonitorCrumbUl">
+    			                    
+    			                    </ul>
+    			            </div>
+			            </div>
+                        <a class="export_data button export_data" style="margin-right:10px" >导出</a>
+                     	<div class="clear"></div>
+                    </div>
+                    <form action="">
+                        <div class='project_search_bar' style="height:auto;max-height:122px;"><!-- 注意要-2 （减掉border的宽度）  -->
+	                    	<div class="form_div">
+                                <div class="form-group">
+                                    <label for="req">时间周期:</label>
+                                    <input type="text" class="form-control laydate-icon" id='start' placeholder="--请选择--" use='laydate' readonly="true" name='startTime' value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.startTime})">
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">至:</label>
+                                    <input type="text" class="form-control laydate-icon" id='end' placeholder="--请选择--" use='laydate' readonly="true" name="endTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResProjectVO.endTime})">
+                                </div>
+                                <div class="form-group">
+                                    <label for="department">部门:</label>
+                                    <select name="orgIds" id="orgIds">
+                                    <option>全部</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="branch">子部门:</label>
+                                    <select name="childOrgIds" id="childOrgIds">
+                                    <option>全部</option>
+                                    </select>
+                                </div>
+								<div class="form-group">
+                                    <label for="team">小组:</label>
+                                    <select name="groupIds" id="groupIds">
+                                    <option>全部</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <a href="javascript:void(0)" class='search_project searchBtn search_data'>查询</a>
+                                </div>
+                            </div>    
+                        </div>
+                    </form>
+                    <div class="project_info_table monitor_content"  style="margin-top:12px">
+                        <table id="monitorTable" class="detail" style="margin-top:12px">
+                            
+                        </table>
+                    </div>
+                    <div class='project_info_table monitor_detail'  style="margin-top:12px">
+                        <!-- 三角开始 -->
+                        <span class="bot"></span>
+                        <span class="top"></span>
+                        <!-- 三角结束 -->
+                        <table id="monitor_detail" class="detail" style="margin-top:12px">
+      
+                           
+                        </table>
+                        
+                        <div id="page"></div>
+                        
+                        
+                        <script id='tableHead_tpl' type='text/html'>
+                        
+                        <thead>
+                                <tr>
+                                    <td>项目ID</td>
+                                    <td>项目名称</td>
+                                    <td>
+                                    <select name="task" id='task' data-wdith='150' searchtype="0">
+                                        <option value=""  project_type="" >任务状态</option>
+        								#foreach($item in $gomeGmpResProjectVO.TaskStatusV)	   
+	             							<option value="$!{item.itemName}"  project_type="$!{item.itemId}" >$!{item.itemName}</option>	
+										#end
+                                        </select>
+                                        </td>
+                                    <td>
+                                        <select name="importance" id='importance' data-wdith='150' searchtype="0">
+                                        <option value=""  project_type="" >优先级</option>
+        								#foreach($item in $gomeGmpResProjectVO.priorityIdsV)	   
+	             							<option value="$!{item.itemName}"  project_type="$!{item.itemId}" >$!{item.itemName}</option>	
+										#end
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="rate"  id='rate' data-wdith='150' searchtype="0">
+                                        <option value=""  project_type="" >状态进度</option>
+        								 #foreach($item in $gomeGmpResProjectVO.scheduleIdsV)	   
+	             							<option value="$!{item.itemName}"  project_type="$!{item.itemId}" >$!{item.itemName}</option>	
+											#end
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="stage"  id='stage' data-wdith='150' searchtype="0">
+                                        <option value=""  project_type="" >实施阶段</option>
+                         				#foreach($item in $gomeGmpResProjectVO.actualizesV)	   
+	             							<option value="$!{item.itemName}"  project_type="$!{item.itemId}" >$!{item.itemName}</option>	
+										#end
+                                        </select>
+                                    </td>
+                                    <td>完成度</td>
+                                    <td>上线时间</td>
+                                    <td>项目经理</td>
+                                </tr>
+                            </thead>
+                        
+                        
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/monitor_update.js'></script>
+<script src='${contextPath}/static/js/explainDialog.js'></script>

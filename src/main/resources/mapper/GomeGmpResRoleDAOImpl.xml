@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResRoleDAO">
+	
+	<insert id="saveGomeGmpResRoleBO" useGeneratedKeys="true" keyProperty="id" parameterType="GomeGmpResRoleBO">
+		INSERT INTO gome_gmp_res_role(id,role_name) 
+		VALUES(#{id},#{roleName})
+	</insert>
+	
+	<delete id="deleteGomeGmpResRoleBOById" parameterType="long">
+		DELETE FROM gome_gmp_res_role WHERE id=#{id}
+	</delete>
+	
+	<update id="updateGomeGmpResRoleBOById" parameterType="GomeGmpResRoleBO">
+		UPDATE gome_gmp_res_role
+		SET update_time=#{updateTime}
+		<if test="roleName!=null and roleName!=''">,role_name=#{roleName}</if>
+ 		WHERE id=#{id}
+	</update>
+	
+	<select id="findGomeGmpResRoleBOById" parameterType="long" resultType="GomeGmpResRoleBO">
+		SELECT id,role_name 
+		FROM gome_gmp_res_role 
+		WHERE id=#{id}
+	</select>
+	
+	<select id="findGomeGmpResRoleVO" parameterType="GomeGmpResRoleVO" resultType="GomeGmpResRoleVO">
+		SELECT id,role_name 
+		FROM gome_gmp_res_role 
+		WHERE 1=1
+		<if test="roleName != null"> 
+		and role_name=#{roleName}
+		</if>
+		<if test="roleNames != null">  
+        	and role_name in 
+	        <foreach collection="roleNames" item="item" index="index" 
+				open="(" separator="," close=")">#{item}</foreach> 
+		</if>
+	</select>
+	
+</mapper>

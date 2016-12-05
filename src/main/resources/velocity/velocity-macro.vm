@@ -1,0 +1,7 @@
+#macro(subStr $str $len $lv) 
+	#if(${str.length()} > ${len})
+		${str.substring(0,${len})}${lv}
+	#else
+		${str}
+	#end
+#end 

@@ -1,0 +1,81 @@
+#parse("common/header.vm")
+#parse("common/explain/explain.vm")
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab" style="position:relative">
+                <div class="GomeProject_tab_title">
+                    <span class="big_tab"><a href="${contextPath}/datas/toProTJ">总数据统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toOnlineTJ">上线分布统计</a></span>
+                    <span class='selected big_tab'><a href="${contextPath}/datas/toUnitTJ">各部门数据表现</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="location.href='${contextPath}/tj/status';return false;">状态分布</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='/gmp/hourCount/scheduleStatistics;return false'">工时统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/todataList">提报需求统计</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                	<div class='GomeProject_nav_title'>
+					<input type="hidden" value="orgsExpression" class="explainKey">
+					<img src="../static/images/explain.png" class="explainImgLabel"/>
+<div class="breadCrumbHolder module">
+						    <div class="breadCrumb module">
+						        <ul  id="unitTjDataCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+                     	<div class="clear"></div>
+                    </div>
+                    <!-- searchBar -->
+                    <form action="">
+                        <div class='project_search_bar' style="height:72px;"><!-- 注意要-2 （减掉border的宽度）  -->
+                            <div class="form_div">
+                                    <div class="form-group">
+                                    <label for="req">时间周期:</label>
+                                    <input type="text" class="form-control laydate-icon" id='start' name="startTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpTJDemandVO.startTime})" use='laydate'>
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">至:</label>
+                                    <input type="text" class="form-control  laydate-icon" id='end' name="endTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpTJDemandVO.endTime})" use='laydate'>
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">类型:</label>
+                                      <select name="proType" id="type">
+                                        <option value="1">项目</option>
+                                       <option value="2">敏捷</option>
+                                       </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">状态：</label>
+                                    <select name="scheduleId" id="scheduleId">
+                                        <option value="4">已延期</option>
+                                        <option value="5">已上线</option>
+                                        <option value="13" selected="selected">新增项目</option>    
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <a href="javascript:void(0)" class='search_project searchBtn search_data'>查询</a>         
+                                </div>
+                            </div>
+                            <div class="form_div"></div>
+                        </div>
+                    </form>
+                    <!-- searchbar end-->
+                    <!-- charts -->
+                    <div class='inner_round'></div>
+                    <div id="main" style="height:400px">
+                    </div>
+                    <!-- chartsEnd -->
+                    <div class='project_info_table data_statistics_table' style="margin-top:12px">
+                        <table>
+                         <tbody></tbody>
+                        </table>
+                    </div>
+                    <!--  tableend  -->
+                    <div id='GomeProjectPage' class='GomeProjectPage'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/echarts.js'></script>
+<script src='${contextPath}/static/js/department_statistics.js'></script>
+<script src='${contextPath}/static/js/explainDialog.js'></script>

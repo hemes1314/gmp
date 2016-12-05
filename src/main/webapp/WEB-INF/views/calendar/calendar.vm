@@ -1,0 +1,107 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/business/calendar.css"/>
+<style>
+	.project_search_bar{
+		margin:0 5px;
+		width:1098px;
+		height: 50px;
+		line-height: 50px;
+	}
+	.calendar_search_box{
+		float:right;
+    	display:inline-block;
+		margin-top: -15px;
+		width:230px;
+	}
+	.org_search_box{
+		float: left; 
+		display: inline-block;
+	}
+</style>
+     <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+              #parse("project/projectHeader.vm")
+                <div class="GomeProject_tab-content">
+                    <div class="GomeProject_nav_title" style="height:90px;">
+						<div class="project_search_bar">
+							
+							<div class="org_search_box">
+								<form action="" id="search_from">
+									<div class="form_div">
+    									#* 管理员权限或者是 部门以上级别 *#
+									#if( ($!{userPermission} and $!{userPermission}==1) or ($!{hasUserOrg} and $!{userOrgLevel}<=2) )
+										<div class="form-group">
+                                            <label for="orgIds">部门</label>
+                                            <select name="orgIds" id="orgIds" initShow="1" style="width:150px;">
+    											#foreach($item in $orgBoList)
+    												<option value="$!{item.orgId}">$!{item.orgName}</option>
+        			                            #end
+    										</select>
+                                        </div>
+    									<div class="form-group">
+                                            <label for="branch">子部门</label>
+                                            <select name="childOrgIds" id="childOrgIds" style="width:150px;">
+                                            	<option value="">全部</option>
+                                            </select>
+    									</div>
+    									<div class="form-group">
+                                            <label for="team">小组</label>
+                                            <select name="groupIds" id="groupIds" style="width:150px;">
+                                            	<option value="">全部</option>
+                                            </select>
+    									</div>
+									#elseif($!{hasUserOrg} and $!{userOrgLevel}>2)
+										<div class="form-group">
+                                          <label for="orgIds">部门</label>
+                                            <select name="orgIds" id="orgIds" style="width:150px;">
+												<option value="">全部</option>
+    											#foreach($item in $userOrgList)
+        											#if($!{item.orgLevel}==2)
+        												<option value="$!{item.orgId}" selected>$!{item.orgName}</option>
+        											#end
+        										#end
+    										</select>
+                                        </div>
+    									<div class="form-group">
+                                            <label for="branch">子部门</label>
+                                            <select name="childOrgIds" id="childOrgIds" initShow="1"  style="width:150px;">
+												#foreach($item in $orgBoList)
+    												<option value="$!{item.orgId}">$!{item.orgName}</option>
+        			                            #end
+                                            </select>
+    									</div>
+    									<div class="form-group">
+                                            <label for="team">小组</label>
+                                            <select name="groupIds" id="groupIds" style="width:150px;">
+                                            	<option value="">全部</option>
+                                            </select>
+    									</div>
+									#end
+								</div>
+							</form>
+						</div>
+							
+							<div class="calendar_search_box">
+        						<select class="select" id="selectYear" style="float:left;margin-top:26px;margin-left:10px;font-size:14px;"></select>
+        						<div class='calendar-title' style="background:#fff;float:left;margin-left:15px;margin-top:25px;height:28px!important;line-height:28px!important">
+        							<a style="width:19px;display:inline-block;text-align:center;" href="javascript:void(0)" class="lastMonth">&lt;</a>
+        							<div style="width:40px;" class="calendar-title-date"></div>
+        							<a style="width:19px;display:inline-block;text-align:center;" href="javascript:void(0)" class="nextMonth">&gt;</a>
+        						</div>
+							</div>
+						</div>
+					</div>
+					<div style="min-width:1200px;max-width:100%;">
+                        <div class="calendar">
+                        	<table id="calendar"></table>
+                        </div>
+                        <div id = "detail" class="right_info">
+                        </div>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/manage_calender.js'></script>

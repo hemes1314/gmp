@@ -1,0 +1,109 @@
+@charset 'utf-8';
+.table_info {
+    width: 770px;
+    height: 380px;
+    float: left;
+    overflow-y: scroll;
+    display: inline-block;
+}
+
+.table_info table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table_info thead tr {
+    background: #fefbf5;
+}
+
+.table_info table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.table_info table tr td {
+    border: 1px solid #e8e8e8;
+    text-align: center;
+    min-width: 20px;
+}
+
+.charts_wrapper {
+    border: 1px solid #e8e8e8;
+    margin-left: 60px;
+    position: fixed;
+    padding: 0px;
+    width: 440px;
+    height: 380px;
+    overflow: auto;
+    z-index: 10000;
+    background: #fff;
+    right: 0px;
+}
+
+.charts_wrapper .content {
+    height: 380px;
+}
+
+.toggle_bar {
+    width: 20px;
+    height: 380px;
+    border: 1px solid #e6e6e6;
+    position: absolute;
+    left: 0px;
+    line-height: 380px;
+    z-index: 99999999;
+}
+
+#toggle_button {
+    width: 20px;
+    height: 30px;
+    display: inline-block;
+}
+
+.toggle_left {
+    background: url(../images/toggle_arrow_left.png) no-repeat;
+    background-position: 2px;
+}
+
+.toggle_right {
+    background: url(../images/toggle_arrow_right.png) no-repeat;
+    background-position: 5px;
+}
+
+.right_wrapper {
+    border: 1px solid #f0f;
+    width: 700px;
+    height: 700px;
+}
+
+
+/* 滚动条 */
+
+
+/* 设置滚动条的样式 */
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+
+/* 滚动槽 */
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+
+/* 滚动条滑块 */
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255, 0, 0, 0.4);
+}

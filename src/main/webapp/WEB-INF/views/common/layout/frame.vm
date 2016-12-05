@@ -1,0 +1,238 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/common_iframe.css">
+<link rel="stylesheet" href="${contextPath}/static/css/demand_management.css">
+
+<iframe id="iframe_top" name="iframe_header" frameborder="0" src="${contextPath}/top" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true"></iframe>
+<iframe id="iframe_left" name="iframe_leftbar" frameborder="0" src="${contextPath}/left" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true"></iframe>
+<div id="iframe_main_warp">
+	<iframe id="iframe_main" name="iframe_main" frameborder="0" src="${contextPath}/project/toProjectView?proType=1&listType=init" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscree="true"></iframe>
+</div>
+
+#parse("common/footer.vm")
+<script src="${contextPath}/static/js/dialog-plus.js"></script>
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/demand_infodetail.js'></script>
+<script type="text/javascript">
+window.dialog = dialog;
+/////////////////////////////面包屑用////////////////////////////////////////
+var NavStack = [];
+
+function pushNavStack(crumbNm){
+	NavStack.push(crumbNm);
+}
+
+function resetNavStack(){
+	NavStack = [];
+}
+
+function buildCrumbs(dom,cb){
+	$(NavStack).each(function(index){
+		var liHtml = '';
+		if(index == NavStack.length - 1){
+			liHtml = '<li>'+NavStack[index]+'</li>';
+		}else{
+			liHtml = '<li><a href="javascript:void(0);">'+NavStack[index]+'</a></li>';
+		}
+		
+		if(NavStack[index].trim().length == 0){
+			
+			/* var active_bar = $(window.frames["iframe_left"].document).find(".GomeProjectCommonLeftBarUl .active"); */
+			var active_bar = $("#iframe_left").contents().find(".GomeProjectCommonLeftBarUl .active");
+			var crumbTxt = '';
+			if('项目管理' == active_bar.text()){
+				crumbTxt = '项目';
+			}else{
+				crumbTxt = active_bar.text();
+			}
+			liHtml = '<li>'+crumbTxt+'</li>';
+			if(NavStack.length > 1){
+				liHtml = '<li><a href="javascript:void(0);">'+crumbTxt+'</a></li>';
+			}
+		}
+		
+		dom.append(liHtml);
+	});
+	
+	if(cb) cb();
+}
+/* function setCurCrumb(CrumbNm){
+	window.localStorage.setItem('CURCRUMB',CrumbNm);
+}
+
+function getCurCrumb(){
+	window.localStorage.getItem('CURCRUMB');
+} */
+
+function popNavStack(num){
+	var popNum = -1;
+	if(typeof(num) != 'undefined'){
+		popNum = num;
+	}
+	document.getElementById('iframe_main').contentWindow.history.go(popNum);
+	console.log(NavStack);
+	NavStack.splice(popNum);
+	console.log(NavStack);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+var l_frame = document.getElementById("iframe_left");
+var t_frame = document.getElementById("iframe_top");
+var m_frame = document.getElementById("iframe_main");
+l_frame.onload = l_frame.onreadystatechange = function(){
+	//console.log('l_frame finished');
+};
+t_frame.onload = t_frame.onreadystatechange = function(){
+	//console.log('t_frame finished');
+}; 
+m_frame.onload = m_frame.onreadystatechange = function(){
+	//console.log('m_frame finished');
+};
+
+window.onload=function(){
+	var obj = $(window.frames["iframe_header"].document).find("#loginout");
+		
+	$(obj).on('click', function() {
+		window.location.href=contextPath + '/logout';
+	});
+	
+	var changepsw = $(window.frames["iframe_header"].document).find("#changePassword");
+	$(changepsw).on('click', function() {
+		
+    	var changepswDiv = '<div class="dialog">'+
+    	'<p><span>旧&nbsp;&nbsp;密&nbsp;&nbsp;码:</span>'+
+    	'<input type="password" id="oldpwd" class=""></p>'+
+    	'<p><span>新&nbsp;&nbsp;密&nbsp;&nbsp;码:</span>'+
+    	'<input type="password" id="newpwd" class=""></p>'+
+    	'<p><span>确认密码:</span>'+
+    	'<input type="password" id="confirmpwd" class=""></p>'+
+    	'<span class="error_tips"></span>'+
+    	'</div>';
+    	
+		var $div = $('<div></div>').append(changepswDiv);
+        var d = dialog({
+            content: $div,
+            okValue: '确定',
+            ok: function() {
+            	var oldpwd = $('.dialog:visible').find('#oldpwd').val();
+            	var newpwd = $('.dialog:visible').find('#newpwd').val();
+            	var confirmpwd = $('.dialog:visible').find('#confirmpwd').val();
+            	
+            	if(!oldpwd){
+            		$('.error_tips').html('请输入原密码');
+            		return false;
+            	}
+            	
+            	if(!newpwd){
+            		$('.error_tips').html('请输入新密码');
+            		return false;
+            	}
+            	if(!confirmpwd){
+            		$('.error_tips').html('请输入确认密码');
+            		return false;
+            	}
+            	
+            	if(confirmpwd!=newpwd){
+            		$('.error_tips').html('新旧密码不一致');
+            		return false;
+            	}
+            	
+            	$('.error_tips').html();
+            	
+            	
+            	data = {
+            			oldpwd:oldpwd,
+            			newpwd:newpwd,
+            			confirmpwd:confirmpwd
+            	};
+            	var ajax_option = {
+                        type: "POST",
+                        url:contextPath + '/changePassword',
+                        data:data,
+                        dataType: "json"
+                    };
+                $.ajax(ajax_option).done(function(result) {
+                	layer.msg(result.content);
+                })
+
+            },
+            cancelValue: '取消',
+            cancel: function() {},
+            title: '修改密码'
+        }).width(400);
+        d.showModal();
+        
+	});
+	
+	changeFrameSize();
+
+}
+
+function changeFrameSize(){
+	var l_frame = document.getElementById("iframe_left");
+	var t_frame = document.getElementById("iframe_top");
+	var m_frame = document.getElementById("iframe_main");
+	
+	var browse_w = (document.documentElement.scrollWidth > document.documentElement.clientWidth) ? document.documentElement.scrollWidth : document.documentElement.clientWidth;
+	var browse_h = (document.documentElement.scrollHeight > document.documentElement.clientHeight) ? document.documentElement.scrollHeight : document.documentElement.clientHeight; 
+	
+	var leftWidth = 0;
+	var mainWidth = 0;
+	var topWidth = 0;
+	
+	var topHeight = 0;
+	var mainHeight = 0;
+	var leftHeight = 0;
+	
+	if (isFireFox == true){
+		topWidth = t_frame.contentDocument.body.offsetWidth;
+		leftWidth = l_frame.contentDocument.body.offsetWidth;
+		mainWidth = m_frame.contentDocument.body.offsetWidth;
+		
+		topHeight = t_frame.contentDocument.body.offsetHeight;
+		leftHeight = l_frame.contentDocument.body.offsetHeight;
+		mainHeight = m_frame.contentDocument.body.offsetHeight;
+	}
+    else if (isIE == false && isOpera == false){
+    	topHeight = t_frame.contentWindow.document.documentElement.scrollHeight;
+		leftWidth = l_frame.contentWindow.document.documentElement.scrollWidth;
+		mainWidth = m_frame.contentWindow.document.documentElement.scrollWidth;
+		
+		topWidth = t_frame.contentWindow.document.documentElement.scrollWidth;
+		leftHeight = l_frame.contentWindow.document.documentElement.scrollHeight;
+		mainHeight = m_frame.contentWindow.document.documentElement.scrollHeight;
+    }
+    else if (isIE == true && !-[1, ] == false) {} //ie9+
+    
+    // header 调整
+    t_frame.style.width = browse_w > (mainWidth + leftWidth)?browse_w+"px":(mainWidth + leftWidth)+"px";
+    /* if((topWidth - leftWidth) < mainWidth){
+    	
+    }else{
+    } */
+    // main 调整
+    //alert(mainWidth);
+    m_frame.style.width = mainWidth + "px";
+    // left 调整
+    var leftHeight = browse_h - topHeight;
+    l_frame.style.height = leftHeight + "px";
+    
+    
+/* 	var leftHeight = browse_h - topHeight;
+    var realWidth = mainWidth > topWidth?mainWidth:topWidth;
+	m_frame.style.width = realWidth + "px";
+	m_frame.style.height = mainHeight + "px";
+	/* t_frame.style.width = (realWidth+leftWidth) + "px"; 
+	l_frame.style.height = leftHeight + "px"; */
+	
+
+	/* $('.GomeProjectCommonHeader').width(realWidth+leftWidth); */
+	
+
+}
+window.onresize=function(){  
+	changeFrameSize();
+}
+
+
+
+</script>

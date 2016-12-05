@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResProjectDAO">
+	
+	<insert id="saveGomeGmpResProjectBO" parameterType="GomeGmpResProjectBO">
+		INSERT INTO gome_gmp_res_project(pro_id,bug_id,title,demand_id,demand_name,bp_id,unit_bs_id,key_user_id,svn_addr,status_id,priority_id,schedule_id,actualize,remark,near_work_done,near_work_plan,risk_remark,pro_type,start_time,plan_time,finish_time,pro_period,is_commit,update_user,update_time,create_user,create_time) 
+		VALUES(#{proId},#{bugId},#{title},#{demandId},#{demandName},#{bpId},#{unitBsId},#{keyUserId},#{svnAddr},#{statusId},#{priorityId},#{scheduleId},#{actualize},#{remark},#{nearWorkDone},#{nearWorkPlan},#{riskRemark},#{proType},#{startTime},#{planTime},#{finishTime},#{proPeriod},#{isCommit},#{updateUser},now(),#{createUser},now())
+	</insert>
+	
+	<delete id="deleteGomeGmpResProjectBOById" parameterType="String">
+		DELETE FROM gome_gmp_res_project WHERE pro_id=#{proId}
+	</delete>
+	
+	<update id="updateGomeGmpResProjectBOById" parameterType="GomeGmpResProjectBO">
+		UPDATE gome_gmp_res_project
+		SET update_time=now()
+		,bug_id=#{bugId}
+		,title=#{title}
+		,demand_id=#{demandId}
+		,demand_name=#{demandName}
+		,bp_id=#{bpId}
+		,unit_bs_id=#{unitBsId}
+		,key_user_id=#{keyUserId}
+		,svn_addr=#{svnAddr}
+		<if test="statusId!=null">,status_id=#{statusId}</if>
+		<if test="priorityId!=null">,priority_id=#{priorityId}</if>
+		<if test="scheduleId!=null">,schedule_id=#{scheduleId}</if>
+		<if test="actualize!=null">,actualize=#{actualize}</if>
+		,remark=#{remark}
+		,near_work_done=#{nearWorkDone}
+		,near_work_plan=#{nearWorkPlan}
+		,risk_remark=#{riskRemark}
+		,pro_type=#{proType}
+		,is_commit=#{isCommit}
+		,start_time=#{startTime}
+		,plan_time=#{planTime}
+		,finish_time=#{finishTime}
+		,pro_period=#{proPeriod}
+		,update_user=#{updateUser}
+		<if test="createUser!=null">,create_user=#{createUser}</if>
+		<if test="createTime!=null">,create_time=#{createTime}</if>
+ 		WHERE pro_id=#{proId}
+	</update>
+	
+	<update id="updateProjectPropertyById" parameterType="GomeGmpResProjectBO">
+		UPDATE gome_gmp_res_project
+		SET update_time=now()
+		<if test="statusId!=null">,status_id=#{statusId}</if>
+		<if test="updateUser!=null">,update_user=#{updateUser}</if>
+ 		WHERE pro_id=#{proId}
+	</update>
+	
+	<sql id="select-common-condition">
+        <if test="proId != null">  
+        	and pro_id = #{proId}
+        </if>  
+        <if test="title != null and title != ''">  
+        	and title like CONCAT('%',#{title},'%')  
+        </if>  
+		<if test="startTime != null">  
+        	<![CDATA[
+        		and plan_time >= #{startTime}
+        	]]>  
+        </if>
+        <if test="endTime != null">  
+        	<![CDATA[
+        		and plan_time <= #{endTime}
+        	]]>  
+        </if>
+        <if test="unitBsId != null and unitBsId != ''">  
+        		and unit_bs_id = #{unitBsId}
+        </if>
+        <!-- 查部门的 -->
+        <if test="orgIds != null and orgIds.length > 0">
+        	and (
+        		exists (
+		        		select u.id from gome_gmp_res_user u,gome_gmp_res_org o where u.org_id = o.org_id and u.id = p.bp_id and
+			        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+			        		o.org_id like CONCAT(#{item},'%') 
+			        	</foreach> 
+			        	<!-- 小组成员 -->
+			        	<if test="isMember != null and isMember and bpId != null and bpId !='' ">
+		        			and p.bp_id = #{bpId}
+		        		</if>
+		        	)
+		        	 <if test="proRelatedUsers != null and proRelatedUsers.length > 0">
+		         		or p.pro_id IN (
+				        	select proTemp.pro_id from (
+								SELECT DISTINCT(pro_id) AS pro_id FROM gome_gmp_res_task WHERE user_id in <foreach collection="proRelatedUsers" item="item" index="index" open="(" separator="," close=")">#{item}</foreach> 
+								UNION
+								SELECT DISTINCT(pro_id) AS pro_id FROM gome_gmp_res_related_user WHERE user_id in <foreach collection="proRelatedUsers" item="item" index="index" open="(" separator="," close=")">#{item}</foreach> 
+								UNION
+								SELECT DISTINCT(pro_id) AS pro_id FROM gome_gmp_res_project WHERE key_user_id in <foreach collection="proRelatedUsers" item="item" index="index" open="(" separator="," close=")">#{item}</foreach> 
+							) proTemp
+						)
+		        	 </if>
+			)
+        </if>
+        <if test="taskStatus != null and taskStatus.length > 0">
+        	and status_id in 
+	        <foreach collection="taskStatus" item="item" index="index" open="(" separator="," close=")">#{item}</foreach> 
+		</if>
+        <if test="priorityIds != null and priorityIds.length > 0">  
+        	and priority_id in 
+	        <foreach collection="priorityIds" item="item" index="index" open="(" separator="," close=")">
+	        	#{item}
+	        </foreach> 
+        </if>
+        <if test="scheduleId != null">  
+        	and schedule_id = #{scheduleId}
+        </if>
+        <if test="scheduleIds != null and scheduleIds.length > 0">
+        	and schedule_id in 
+	        <foreach collection="scheduleIds" item="item" index="index" open="(" separator="," close=")">
+	        	#{item}
+	        </foreach> 
+        </if>
+        <if test="actualizes != null and actualizes.length > 0">  
+        	and actualize in 
+	        <foreach collection="actualizes" item="item" index="index" open="(" separator="," close=")">
+	        	#{item}
+	        </foreach> 
+        </if>
+        <if test="proType != null">  
+        	and pro_type = #{proType}
+        </if>
+	</sql>
+	
+	<select id="findGomeGmpResProjectBO" parameterType="GomeGmpResProjectVO" resultType="GomeGmpResProjectVO">
+		SELECT 
+			pro_id proId,
+			bug_id bugId,
+			title title,
+			demand_id demandId,
+			IFNULL((select title from gome_gmp_res_need n where n.need_id = p.demand_id),demand_name) demandName,
+			bp_id bpId,
+			unit_bs_id unitBsId,
+			key_user_id keyUserId,
+			svn_addr svnAddr,
+			status_id statusId,
+			priority_id priorityId,
+			schedule_id scheduleId,
+			actualize actualize,
+			remark remark,
+			near_work_done nearWorkDone,
+			near_work_plan nearWorkPlan,
+			risk_remark riskRemark,
+			pro_type proType,
+			start_time startTime,
+			plan_time planTime,
+			finish_time finishTime,
+			pro_period proPeriod,
+			update_user updateUser,
+			update_time updateTime,
+			create_user createUser,
+			create_time createTime,
+			is_commit isCommit,
+			<if test="qryType != 'projectManageList'">
+				IFNULL((select plan_hour from gome_gmp_v_pro_hour c where c.pro_id = p.pro_id),0) planHour,
+			</if>
+			CONCAT(IFNULL((
+	  			select round(sum(work_period/(select sum(k.work_period) sum_period from gome_gmp_res_task k where k.pro_id = s.pro_id)*s.`schedule`/100)*100,1)
+				  from gome_gmp_res_task s where s.pro_id = p.pro_id
+			),0),'%') percentage,
+			(CASE WHEN bp_id = ${loginUserId} or key_user_id = ${loginUserId} or create_user = ${loginUserId} or (SELECT COUNT(1) FROM gome_gmp_res_related_user u WHERE u.pro_id = p.pro_id AND u.user_id = ${loginUserId}) > 0 or (SELECT COUNT(1) FROM gome_gmp_res_task s WHERE s.pro_id = p.pro_id AND s.user_id = ${loginUserId}) > 0 THEN 1 ELSE 0 END) isAuth
+			FROM gome_gmp_res_project p
+			<where>
+				<include refid="select-common-condition"></include>
+		        <if test="bpIds != null and bpIds.length > 0">  
+		        	and bp_id in 
+			        <foreach collection="bpIds" item="item" index="index" open="(" separator="," close=")">
+			        	#{item}
+			        </foreach> 
+		        </if>
+			</where>
+	        order by p.create_time desc
+	</select>
+	
+	<select id="validateBugId" parameterType="GomeGmpResProjectVO" resultType="java.lang.Integer">
+		select COUNT(1) from gome_gmp_res_project t where t.bug_id = #{bugId} 
+		<if test="proId != null"> 	
+		   and t.bug_id != (select bug_id from gome_gmp_res_project t where t.pro_id = #{proId})
+		</if>   
+	</select>
+	
+	<!-- 项目关联的项目经理 -->
+	<select id="getProRelatedBps" parameterType="GomeGmpResProjectVO" resultType="GomeGmpResUserBO">
+		SELECT  u.id,
+				u.user_name
+		FROM	gome_gmp_res_project p,gome_gmp_res_user u
+		<where>
+			p.bp_id = u.id
+			<include refid="select-common-condition"></include>
+			and p.bp_id is not null and p.bp_id != ''
+		</where>
+		GROUP BY p.bp_id
+	</select>
+	
+	<select id="getDailyRelateProjectsByUser" parameterType="Long" resultType="GomeGmpResProjectBO">
+	   SELECT pro_id proId,title title FROM gome_gmp_res_project p
+	   	WHERE
+	   	pro_id IN ( 
+			SELECT DISTINCT(pro_id) AS pro_id FROM gome_gmp_res_task WHERE user_id = #{userId}
+			UNION
+			SELECT DISTINCT(pro_id) AS pro_id FROM gome_gmp_res_related_user WHERE user_id = #{userId}
+			UNION
+			SELECT DISTINCT(pro_id) AS pro_id FROM gome_gmp_res_project WHERE (bp_id = #{userId} OR key_user_id = #{userId})
+		)
+		<![CDATA[ 
+			AND DATE_FORMAT(start_time,'%Y-%m-%d') <= CURRENT_DATE()
+		]]>
+		AND p.status_id!=3 AND p.is_commit=1
+	</select>
+	
+</mapper>

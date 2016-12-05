@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+     ">
+	
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.util.Date" value="com.gome.framework.util.propertyeditor.DateEditor" />
+				<entry key="java.math.BigDecimal" value="com.gome.framework.util.propertyeditor.BigDecimalEditor" />
+				<entry key="java.util.Map" value="com.gome.framework.util.propertyeditor.StringMapEditor"/>
+				<entry key="java.util.List" value="com.gome.framework.util.propertyeditor.StringListEditor"/>
+			</map>
+		</property>
+	</bean>
+	
+	<aop:aspectj-autoproxy />
+	<context:component-scan base-package="com.gome.gmp.web" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<mvc:resources mapping="/js/**" location="/static/js/" />
+	<mvc:resources mapping="/css/**" location="/static/css/" />
+	<mvc:resources mapping="/images/**" location="/static/images/" />
+	
+	<!-- 配置velocity引擎 -->
+	<bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		 <property name="velocityProperties">
+			<props>
+				<prop key="input.encoding">UTF-8</prop>
+				<prop key="output.encoding">UTF-8</prop>
+				<prop key="contentType">text/html;charset=UTF-8</prop>
+				<prop key="velocimacro.library">/velocity/velocity-macro.vm</prop>
+				<prop key="velocimacro.library.autoreload">true</prop>
+			</props>
+		</property>
+		<property name="configLocation" value="classpath:/velocity/velocity.properties" />
+		<property name="resourceLoaderPath" value="/WEB-INF/views/" />
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+		<property name="viewClass" value="com.gome.framework.web.VelocityLayoutView" />
+		<property name="layoutUrl" value="common/layout/default.vm" />
+		<property name="cache" value="false" />		
+		<property name="prefix" value="" />
+		<property name="suffix" value=".vm" />
+		<property name="layoutKey" value="layout" />
+		<property name="screenContentKey" value="screen_content" />
+		<property name="dateToolAttribute" value="dateTool" />
+		<property name="numberToolAttribute" value="numberTool" />
+		<property name="toolboxConfigLocation" value="classpath:/velocity/velocity-tools.xml" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+	
+		
+	<!-- 将自定义工具类 注入到VelocityContext中 -->
+	<bean name="velocityView" class="org.springframework.web.servlet.view.velocity.VelocityView">
+		<property name="toolAttributes">
+			<map>
+				<entry key="dateUtil" value="com.gome.gmp.common.util.DateUtil" />
+			</map>
+		</property>
+		<property name="url" value="/" />
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="com.gome.framework.web.ConfigurableWebBindingInitializer">
+				<property name="propertyEditors">
+					<map>
+						<entry key="byte[]" value="org.springframework.web.multipart.support.ByteArrayMultipartFileEditor" />
+						<entry key="java.lang.String" value="com.gome.framework.util.propertyeditor.StringTrimmerEditor" />
+						<entry key="java.lang.String[]" value="com.gome.framework.util.propertyeditor.StringArrayPropertyEditor" />
+						<entry key="java.util.Date" value="com.gome.framework.util.propertyeditor.DateEditor" />
+						<entry key="java.math.BigDecimal" value="com.gome.framework.util.propertyeditor.BigDecimalEditor" />
+					</map>
+				</property>
+				<property name="validator" ref="_validator" />
+			</bean>
+		</property>
+		<!-- <property name="customArgumentResolvers"></property> -->
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="writeAcceptCharset" value="false" />
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=utf-8</value>
+							<value>text/plain;charset=utf-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<property name="objectMapper" ref="_jacksonObjectMapper" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8" />
+		<!-- 指定所上传文件的总大小,单位字节。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->  
+		<property name="maxUploadSize" value="52428800"></property>
+		<property name="maxInMemorySize" value="4096"></property>
+	</bean>
+	
+	<!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->  
+	<!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->  
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+        <property name="exceptionMappings">  
+            <props>  
+                <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/view配置根目录/error_fileupload.vm页面 -->  
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error_fileupload</prop>  
+            </props>  
+        </property>  
+    </bean>
+    
+	<mvc:default-servlet-handler/>
+</beans>

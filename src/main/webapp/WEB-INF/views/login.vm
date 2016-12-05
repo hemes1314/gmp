@@ -1,0 +1,58 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="static/css/login.css" type="text/css"/>
+ <div class='wrapper'>
+        <!-- 头部开始 -->
+        <div class="header">
+            <div class="header_logo">
+                <img src="static/images/logo.png" alt="">
+            </div>
+        </div>
+        <!-- 头部结束 -->
+        <!-- 登陆区域开始-->
+        <div class="login_body">
+            <div class="left_desc">
+                <img src="static/images/system.png" alt="">
+            </div>
+            <div class="middle_desc">
+                <img src="static/images/login_middle_desc.png" alt="">
+            </div>
+            <div class='login_area'>
+                <div class='login_window'>
+                    <div class='login_flag'>
+                        <img src="static/images/login_area_header.png" alt="">
+                    </div>
+                    <div class="describe" style="margin-top:10px;">欢迎使用国美在线项目管理系统！</div>
+                    <div class="describe">请使用域账号和密码登录!</div>
+                    <div class="describe">权限分配请联系:liudawei@ds.gome.com.cn</div>
+                    <hr style="border:0;height:1px;margin:16px 18px;background-color:#C5CFF5"/>
+                    <div class='login_input' id='valid_area'>
+                        <a class="login_account">
+                           <div class="inner">
+                           		<input type="text" autocomplete="off" placeholder='用户名' id='username' name="username">
+                           		<span>@yolo24.com</span>
+                           </div>
+                        </a>
+                        <a class='login_password'>
+                        	<div style="margin-left:16px;">
+	                            <input type="password"  placeholder='密码' id='password' name='password'>
+	                            <i class='login_button'></i>
+                            </div>
+                        </a>
+                    </div>
+                    <div class='login_bottom'>
+                        <input type="checkbox" id='rmbUser'>
+                        <label for="">记住我在这台电脑</label>
+                        <a href="javascrpit:void(0)">&nbsp;&nbsp;&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 登陆区域结束-->
+        <!-- 底部-->
+        <div class='login_bottom'></div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.cookie.js'></script>
+<script src='${contextPath}/static/js/jquery.validator.js'></script>
+<script src='${contextPath}/static/js/login.js'></script>
+<script src='${contextPath}/static/js/zh-CN.js'></script>

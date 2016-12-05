@@ -1,0 +1,93 @@
+#parse("common/header.vm")
+
+<form id="dataForm" method="post" action="${contextPath}/datas/exportD">
+	<table border="1">
+		<tr>
+			<td>部门</td>
+			<td>提报需求</td>
+			<td>已受理需求</td>
+			<td>已拒绝需求</td>
+			<td>待受理需求</td>
+			<td>已完成需求</td>
+			<td>月内上线需求</td>
+			<td>操作</td>
+		</tr>
+		<tr>
+			<td>耳朵</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6项</td>
+			<td>7项</td>
+		</tr>
+				<tr>
+			<td>耳朵</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6项</td>
+			<td>7项</td>
+		</tr>
+				<tr>
+			<td>耳朵</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6项</td>
+			<td>7项</td>
+		</tr>
+				<tr>
+			<td>耳朵</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6项</td>
+			<td>7项</td>
+		</tr>
+				<tr>
+			<td>耳朵</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6项</td>
+			<td>7项</td>
+		</tr>
+		<tr>
+			<td>总计</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<input type="button" onclick="sub();" value="导出">
+	</table>
+</form>
+<script type="text/javascript">
+/*  function sub()
+{
+	var formData = $("#dataForm").serialize();
+    $.ajax({  
+        type:'get',      
+        url: '${contextPath}/datas/exportD',  
+        data: null,  
+        dataType:'json',  
+        success:function(data){ 
+           alert(data);
+        
+       }
+    });  
+} */
+function sub()
+{
+ var formData = $("#dataForm").serialize();
+    window.open("/gmp/datas/exportD?"+formData); 
+}
+</script>
+#include("common/footer.vm")

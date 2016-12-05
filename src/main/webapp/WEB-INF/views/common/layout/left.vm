@@ -1,0 +1,42 @@
+#parse("common/header.vm")
+<style>
+<!--
+.marker {
+	width:20px; 
+	height:20px; 
+	margin: 0px; 
+	position: relative; 
+	top: -60px; 
+	right: -20px; 
+	display: none;
+}
+-->
+</style>
+    <div class="GomeProjectCommonLeftBar">
+		<div style="width:117px;height:27px;background:#3252db"></div>
+        <ul class="GomeProjectCommonLeftBarUl">
+            <li><a href="${contextPath}/project/toProjectView?proType=1&listType=init" target="iframe_main" class="active"><i>项目管理</i></a></li>
+            <li><a href="${contextPath}/proMonitor/toProMonitor" target="iframe_main" ><i>项目监控</i></a></li>
+            <li><a href="${contextPath}/datas/toProTJ" target="iframe_main"><i>数据统计</i></a></li>
+            <li><a href="${contextPath}/demand/tolist" target="iframe_main"><i>需求管理</i></a><img id="marker" class="marker" src="${contextPath}/static/images/marker.png"/></li>
+            <li><a href="${contextPath}/dataManage/projectData"  target="iframe_main"><i>资料同步</i></a></li>
+            <li><a href="${contextPath}/orgManage/myAccount"  target="iframe_main"><i>组织管理</i></a></li>
+        </ul>
+    </div>
+#parse("common/footer.vm")
+    <script>
+    	$(document).ready(function(){
+    		$('.GomeProjectCommonLeftBarUl a').click(function(){
+    			parent.NavStack = [];
+        	/* 	var crumbTxt = '';
+        		parent.pushNavStack($(this).text()); */
+        	});
+    		
+    		$.get("${contextPath}/demand/findAcceptCount", function(result){
+    			$("#marker").hide();
+    			if(result > 0) {
+    				$("#marker").show();
+    			}
+    		});
+    	});
+    </script>

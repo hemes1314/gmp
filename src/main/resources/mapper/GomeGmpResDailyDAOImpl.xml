@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResDailyDAO">
+	
+	<!-- 根据时间校验是否有重复的日报 -->
+	<select id="checkRepetDailyByTime" parameterType="GomeGmpResDailyBO" resultType="java.lang.String">
+	    SELECT d.id FROM gome_gmp_res_daily d
+	    <where>
+	    	<if test="startTime != null and startTime !='' and endTime != null and endTime !=''">
+				<![CDATA[
+					and
+					(
+						(d.start_time > str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s') and d.start_time < str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s'))
+					    or (d.end_time > str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s') and d.end_time < str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s'))
+						or (d.start_time <= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s') and d.end_time >= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s'))
+					)
+				]]>
+			</if>
+			<if test="createUser != null">
+				and d.create_user=#{createUser}
+			</if>
+			<if test="id != null and id !=''">
+				<![CDATA[and d.id <> #{id}]]>
+			</if>
+	    </where>
+	</select>
+	
+	<insert id="addDaily" parameterType="GomeGmpResDailyBO">
+		INSERT INTO gome_gmp_res_daily(id,need_id,type,start_time,end_time,work_content,hours,pro_id,pro_task_id,pro_task_name,pro_task_schedule,create_user,create_time) VALUES(#{id},#{needId},#{type},#{startTime},#{endTime},#{workContent},#{hours},#{proId},#{proTaskId},#{proTaskName},#{proTaskSchedule},#{createUser},#{createTime})
+	</insert>
+	
+	<!-- 用户最近一次写日报时间 -->
+	<select id="findUserRecentDaily" parameterType="java.lang.String" resultType="GomeGmpResDailyBO">
+		SELECT 	
+			daily.id,
+			max(daily.create_time) create_time
+		FROM gome_gmp_res_daily daily 
+		LEFT JOIN gome_gmp_dict_item item ON item.group_type = 'dailyType' AND daily.type = item.item_id
+		LEFT JOIN gome_gmp_res_project project ON daily.pro_id = project.pro_id
+		where 
+				daily.create_time = (SELECT max(create_time) AS create_time FROM gome_gmp_res_daily where create_user = #{userId}) 
+			and daily.create_user=#{userId}
+	</select>
+	
+	<!-- 根据日报开始日期查询日期当天的日报 -->
+	<select id="getDailyListByStartDay" parameterType="GomeGmpResDailyBO" resultType="GomeGmpResDailyBO">
+		SELECT
+			daily.id,
+			daily.type,
+			daily.start_time,
+			daily.end_time,
+			daily.hours,
+			daily.work_content,
+			daily.pro_id,
+			daily.create_time,
+			daily.operate_time
+		FROM gome_gmp_res_daily AS daily
+		<where>
+			<if test="startTime != null">
+				and to_days(daily.start_time)=to_days(#{startTime})
+			</if>
+			<if test="createUser != null">
+				and daily.create_user=#{createUser}
+			</if>
+		</where>
+		ORDER BY daily.start_time
+	</select>
+	
+	<select id="findUserAllDaily" parameterType="Integer" resultType="GomeGmpResDailyVO">
+		SELECT 	
+			daily.id,
+			daily.type,
+			daily.start_time,
+			daily.end_time,
+			daily.hours,
+			daily.work_content,
+			daily.pro_id,
+			daily.pro_task_id,
+			daily.pro_task_name,
+			daily.pro_task_schedule,
+			daily.create_time,
+			item.item_name AS dailyTypeName,
+			project.title
+		FROM gome_gmp_res_daily AS daily
+			 LEFT JOIN gome_gmp_dict_item AS item ON item.group_type = 'dailyType' AND daily.type = item.item_id
+			 LEFT JOIN gome_gmp_res_project AS project ON daily.pro_id = project.pro_id
+		WHERE daily.create_user = #{userId}
+		ORDER BY daily.start_time DESC
+	</select>
+		
+	<delete id="deleteGomeGmpResDailyBOById" parameterType="String">
+		DELETE FROM gome_gmp_res_daily WHERE id=#{daliyId}
+	</delete>
+	
+	<update id="updateGomeGmpResDailyBOById" parameterType="GomeGmpResDailyBO">
+		UPDATE gome_gmp_res_daily
+		SET id=#{id}
+		<if test="needId!=null and needId!=''">,need_id=#{needId}</if>
+		<if test="type!=null and type!=''">,type=#{type}</if>
+		<if test="startTime!=null">,start_time=#{startTime}</if>
+		<if test="endTime!=null">,end_time=#{endTime}</if>
+		<if test="workContent!=null and workContent!=''">,work_content=#{workContent}</if>
+		<if test="hours!=null">,hours=#{hours}</if>
+		<if test="proId!=null and proId!=''">,pro_id=#{proId}</if>
+		<if test="proId==null or proId==''">,pro_id=null</if>
+		<![CDATA[,operate_time = now()]]>
+ 		WHERE id=#{id}
+	</update>
+	
+	<!-- 日报工时统计 -->
+	<select id="getDailyHoursScheduleList" parameterType="GomeGmpResDailyVO" resultType="GomeGmpResDailyVO">
+			SELECT 
+				date_format(start_time,'%Y-%c-%e') AS actionDate,sum(hours) AS hours 
+			FROM gome_gmp_res_daily
+			<where>
+				<if test="strStartDate != null and strStartDate !='' and strEndDate != null and strEndDate !=''">
+					<![CDATA[
+						 and date_format(start_time,'%Y-%m-%d') >= str_to_date(#{strStartDate},'%Y-%m-%d')
+						 and date_format(start_time,'%Y-%m-%d') <= str_to_date(#{strEndDate},'%Y-%m-%d')
+					]]>
+				</if>
+				<if test="createUser != null">
+					and create_user=#{createUser}
+				</if>
+			</where>
+			group by date_format(start_time,'%Y-%m-%d')
+	</select>
+	
+	<!-- 日报详情  -->
+	<select id="getDailyDetailInfo" parameterType="java.util.Map" resultType="GomeGmpResDailyDetailVO">
+		SELECT
+			date_format(daily.start_time,'%Y-%m-%d') dailyDate,
+			IFNULL(item.item_name,'') itemName,
+			date_format(daily.start_time,'%H:%i') startPoint,
+			date_format(daily.end_time,'%H:%i') endPoint,
+			IFNULL(project.title,'') title,
+			IFNULL(daily.work_content,'') workContent,
+			daily.hours hours,
+			date_format(daily.create_time,'%Y-%m-%d %H:%i') updatePoint
+		from 
+			gome_gmp_res_daily daily 
+			LEFT JOIN gome_gmp_res_project project ON project.pro_id = daily.pro_id
+			LEFT JOIN gome_gmp_dict_item item ON item.group_type = 'dailyType' AND daily.type = item.item_id
+		WHERE daily.create_user = #{userTid}
+		<if test="dailyDates != null">
+			AND
+			<foreach collection="dailyDates" item="dateStr" index="index" open="(" separator="or" close=")">
+				date_format(daily.start_time,'%Y-%m-%d') = str_to_date(#{dateStr},'%Y-%m-%d')
+			</foreach>
+		</if>
+		ORDER BY dailyDate DESC,startPoint DESC
+	</select>
+	
+	<select id="findGomeGmpResDailyBOById" parameterType="String" resultType="GomeGmpResDailyBO">
+		SELECT id,need_id,type,start_time,end_time,work_content,hours,pro_id,create_user,create_time 
+		FROM gome_gmp_res_daily 
+		WHERE id=#{dailyId}
+	</select>
+	
+	<select id="getDailyByDate" parameterType="GomeGmpResDailyBO" resultType="GomeGmpResDailyBO">
+	<![CDATA[
+	SELECT start_time, end_time, hours from(
+		SELECT create_user, start_time, end_time, hours FROM gome_gmp_res_daily
+		WHERE start_time >= #{startTime} AND end_time <= #{endTime}
+		union all
+		SELECT create_user, start_time, end_time, hours FROM gome_gmp_res_daily
+		WHERE start_time <= #{startTime} AND end_time >= #{startTime}
+		union all
+		SELECT create_user, start_time, end_time, hours FROM gome_gmp_res_daily
+		WHERE start_time <= #{endTime} AND end_time >= #{endTime}
+	) t 
+	WHERE t.create_user = #{createUser} 
+	ORDER BY start_time
+		]]>
+	</select>
+	
+</mapper>

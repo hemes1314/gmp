@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+
+	<property name="LOG_DIR" value="/app/logs/com.gome_gmp/${app.server.port}" />
+	
+	<conversionRule conversionWord="L" converterClass="com.gome.framework.logging.slf4j.LineOfCallerConverter" />
+	<conversionRule conversionWord="line" converterClass="com.gome.framework.logging.slf4j.LineOfCallerConverter" />
+	<conversionRule conversionWord="F" converterClass="com.gome.framework.logging.slf4j.FileOfCallerConverter" />
+	<conversionRule conversionWord="file" converterClass="com.gome.framework.logging.slf4j.FileOfCallerConverter" />
+	<conversionRule conversionWord="M" converterClass="com.gome.framework.logging.slf4j.MethodOfCallerConverter" />
+	<conversionRule conversionWord="method" converterClass="com.gome.framework.logging.slf4j.MethodOfCallerConverter" />
+
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger{50}.%M\(%file:%line\) - %msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>
+	<appender name="appAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/app.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/otherlogs/app-%d{yyyyMMdd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger{50}.%M\(%file:%line\) - %msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>
+	<appender name="heartbeatAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/heartbeat.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${LOG_DIR}/otherlogs/heartbeat.%i.log</FileNamePattern>
+			<MinIndex>1</MinIndex>
+			<MaxIndex>20</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>100MB</MaxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger{50}.%M\(%file:%line\) - %msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="appAppender" />
+		<appender-ref ref="consoleAppender" />
+	</root>
+	
+	<logger name="org.apache.curator" level="ERROR" />
+	<logger name="org.springframework" level="ERROR" />
+	<logger name="com.taobao.diamond" level="ERROR" />
+	
+	<logger name="com.gome.gmp.dao.GomeGmpWSUnitDAO" level="info" />
+	<logger name="com.gome.gmp.dao.GomeGmpDictItemDAO" level="info" />
+	
+	<logger name="com.gome.gmp" level="debug" />
+
+	<logger name="org.apache.zookeeper.ClientCnxn" level="INFO" additivity="false">
+		<appender-ref ref="heartbeatAppender" />
+	</logger>
+
+</configuration>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpWSUnitDAO">
+	
+	<delete id="deleteGomeGmpResUnits">
+		delete from gome_gmp_res_unit  where id is not null
+	</delete>
+	
+	<insert id="saveGomeGmpResUnitBO" parameterType="java.util.List">
+		INSERT INTO gome_gmp_res_unit(id,unit_name,unit_parent,unit_level) 
+		VALUES
+		<foreach collection="list" item="obj" index="index" separator="," >  
+		(#{obj.id},#{obj.unitName},#{obj.unitParent},#{obj.unitLevel})
+		</foreach>
+	</insert>
+</mapper>

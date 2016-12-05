@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResUserDAO">
+	
+	<!-- 根据条件匹配用户 -->
+	<select id="matchingUserByParms" parameterType="java.util.Map" resultType="GomeGmpResUserBO">
+		SELECT id, user_id,user_name,email 	FROM gome_gmp_res_user
+		WHERE (user_id like CONCAT('%',#{matchUserStr},'%') or user_name like CONCAT('%',#{matchUserStr},'%') or email like CONCAT('%',#{matchUserStr},'%'))
+        and user_id &lt;&gt; 'admin' 
+        <if test="matchType!=null and matchType!='' and matchType=='orgManager'">and org_id is null</if>
+	</select>
+	
+	<!--更新用户信息根据主键ID-->
+	<update id="updateGmpResUserById" parameterType="GomeGmpResUserBO">
+		UPDATE gome_gmp_res_user
+		SET update_time=now()
+		<if test="userId!=null and userId!=''">,user_id=#{userId}</if>
+		<if test="userName!=null and userName!=''">,user_name=#{userName}</if>
+		<if test="password!=null and password!=''">,password=#{password}</if>
+		<if test="unitId!=null and unitId!=''">,unit_id=#{unitId}</if>
+		<if test="orgId!=null and orgId!=''">,org_id=#{orgId}</if>
+		<if test="orgId==null or orgId==''">,org_id=null</if>
+		<if test="email!=null and email!=''">,email=#{email}</if>
+		<if test="lastLogtime!=null and lastLogtime!=''">,last_logtime=#{lastLogtime}</if>
+		<if test="remark!=null and remark!=''">,remark=#{remark}</if>
+		WHERE id=#{id}
+	</update>
+	
+	<!-- 清空用户表内的组织Id -->
+	<update id="clearGomeGmpResUserOrgId" parameterType="String">
+		UPDATE gome_gmp_res_user SET org_id = null WHERE org_id=#{orgId}
+	</update>
+		
+	<!-- 清空用户表内的组织Id -->
+    <update id="clearGomeGmpResUserOrgIdWithId" parameterType="Long">
+		UPDATE gome_gmp_res_user SET org_id = null WHERE id=#{id}
+	</update>
+	
+	<insert id="saveGomeGmpResUserBO" parameterType="GomeGmpResUserBO">
+		INSERT INTO
+		gome_gmp_res_user(id,user_id,user_name,password,unit_id,org_id,email,last_logtime,remark)
+		VALUES(#{id},#{userId},#{userName},#{password},#{unitId},#{orgId},#{email},#{lastLogtime},#{remark})
+	</insert>
+
+	<delete id="deleteGomeGmpResUserBOById" parameterType="long">
+		DELETE
+		FROM gome_gmp_res_user WHERE id=#{id}
+	</delete>
+	
+
+	<update id="updateGomeGmpResUserLastLoginTime" parameterType="GomeGmpResUserBO">
+		UPDATE gome_gmp_res_user
+		SET
+		last_logtime=#{lastLogtime}
+		WHERE user_id=#{userId}
+	</update>
+
+	<select id="findGomeGmpResUserBOById" parameterType="long" resultType="GomeGmpResUserBO">
+		SELECT
+		id,user_id,user_name,password,unit_id,org_id,email,last_logtime,remark
+		FROM gome_gmp_res_user
+		WHERE id=#{id}
+	</select>
+
+	<select id="userLogin" resultType="GomeGmpResUserBO">
+		SELECT
+		id,user_id,user_name,unit_id,org_id,email,last_logTime,remark,authority
+		FROM gome_gmp_res_user
+		WHERE user_id=#{0} LIMIT 0,1
+	</select>
+
+	<select id="testUserName" resultType="GomeGmpResUserBO">
+		SELECT
+		id,user_id,user_name,password,unit_id,org_id,email,last_logTime,remark
+		FROM gome_gmp_res_user
+		WHERE user_id=#{0} LIMIT 0,1
+	</select>
+
+	<select id="adminLogin" parameterType="String"
+		resultType="GomeGmpResUserBO">
+		SELECT
+		id,user_id,IFNULL(user_name,'') as user_name ,unit_id,org_id,IFNULL(email,'') as email,last_logTime,remark,authority
+		FROM gome_gmp_res_user
+		WHERE user_id=#{0} AND password = #{1} LIMIT 0,1
+	</select>
+	<update id="updateAdminPassword" parameterType="String">
+		UPDATE gome_gmp_res_user
+		SET password = #{0}
+		WHERE user_id= 'admin'
+	</update>
+	<select id="findGomeGmpResUser" parameterType="GomeGmpResUserBO" resultType="GomeGmpResUserBO">
+		SELECT id, user_id,user_name FROM gome_gmp_res_user
+		WHERE org_id like concat(#{orgId},'%')
+	</select>
+</mapper>

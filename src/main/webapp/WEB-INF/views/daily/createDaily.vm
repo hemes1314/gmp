@@ -1,0 +1,100 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/jquery/jquery.spinner.css"/>
+<link rel="stylesheet" href="${contextPath}/static/css/jquery/jquery-clockpicker.min.css"/> 
+<link rel="stylesheet" href="${contextPath}/static/css/business/createDaily.css"/>
+<style>
+.GomeProject_tab-content{
+	height:auto;
+	max-height:800px;
+	overflow-y:auto;
+}
+</style>
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+              #parse("project/projectHeader.vm")
+                <div class="GomeProject_tab-content">
+                    <div class="GomeProject_nav_title_split">
+                    	<span>写日报</span>
+                        <a class="button" href="javascript:void(0)" id='add_log'>添加</a>
+                     	<div class="clear"></div>
+					</div> 
+                    <div class="GomeProject_tab_content_main">
+                    	<div id="page"></div>
+                    </div>
+            <script id='ul_tpl' type='text/html'>
+         		<ul class="log_ul">
+                	<li class="condition">
+                        <span class="dailyTitle">类型：</span>
+                        <span>
+							<select class="project_select" name="project">
+                              #foreach($item in $gomeGmpResDailyVO.dailyTypeList)
+                					#if($!{item.itemId} == 3)    
+                	             		<option value="$!{item.itemName}" maxtime="8" project_type="$!{item.itemId}" >$!{item.itemName}</option>
+                					#else
+                						<option value="$!{item.itemName}" maxtime="2" project_type="$!{item.itemId}">$!{item.itemName}</option>
+                					#end
+                				#end
+                            </select>
+                        </span>
+                        <span class="dailyTitle">开始时间：</span>
+                		<span>
+                			<input type="text" class="laydate-icon" style="width:120px;"> 
+                        </span>
+                        <span class="dailyTitle">工时：</span>
+                		<span>
+                            <div data-trigger="spinner" class='spinner' style="line-height:50px;">
+                                <a href="javascript:;" data-spin="down" class='reduce'>&nbsp</a>
+                                    <input type="text" data-max="2" data-step="0.5" data-rule="currency" readonly>
+                                <a href="javascript:;" data-spin="up" class='add'>&nbsp</a>
+                            </div>
+                        </span>
+                        <span class="dailyTitle">结束时间：</span>
+                		<span>
+                             <input type="text" class="form-control" value="09:30" readonly style="padding-left:6px;width:50px;">
+                        </span>
+						<div style="display:inline-block;" class="relatedProBox">
+							<span class="dailyTitle">关联项目：</span>
+                    		<span>
+                                <select class="related_project_select" name="relateditems" >
+                                	<option value="" proId="">请选择</option>
+                                	#foreach($item in $gomeGmpResDailyVO.relateProjectList)
+                    					<option value="$!{item.title}" proId="$!{item.proId}">$!{item.title}</option>
+                    				#end
+                                </select>
+                            </span>
+						</div>
+						<div style="display:inline-block;display:none;" class="proTaskBox">
+    						<span class="dailyTitle">项目任务：</span>
+                    		<span>
+                                <select class="related_project_select" name="proTaskId" >
+    								<option value="" >请选择</option>
+                                </select>
+                            </span>
+                            <span class="dailyTitle">任务进度：</span>
+    						<span class="taskSchedule">
+                    			<input type="text" style="width:30px;height:23px;line-height:23px;" name="proTaskSchedule">%
+                            </span>
+						</div>
+                	</li>
+                    <li class='edit_li'>
+                        <div class="edit_box"  placeholder="请输入内容" contenteditable="true"></div>
+                    </li>
+                    <li class="li_op">
+                        <span class='save_button abled' style="color:#41B51E">保存</span>
+                        <span class='edit_button abled'>修改</span>
+                        <span class='del_button abled'>删除</span>
+                		<span class='edit_button_dis disabled'>修改</span>
+                		<span class='del_button_dis disabled'>删除</span>
+                    </li>
+                    <li class="opacity"></li>
+            	</ul>
+            </script>
+        </div>
+    </div>
+	</div>
+</div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/datepicker.min.js'></script>
+<script src='${contextPath}/static/js/jquery-clockpicker.min.js'></script>
+<script src="${contextPath}/static/js/write_log.js"></script>

@@ -1,0 +1,74 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/data.css" type="text/css"/>
+      <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab" style="position:relative">
+                <div class="GomeProject_tab_title">
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/dataManage/projectData'">项目资料</a></span>
+                    <span class="selected big_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/dataManage/needData'">敏捷需求资料</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/dataManage/otherData'">其他资料</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+	                <div class='GomeProject_nav_title'>
+<div class="breadCrumbHolder module">
+					    		<div  class="breadCrumb module">
+				                    <ul id="needDataCrumbUl">
+				                    
+				                    </ul>
+				            	</div>
+				            </div>
+	                     	<div class="clear"></div>
+	                </div>
+	                <div class='project_search_bar' style="height:72px;"><!-- 注意要-2 （减掉border的宽度）  -->
+		                <div class="form_div">
+		                	<div class="form-group">
+		                		<div class='data_title_'>
+				                    <input type="text" class="form-control" placeholder="请输入资料名称、项目名称" name="strSearch">
+				                    <input type='hidden' value='2' name='proType'>
+				                    <a href="javascript:void(0)" class="search_project searchBtn">查询
+				                    </a>
+	                    		</div>
+		                	</div>
+		                </div>
+                	</div>
+                    <ul class='data_accordion' style="margin-top:12px">
+                    </ul>
+                    <div id="page"></div>
+                </div>
+            </div>
+        </div>
+        <iframe name="downloadIframe" style="display: none;"></iframe>
+        <!-- 文件模板 -->
+    <script id="file_tpl" type="text/html">
+        <div class="dialog_file">
+            <p><span>项&nbsp&nbsp&nbsp&nbsp目:</span>{name}</p>
+            <div class="file_shade">
+                <p><span>资&nbsp&nbsp&nbsp&nbsp料:</span>
+                   <a href="javascript:void(0)" class="shade">上传文件</a>
+                </p>
+                <form action="/gmp/dataManage/uploadFile" method="post" id="file_upload" enctype="multipart/form-data" style="position:relative;top:-180px;">
+                    <input type="file" name="file" class="modal_file">
+                    <input name="proType" type="hidden" value="2" />
+                    <input name="proId" type="hidden" value="" />
+                </form>
+            </div>
+            <p><span>文件名:</span>
+                <input type="text" class="input_file_name">
+                <span class="file_error_tips"></span>
+            </p>
+        </div>
+    </script>
+        <!-- 文件模板结束 -->
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/dialog-min.js'></script>
+<script src='${contextPath}/static/js/jquery.cookie.js'></script>
+<script src='${contextPath}/static/js/jquery.form.js'></script>
+<script src='${contextPath}/static/js/data.js'></script>
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#needDataCrumbUl'));
+	// add for crumb end
+});
+</script>

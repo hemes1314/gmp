@@ -1,0 +1,68 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/business/scheduleCalendar.css"/>
+<link rel="stylesheet" href="${contextPath}/static/css/common/calender.css"/>
+     <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class="big_tab"><a href="${contextPath}/datas/toProTJ">总数据统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toOnlineTJ">上线分布统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toUnitTJ">各部门数据表现</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="location.href='${contextPath}/tj/status';return false;">状态分布</a></span>
+                    <span class='selected small_tab'><a href="javascript:void(0)">工时统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/todataList">提报需求统计</a></span>
+                </div>
+				<input type="hidden" id="dailyUserId" />
+                <div class="GomeProject_tab-content">
+                	<div class="GomeProject_nav_title">
+                		<div class="breadCrumbHolder module">
+						    <div class="breadCrumb module">
+						        <ul  id="scheduleStatisticsCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+                	</div>
+                    <!-- searchBar -->
+					<input type="hidden" value="$!{userOrgLevel}" id="userOrgLevel"/>
+                    <!-- searchbar end-->
+                    <div class='project_info_table work_hours_table  team_table ' style="margin-top:12px">
+                        <table id="hours_count_tab">
+                            <thead>
+                                <tr>
+                                    <td>姓名</td>
+                                   	<td>实际出勤天数</td>
+                                    <td>计划总工时</td>
+                                    <td>实际总工时</td>
+                                    <td>实际/计划</td>
+                                    <td>日平均工时</td>
+									<td>操作</td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+					<div id="userDailyHours_div" style="display:none;">
+                		#parse("scheduleStatistics/userDailyHoursSchedule.vm")
+                    </div>
+                    <script id='work_hours_tpl' type="text/html">
+                        <tr>
+                            <td class='td_01'>$userName$</td>
+                            <td>$weekdayCount$</td>
+                            <td>$planHoursCount$</td>
+                            <td>$hoursCount$</td>
+                            <td>$percent$%</td>
+                            <td>$avgHour$</td>
+							<td>
+                                <a href="javascript:void(0)" class="showNext" userTid="$id$" title="$userName$日报工时统计">查看日报</a>
+                            </td>
+                        </tr>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+	   
+</div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/userDailyHours.js'></script>
+<script src='${contextPath}/static/js/showWorkHoursContent.js'></script>

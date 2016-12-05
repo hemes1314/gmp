@@ -1,0 +1,113 @@
+.log_ul {
+    border: 1px solid #EBEBEB;
+    margin: 10px 10px;
+    background: #fff;
+    position: relative;
+    height:204px;
+    padding:0;
+    font-size:12px;
+}
+
+.log_ul .condition {
+    height: 86px;
+    margin: 0px 14px;
+    width: 1300px;
+}
+
+.log_ul .condition span{
+	display: inline-block;
+	padding:0;
+    margin-top:29px;
+    heigj
+}
+
+.log_ul li span select {
+    width: 100px;
+    height: 30px;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+    border-top: 1px solid #c0c0c0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.log_ul li.opacity{ position:absolute; width:100%;height:173px;z-index:3; top:0; left: 0;}
+
+.log_ul li .dailyTitle{
+	font-weight:bolder;
+	margin-left:7px;
+}
+
+.log_ul li .sb {
+    float: none;
+    top: 10px;
+    left: 11px;
+}
+
+.edit_li {
+    min-height: 80px;
+    max-height: 100px;
+}
+
+.edit_box {
+    min-height: 60px;
+    max-height: 70px;
+    _height: 60px;
+    margin:0 14px;
+    padding: 12px 6px;
+    outline: 0;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    _overflow-y: visible;
+    border: 1px solid #e8e8e8;
+}
+
+.log_ul .li_op .abled {
+	font-size: 12px;
+    float: right;
+    display: inline-block;
+    width: 66px;
+    height:30px;
+    line-height: 28px;
+    text-align: center;
+    margin: 0 14px;
+    cursor:pointer;
+}
+
+.log_ul .li_op .disabled{
+	font-size: 12px;
+    float: right;
+    display: inline-block;
+    width: 66px;
+    height:30px;
+    line-height: 28px;
+    text-align: center;
+    color:#B3AFAF;
+    margin: 0 14px;
+}
+
+.del_button {
+    background: url(../../images/del_icon.png) no-repeat;
+    background-position: 5px 7px;
+}
+
+.del_button_dis {
+    background: url(../../images/del_icon.png) no-repeat;
+    background-position: 5px 7px;
+}
+
+.edit_button {
+    background: url(../../images/edit_icon.png) no-repeat;
+    background-position: 5px 7px;
+}
+
+.edit_button_dis {
+    background: url(../../images/edit_icon.png) no-repeat;
+    background-position: 5px 7px;
+}
+
+.save_button {
+    background: url(../../images/save_icon.png) no-repeat;
+    background-position: 5px 7px;
+}

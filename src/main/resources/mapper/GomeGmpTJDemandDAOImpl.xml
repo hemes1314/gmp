@@ -1,0 +1,1592 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpTJDemandDAO">
+	<select id="tjDemand" parameterType="GomeGmpResNeedVO"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		o.org_id as orgId,
+		o.org_name AS
+		orgName,
+		COUNT(1) AS
+		tbNeed,
+		SUM(CASE t.states WHEN
+		3 THEN
+		1 ELSE
+		0 END) AS
+		slNeed,
+		SUM(CASE
+		t.states
+		WHEN 2 THEN 1 ELSE 0
+		END) AS
+		juNeed,
+		SUM(CASE
+		t.states
+		WHEN 4
+		THEN 1
+		ELSE
+		0
+		END) AS dslNeed,
+		SUM(CASE
+		t.states
+		WHEN 1 THEN
+		1 ELSE
+		0 END)
+		AS
+		wcNeed,
+		sum(CASE WHEN
+		(
+		SELECT
+		a.states
+		FROM
+		gome_gmp_res_need a
+		where
+		DATE_SUB(CURDATE(),
+		INTERVAL 30
+		DAY)
+		&lt;=
+		date(a.create_time)
+		AND
+		a.create_time
+		&lt;=NOW() AND
+		a.need_id=t.need_id )=1
+		THEN 1 ELSE 0 END
+		)
+		as yNeed
+		FROM
+		gome_gmp_res_need
+		t,gome_gmp_res_user b,
+		gome_gmp_res_org o
+		WHERE
+		t.create_user=b.id
+		and length(b.org_id) >= 4
+		AND o.org_id=left(b.org_id,4)
+		<if test="startTimes != null">  
+			<![CDATA[
+        		AND DATE_FORMAT(t.create_time,'%Y-%m-%d') >= #{startTimes}
+        	]]>
+		</if>
+		<if test="endTimes != null">  
+			<![CDATA[
+				AND DATE_FORMAT(t.create_time,'%Y-%m-%d') <= #{endTimes}
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o
+			WHERE u.org_id = o.org_id AND u.id = t.create_user and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		GROUP BY
+		orgName
+		
+		
+	</select>
+
+
+	<select id="tjPeopleInfo" parameterType="GomeGmpResNeedVO"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		t.create_user,
+		b.user_name AS
+		userName,
+		COUNT(1) AS
+		tbNeed,
+		SUM(CASE
+		t.states WHEN
+		3 THEN
+		1 ELSE
+		0 END) AS
+		slNeed,
+		SUM(CASE
+		t.states
+		WHEN 2 THEN 1
+		ELSE 0
+		END) AS
+		juNeed,
+		SUM(CASE
+		t.states
+		WHEN 4
+		THEN 1
+		ELSE
+		0
+		END) AS dslNeed,
+		SUM(CASE
+		t.states
+		WHEN 1 THEN
+		1 ELSE
+		0 END)
+		AS
+		wcNeed,
+		sum(CASE WHEN
+		(
+		SELECT
+		a.states
+		FROM
+		gome_gmp_res_need a
+		where
+		DATE_SUB(CURDATE(),
+		INTERVAL 30
+		DAY)
+		&lt;=
+		date(a.create_time)
+		AND
+		a.create_time
+		&lt;=NOW() AND
+		a.need_id=t.need_id
+		)=1
+		THEN 1 ELSE 0 END
+		)
+		as yNeed
+		FROM
+		gome_gmp_res_need
+		t,gome_gmp_res_user
+		b,gome_gmp_res_org o
+		WHERE
+		t.create_user=b.id
+		and length(b.org_id) >= 4
+		AND o.org_id=left(b.org_id,4)
+	
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND DATE_FORMAT(t.create_time,'%Y-%m-%d') >= STR_TO_DATE(#{startTime},'%Y-%m-%d')
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND DATE_FORMAT(t.create_time,'%Y-%m-%d') <= STR_TO_DATE(#{endTime},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o
+			WHERE u.org_id = o.org_id AND u.id = t.create_user and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		GROUP BY
+		userName
+	</select>
+
+
+	<select id="tjPeopleList" parameterType="GomeGmpResNeedVO"
+		resultType="GomeGmpResNeedVO">
+		SELECT
+		need_id,
+		title,
+		(select item_name from
+		gome_gmp_dict_item
+		where
+		group_type
+		=
+		'priorityId' and item_id =
+		n.priority_id)
+		priority_name,
+		create_time,
+		plan_time,
+		(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'status' and
+		item_id = n.states)
+		statusName,create_user
+		FROM
+		gome_gmp_res_need n,gome_gmp_res_user b,
+		gome_gmp_res_org o
+		WHERE
+		n.create_user=b.id
+		and length(b.org_id) >= 4
+		AND o.org_id=left(b.org_id,4)
+
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND DATE_FORMAT(n.create_time,'%Y-%m-%d') >= STR_TO_DATE(#{startTime},'%Y-%m-%d')
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND DATE_FORMAT(n.create_time,'%Y-%m-%d') <= STR_TO_DATE(#{endTime},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o
+			WHERE u.org_id = o.org_id AND u.id = n.create_user and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		<if test="createUser != null ">  
+			<![CDATA[
+		and n.create_user=#{createUser}
+			]]>
+		</if>
+	</select>
+
+
+
+	<select id="proTJ" parameterType="GomeGmpTJDemandVO" resultType="java.util.LinkedHashMap">
+		SELECT DISTINCT(
+				SELECT 
+					COUNT(schedule_id) 
+				FROM 
+					gome_gmp_res_project p, gome_gmp_res_user b,( SELECT LEFT(o.org_id, 4)org_id_bm, o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4 ) o
+				WHERE 
+					p.is_commit = 1 AND p.bp_id = b.id AND b.org_id = o.org_id
+			)AS sums,
+			(
+				SELECT 
+					COUNT(schedule_id)
+				FROM
+					gome_gmp_res_project p,gome_gmp_res_user b,( SELECT LEFT(o.org_id,4)org_id_bm, o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4 ) o
+				WHERE
+					p.is_commit = 1	AND p.bp_id = b.id AND b.org_id = o.org_id AND	p.schedule_id NOT IN(0, 5, 7, 9, 10, 11) and p.status_id=2
+			)AS jxz,
+			( 
+				SELECT 
+					COUNT(schedule_id) 
+				FROM
+				 	gome_gmp_res_project p,gome_gmp_res_user b, ( SELECT LEFT(o.org_id, 4)org_id_bm,o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4 ) o
+				WHERE 
+					p.is_commit = 1	AND p.bp_id = b.id	AND b.org_id = o.org_id	AND p.schedule_id =5 
+			)AS ysx,
+			(
+				SELECT
+				 	COUNT(schedule_id)
+				FROM
+					gome_gmp_res_project p,gome_gmp_res_user b, ( SELECT LEFT(o.org_id, 4)org_id_bm,o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4	) o
+				WHERE 
+					p.is_commit = 1	AND p.bp_id = b.id AND b.org_id = o.org_id AND p.schedule_id =3
+			)AS fx,
+			(
+				SELECT
+					COUNT(schedule_id)
+				FROM
+					gome_gmp_res_project p,gome_gmp_res_user b,( SELECT	LEFT(o.org_id,4)org_id_bm,o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4 ) o
+				WHERE
+					p.is_commit = 1	AND p.bp_id = b.id AND b.org_id = o.org_id AND p.schedule_id =4 
+			)AS yq,
+			(
+				SELECT
+					COUNT(schedule_id)
+				FROM
+					gome_gmp_res_project p,gome_gmp_res_user b,( SELECT LEFT(o.org_id,4)org_id_bm,o.* FROM gome_gmp_res_org o WHERE	LENGTH(o.org_id)>= 4 ) o
+				WHERE
+					p.is_commit = 1 AND p.bp_id = b.id AND b.org_id = o.org_id AND p.schedule_id =9
+			)AS zt,
+			(
+				SELECT
+					COUNT(schedule_id)
+				FROM
+					gome_gmp_res_project p,gome_gmp_res_user b,( SELECT LEFT(o.org_id,4)org_id_bm,o.* FROM gome_gmp_res_org o WHERE	LENGTH(o.org_id)>= 4) o
+				WHERE
+					p.is_commit = 1 AND p.bp_id = b.id AND b.org_id = o.org_id AND p.schedule_id = 0 and p.status_id!=3
+			)AS wqd
+		from
+			gome_gmp_res_project p
+		WHERE 
+			DATE_FORMAT(p.update_time,"%Y")= #{year} and p.is_commit=1
+	</select>
+
+	<select id="toProTJ" parameterType="GomeGmpTJDemandVO" resultType="java.lang.String">
+		SELECT year	from
+		(
+			select x.pro_id, max(year) year from
+			 ( select DATE_FORMAT(t.create_time,'%Y') year,pro_id from gome_gmp_res_project t where t.is_commit=1) x
+			group by x.pro_id
+		) d
+		<where>
+			<if test="orgIds != null">
+				AND EXISTS 
+				(
+					SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o
+					WHERE 
+					u.org_id = o.org_id	and
+					p.pro_id = d.pro_id and
+					<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")"> 
+						 o.org_id LIKE CONCAT(#{item},'%')
+					</foreach>
+				)
+			</if>
+		</where>
+		group by year
+	</select>
+
+	<select id='proTJNum' parameterType="GomeGmpTJDemandVO" resultType="GomeGmpTJDemandVO">
+		SELECT
+			p.pro_id,
+			p.title,
+			(select item_name from gome_gmp_dict_item where group_type = 'statusId' and item_id = p.status_id) status_name,
+			(select item_name from gome_gmp_dict_item where group_type = 'priorityId' and item_id = p.priority_id) priority_name,
+			(select item_name from gome_gmp_dict_item where group_type = 'scheduleId' and item_id = p.schedule_id) schedule_name,
+			(select item_name from gome_gmp_dict_item where	group_type = 'actualize' and item_id = p.actualize)	actualize_name,
+			CONCAT(IFNULL(( select round(sum(work_period/(select sum(k.work_period) sum_period from gome_gmp_res_task k where k.pro_id = s.pro_id)*s.`schedule`/100)*100,1)	from gome_gmp_res_task s where s.pro_id = p.pro_id),0),'%') percentage,
+			p.plan_time,
+			(select user_name from gome_gmp_res_user where id = p.bp_id) bp_name
+		FROM
+			gome_gmp_res_project p,gome_gmp_res_user b,(SELECT LEFT(o.org_id,4)org_id_bm, o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4) o
+		WHERE
+		1 = 1
+		AND p.is_commit = 1
+		AND p.bp_id = b.id
+		AND b.org_id = o.org_id
+	 	and DATE_FORMAT(p.update_time,"%Y")= #{year}
+		group BY p.pro_id
+	</select>
+
+	<select id='jxzTJNum' parameterType="GomeGmpTJDemandVO" resultType="GomeGmpTJDemandVO">
+		SELECT
+			p.pro_id,p.title,
+			(select item_name from gome_gmp_dict_item where group_type = 'statusId' and item_id = p.status_id) status_name,
+			(select item_name from gome_gmp_dict_item where group_type = 'priorityId' and item_id = p.priority_id) priority_name,
+			(select item_name from gome_gmp_dict_item where group_type = 'scheduleId' and item_id =	p.schedule_id) schedule_name,
+			(select item_name from gome_gmp_dict_item where group_type = 'actualize' and item_id = p.actualize) actualize_name,
+			CONCAT(IFNULL(( select round(sum(work_period/(select sum(k.work_period) sum_period from gome_gmp_res_task k where k.pro_id = s.pro_id)*s.`schedule`/100)*100,1) from gome_gmp_res_task s where s.pro_id = p.pro_id),0),'%') percentage,
+			p.plan_time,
+			(select user_name from gome_gmp_res_user where id = p.bp_id) bp_name
+		FROM
+			gome_gmp_res_project p,gome_gmp_res_user b,(SELECT LEFT(o.org_id,4)org_id_bm, o.* FROM gome_gmp_res_org o WHERE	LENGTH(o.org_id)>= 4 ) o
+		WHERE
+			p.is_commit = 1	AND p.bp_id = b.id AND b.org_id = o.org_id AND p.schedule_id NOT IN(0, 5, 7, 9, 10, 11) and p.status_id=2 and DATE_FORMAT(p.update_time,"%Y")= #{year}
+		GROUP BY p.pro_id
+	</select>
+	
+	<select id='ztTJNum' parameterType="GomeGmpTJDemandVO" resultType="GomeGmpTJDemandVO">
+		SELECT
+			p.pro_id,p.title,
+			(select item_name from gome_gmp_dict_item where group_type ='statusId' and item_id = p.status_id) status_name,
+			(select	item_name from gome_gmp_dict_item where group_type = 'priorityId' and item_id = p.priority_id) priority_name,
+			(select item_name from gome_gmp_dict_item where group_type = 'scheduleId' and item_id = p.schedule_id) schedule_name,
+			(select item_name from gome_gmp_dict_item where	group_type = 'actualize' and item_id = p.actualize) actualize_name,
+			CONCAT(IFNULL(( select round(sum(work_period/(select sum(k.work_period) sum_period from gome_gmp_res_task k where k.pro_id = s.pro_id)*s.`schedule`/100)*100,1) from gome_gmp_res_task s where s.pro_id = p.pro_id),0),'%') percentage,
+			p.plan_time,
+			(select user_name from gome_gmp_res_user where id = p.bp_id) bp_name 
+		FROM
+			gome_gmp_res_project p,gome_gmp_res_user b,( SELECT LEFT(o.org_id,4)org_id_bm, o.* FROM gome_gmp_res_org o WHERE LENGTH(o.org_id)>= 4 ) o
+		<where>
+			p.bp_id = b.id AND b.org_id = o.org_id 
+			<if test="year !=null and year!='' ">
+				and DATE_FORMAT(p.update_time,"%Y")= #{year}
+			</if>
+			<if test=" scheduleId !=null ">
+				and p.schedule_id=#{scheduleId}
+				<if test=" scheduleId == 0 ">
+					and p.status_id!=3
+				</if>
+			</if>
+			and p.is_commit = 1
+		</where>
+		group by p.pro_id
+	</select>
+
+	<select id="bzProTJ" parameterType="GomeGmpTJDemandVO"
+		resultType="java.util.LinkedHashMap">
+		select
+		(SELECT count(1) FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND p.bp_id=u.id AND
+		u.org_id=o.org_id
+		AND p.schedule_id=5
+		AND p.is_commit=1
+		AND
+		p.update_time
+		&gt;=#{startTime}
+		AND
+		p.update_time
+		&lt;=#{endTime}
+		)
+		ysx,
+		(SELECT count(1)
+		from
+		gome_gmp_res_project
+		a,gome_gmp_res_org o,gome_gmp_res_user u
+		where
+		1=1
+		and
+		a.bp_id=u.id AND
+		u.org_id=o.org_id
+		and
+		a.schedule_id
+		not
+		in
+		(0,5,7,9,10,11)
+		AND
+		a.is_commit=1
+		AND
+		a.update_time
+		&gt;=#{startTime}
+		AND
+		a.update_time
+		&lt;=#{endTime}
+		)
+		jxz
+		,
+		(
+		SELECT count(1)
+		from
+		gome_gmp_res_project
+		b,gome_gmp_res_org
+		o,gome_gmp_res_user u
+		where
+		1=1
+		AND b.bp_id=u.id and
+		o.org_id=u.org_id
+		AND
+		b.is_commit=1
+		AND
+		b.update_time
+		&gt;=#{startTime}
+		AND
+		b.update_time
+		&lt;=#{endTime}
+		) xz
+		,
+		(SELECT
+		count(1)
+		from
+		gome_gmp_res_project
+		c,gome_gmp_res_org o,gome_gmp_res_user u
+		where
+		1=1
+		AND c.bp_id=u.id and
+		o.org_id=u.org_id
+		AND
+		c.schedule_id
+		=3
+		AND
+		c.is_commit=1
+		AND
+		c.update_time
+		&gt;=#{startTime}
+		AND
+		c.update_time
+		&lt;=#{endTime}
+		) fx
+		,
+		(SELECT
+		count(1)
+		FROM
+		gome_gmp_res_project
+		d,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND d.bp_id=u.id and
+		o.org_id=u.org_id
+		AND
+		d.update_time!=d.create_time
+		AND
+		d.schedule_id=9
+		AND
+		d.is_commit=1
+		AND
+		d.update_time &gt;=#{startTime}
+		AND
+		d.update_time
+		&lt;=#{endTime}
+		)
+		zt
+		,
+		(select count(1) from
+		gome_gmp_res_project
+		e,gome_gmp_res_org
+		o,gome_gmp_res_user u
+		where
+		1=1
+		AND e.bp_id=u.id and
+		o.org_id=u.org_id
+		AND
+		date_add(
+		CURDATE(),
+		INTERVAL
+		7 - DAYOFWEEK(
+		CURDATE()
+		)+ 2
+		DAY
+		)
+		&gt;=DATE_FORMAT(e.update_time,'%Y-%m-%d')
+		AND
+		date_add(
+		CURDATE(),
+		INTERVAL
+		7 - DAYOFWEEK(
+		CURDATE()
+		)+ 2 + 6
+		DAY
+		)
+		&lt;=DATE_FORMAT(e.update_time,'%Y-%m-%d')
+		AND
+		e.is_commit=1
+		)
+		xzjh
+		from
+		DUAL
+	</select>
+
+	<select id='bzProTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id =
+		p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where
+		group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type =
+		'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name
+		from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id =
+		p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select
+		round(sum(work_period/(select sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND p.bp_id=u.id and
+		u.org_id=o.org_id
+		AND
+		p.schedule_id
+		=#{scheduleId}
+		AND p.is_commit=1
+		AND
+		p.update_time
+		&gt;=#{startTime}
+		AND
+		p.update_time
+		&lt;=#{endTime}
+		GROUP BY
+		p.pro_id
+	</select>
+
+
+	<select id='bzjxzTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id =
+		p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where
+		group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type =
+		'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name
+		from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id =
+		p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select
+		round(sum(work_period/(select sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND p.bp_id=u.id and
+		u.org_id=o.org_id
+		AND
+		p.schedule_id
+		not
+		in
+		(0,5,7,9,10,11)
+		AND p.is_commit=1
+		AND
+		p.update_time &gt;=#{startTime}
+		AND
+		p.update_time &lt;=#{endTime}
+		group
+		by p.pro_id
+	</select>
+
+
+	<select id='bzXzTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		select
+		p.pro_id,p.title,(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id =
+		p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where
+		group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type =
+		'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name
+		from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id =
+		p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select
+		round(sum(work_period/(select sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND p.bp_id=u.id and
+		u.org_id=o.org_id
+		AND p.is_commit=1
+		AND
+		p.update_time
+		&gt;=#{startTime}
+		AND
+		p.update_time &lt;=#{endTime}
+		group by
+		p.pro_id
+	</select>
+
+
+	<select id='bzFxTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id =
+		p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where
+		group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type =
+		'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name
+		from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id =
+		p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select
+		round(sum(work_period/(select sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND p.bp_id=u.id and
+		u.org_id=o.org_id
+		AND
+		p.schedule_id
+		=3
+		AND
+		p.is_commit=1
+		AND
+		p.update_time
+		&gt;=#{startTime}
+		AND
+		p.update_time
+		&lt;=#{endTime}
+		group
+		by p.pro_id
+	</select>
+
+
+	<select id='xzJhsxTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		select
+		p.pro_id,p.title,(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id =
+		p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where
+		group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type =
+		'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name
+		from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id =
+		p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select
+		round(sum(work_period/(select sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_org o,gome_gmp_res_user u
+		WHERE
+		1=1
+		AND p.bp_id=u.id and
+		u.org_id=o.org_id
+		AND p.update_time
+		&gt;=#{startTime}
+		AND
+		p.update_time
+		&lt;=#{endTime}
+		AND
+		p.is_commit=1
+		group
+		by p.pro_id
+	</select>
+
+
+
+	<select id="ztProTJ" parameterType="GomeGmpTJDemandVO"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		i.item_name name,
+		count(p.schedule_id) num
+		FROM
+		gome_gmp_res_project p, GOME_GMP_DICT_ITEM i
+		WHERE i.group_type =
+		'scheduleId'
+		AND i.item_id = p.schedule_id
+		and p.status_id=2
+		GROUP BY
+		p.schedule_id
+		ORDER BY p.schedule_id
+	</select>
+
+
+
+
+	<select id="bzZtTJNum" parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from
+		gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id =
+		p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where
+		group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type =
+		'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name
+		from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id =
+		p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select
+		round(sum(work_period/(select sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project p
+		where
+		1=1
+		and p.schedule_id=#{scheduleId}
+		and
+		p.status_id=2
+	</select>
+
+
+
+
+
+
+
+
+
+	<select id="unitProTJ" parameterType="GomeGmpTJDemandVO"
+		resultType="java.util.LinkedHashMap">
+		select orgId,org_name,
+		sum(jxz) AS jxz,
+		sum(ysx) as ysx,
+		sum(fx) as fx,
+		sum(yq) as yq
+		FROM
+		(SELECT
+		o.org_id as orgId,
+		o.org_name,
+		(
+		SELECT
+		count(1)
+		FROM
+		gome_gmp_res_project p
+		WHERE
+		p.schedule_id NOT IN(0,
+		5, 7, 9, 10, 11)
+		AND p.pro_id = pro.pro_id
+		)jxz,
+		(
+		SELECT
+		count(1)
+		FROM
+		gome_gmp_res_project
+		p,
+		gome_gmp_res_org o,
+		gome_gmp_res_user u
+		WHERE
+		1 =
+		1
+		AND p.bp_id = u.id
+		AND u.org_id = o.org_id
+		AND p.schedule_id = 5
+		AND
+		p.pro_id = pro.pro_id
+		)ysx,
+		(
+		SELECT
+		count(1)
+		FROM
+		gome_gmp_res_project c,
+		gome_gmp_res_org o,
+		gome_gmp_res_user u
+		WHERE
+		1 = 1
+		AND c.bp_id = u.id
+		AND
+		o.org_id = u.org_id
+		AND c.schedule_id = 3
+		AND c.pro_id = pro.pro_id
+		)fx,
+		(
+		SELECT
+		count(1)
+		FROM
+		gome_gmp_res_project c,
+		gome_gmp_res_org o,
+		gome_gmp_res_user u
+		WHERE
+		1 =
+		1
+		AND c.bp_id = u.id
+		AND o.org_id = u.org_id
+		AND c.schedule_id =4
+		AND
+		c.pro_id = pro.pro_id
+		)yq
+		FROM
+		gome_gmp_res_project pro,
+		gome_gmp_res_user b,
+		gome_gmp_res_org o
+		WHERE
+		pro.bp_id = b.id
+		and length(b.org_id) >= 4
+		AND o.org_id=left(b.org_id,4)
+		and
+		pro.is_commit=1
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND pro.update_time >= #{startTime}
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND pro.update_time <= #{endTime}
+			]]>
+		</if>
+		)t
+		WHERE t.jxz!=0 OR t.ysx!=0 or t.fx!=0 or t.yq!=0
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="unitTJ" parameterType="GomeGmpTJDemandVO"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		o.org_id as orgId,
+		o.org_name,
+		count(1) num
+		FROM
+		(
+		SELECT
+		p.pro_id,
+		p.schedule_id,
+		p.update_time
+		FROM
+		gome_gmp_res_project p
+		UNION ALL
+		SELECT
+		pro_id,
+		13 schedule_id,
+		update_time
+		FROM
+		gome_gmp_res_project
+		) tj,
+		gome_gmp_res_user
+		u,
+		gome_gmp_res_project p,
+		gome_gmp_res_org o
+		WHERE
+		1=1
+		and
+		p.bp_id = u.id
+		and length(u.org_id) >= 4
+		AND o.org_id=left(u.org_id,4)
+		AND tj.pro_id=p.pro_id
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND tj.update_time >= #{startTime}
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND tj.update_time <= #{endTime}
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o,
+			gome_gmp_res_project p
+			WHERE u.org_id = o.org_id AND u.id =
+			p.bp_id and
+			p.pro_id=tj.pro_id and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		AND
+		tj.schedule_id=#{scheduleId}
+		AND p.pro_type = #{proType}
+		AND
+		p.is_commit=1
+		group By o.org_name
+	</select>
+
+
+
+	<select id="unitTJNum" parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id = p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type = 'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id = p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select round(sum(work_period/(select
+		sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_org
+		o,
+		gome_gmp_res_user u,
+		gome_gmp_res_project p,
+		(
+		SELECT
+		p.pro_id,
+		p.schedule_id,
+		p.update_time
+		FROM
+		gome_gmp_res_project p
+		UNION ALL
+		SELECT
+		pro_id,
+		13 schedule_id,
+		update_time
+		FROM
+		gome_gmp_res_project
+		) tj
+		WHERE
+		1=1
+		and
+		o.org_id=u.org_id
+		AND
+		u.id=p.bp_id
+		and tj.pro_id=p.pro_id
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND tj.update_time >= #{startTime}
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND tj.update_time <= #{endTime}
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o,
+			gome_gmp_res_project p
+			WHERE u.org_id = o.org_id AND u.id =
+			p.bp_id and
+			p.pro_id=tj.pro_id and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		AND
+		tj.schedule_id=#{scheduleId}
+		AND p.pro_type=#{proType}
+		and
+		p.is_commit=1
+	</select>
+
+
+
+
+	<select id="onlineTJ" parameterType="GomeGmpTJDemandVO"
+		resultType="java.util.LinkedHashMap">
+		select onlineMonth,count(1) cnt,onlineYear from
+		(
+		SELECT
+		DATE_FORMAT(t.update_time, '%Y-%m') onlineMonth,
+		DATE_FORMAT(t.update_time, '%Y') onlineYear,
+		pro_id,bp_id,pro_type
+		FROM
+		gome_gmp_res_project t
+		WHERE
+		t.is_commit=1 and t.schedule_id = 5
+		) d,
+		gome_gmp_res_user b,
+	    gome_gmp_res_org o
+		WHERE
+		d.bp_id = b.id
+		and length(b.org_id) >= 4
+		AND o.org_id=left(b.org_id,4)
+		<if test="orgIds != null and orgIds.length > 0">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org
+			o,gome_gmp_res_project p WHERE u.org_id = o.org_id AND u.id =
+			p.bp_id
+			and
+			p.pro_id=d.pro_id and p.pro_type=#{proType} and
+			<foreach collection="orgIds" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		and
+		onlineYear = #{year}
+		and d.pro_type=#{proType}
+		group by d.onlineMonth
+		order by d.onlineMonth
+	</select>
+
+
+	<select id='unitYsxTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id = p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type = 'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id = p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select round(sum(work_period/(select
+		sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		from
+		gome_gmp_res_project
+		p,
+		gome_gmp_res_org o,
+		gome_gmp_res_user u
+		WHERE 1=1
+		AND
+		p.bp_id=u.id and
+		u.org_id= o.org_id
+		and p.schedule_id=5
+		and
+		p.is_commit=1
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND p.update_time >= #{startTime}
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND p.update_time <= #{endTime}
+			]]>
+		</if>
+		<if test="orgId != null and orgId.length > 0 ">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o
+			WHERE u.org_id = o.org_id AND u.id = p.bp_id
+			and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		and
+		p.schedule_id=#{scheduleId}
+		GROUP BY
+		o.org_name,p.pro_id
+
+	</select>
+
+	<select id='unitJxzTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id = p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type = 'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id = p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select round(sum(work_period/(select
+		sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,
+		gome_gmp_res_user b,
+		gome_gmp_res_org o
+		WHERE
+		1=1
+		AND
+		p.bp_id=b.id
+		AND
+		b.org_id=o.org_id
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND p.update_time >= #{startTime}
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND p.update_time <= #{endTime}
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o
+			WHERE u.org_id = o.org_id AND u.id = p.bp_id AND
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		and p.schedule_id not in(0,5,7,9,10,11)
+		and p.is_commit=1
+	</select>
+
+	<select id='onlineTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpResProjectVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id = p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type = 'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id = p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select round(sum(work_period/(select
+		sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		from
+		(
+		SELECT
+		DATE_FORMAT(t.update_time, '%Y-%m') onlineMonth,
+		DATE_FORMAT(t.update_time, '%Y') onlineYear,
+		pro_id,pro_type
+		FROM
+		gome_gmp_res_project t
+		WHERE
+		t.schedule_id = 5 and t.is_commit=1
+		)
+		pr,gome_gmp_res_project p,
+		gome_gmp_res_user b,
+		gome_gmp_res_org o
+		WHERE
+		p.pro_id=pr.pro_id
+		and p.bp_id=b.id
+		and length(b.org_id) >= 4
+		AND o.org_id=left(b.org_id,4)
+		<if test="orgId != null and orgId.length > 0">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org
+			o,gome_gmp_res_project p WHERE u.org_id = o.org_id AND u.id =
+			p.bp_id
+			and
+			p.pro_id=pr.pro_id and p.pro_type=#{proType} and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		AND pr.onlineMonth=#{month}
+		AND
+		pr.pro_type=#{proType}
+		GROUP
+		BY
+		pr.pro_id
+	</select>
+
+	<select id="onlineYear" parameterType="GomeGmpTJDemandVO"
+		resultType="java.lang.String">
+
+		select DISTINCT(year) AS year from
+		(
+
+		SELECT
+		DATE_FORMAT(t.update_time, '%Y-%m') month,
+		DATE_FORMAT(t.update_time,
+		'%Y') year,
+		pro_id
+		FROM
+		gome_gmp_res_project t
+		WHERE
+		t.schedule_id = 5
+		AND
+		t.is_commit=1
+		) d
+		where EXISTS
+		(SELECT u.id FROM
+		gome_gmp_res_user
+		u,gome_gmp_res_org
+		o,gome_gmp_res_project p WHERE
+		u.org_id = o.org_id
+		AND u.id = p.bp_id
+		and p.pro_id=d.pro_id and
+		o.org_id LIKE
+		CONCAT('0','%'))
+		group by month
+	</select>
+
+	<select id="onlineTJExport" parameterType="GomeGmpTJDemandVO"
+		resultType="java.util.LinkedHashMap">
+		select onlineMonth,count(d.pro_id) cnt,onlineYear from
+		gome_gmp_res_project p,
+		(
+		select
+		CONCAT(DATE_FORMAT(t.create_time,
+		'%m'),'月')
+		onlineMonth,
+		DATE_FORMAT(t.create_time, '%Y') onlineYear,
+		pro_id
+		FROM
+		gome_gmp_res_project t
+		WHERE
+		t.schedule_id = 5
+		and
+		t.is_commit=1
+		) d
+		where
+		1=1
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org
+			o,gome_gmp_res_project p WHERE u.org_id = o.org_id AND u.id =
+			p.bp_id
+			and
+			p.pro_id=d.pro_id and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		and
+		onlineYear = #{year}
+		and p.pro_id=d.pro_id
+		and p.pro_type=#{proType}
+		group by d.onlineMonth
+		order by d.onlineMonth
+	</select>
+
+	<select id='unitztTJNum' parameterType="GomeGmpTJDemandVO"
+		resultType="GomeGmpTJDemandVO">
+		SELECT
+		p.pro_id,p.title,(select item_name from gome_gmp_dict_item where
+		group_type =
+		'statusId' and
+		item_id = p.status_id) status_name,
+		(select
+		item_name from
+		gome_gmp_dict_item where group_type = 'priorityId' and
+		item_id =
+		p.priority_id) priority_name,
+		(select item_name from
+		gome_gmp_dict_item
+		where group_type = 'scheduleId' and
+		item_id =
+		p.schedule_id)
+		schedule_name,
+		(select item_name from gome_gmp_dict_item
+		where
+		group_type = 'actualize' and
+		item_id = p.actualize)
+		actualize_name,
+		CONCAT(IFNULL((
+		select round(sum(work_period/(select
+		sum(k.work_period) sum_period from
+		gome_gmp_res_task k where k.pro_id =
+		s.pro_id)*s.`schedule`/100)*100,1)
+		from gome_gmp_res_task s where
+		s.pro_id = p.pro_id
+		),0),'%') percentage,
+		p.plan_time,
+		(select user_name
+		from
+		gome_gmp_res_user where id =
+		p.bp_id) bp_name
+		FROM
+		gome_gmp_res_project
+		p,gome_gmp_res_user u,gome_gmp_res_org o
+		WHERE 1 =
+		1
+		and p.bp_id=u.id
+		and u.org_id=o.org_id
+		<if test="startTime != null">  
+			<![CDATA[
+        		AND p.update_time >= #{startTime}
+        	]]>
+		</if>
+		<if test="endTime != null">  
+			<![CDATA[
+				AND p.update_time <= #{endTime}
+			]]>
+		</if>
+		<if test="orgId != null">
+			AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org
+			o
+			WHERE u.org_id = o.org_id AND u.id =
+			p.bp_id
+			and
+			<foreach collection="orgId" item="item" index="index" open="("
+				separator="or" close=")">
+				o.org_id LIKE CONCAT(#{item},'%')
+			</foreach>
+			)
+		</if>
+		and
+		p.schedule_id=#{scheduleId}
+		and p.is_commit=1
+	</select>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResNeedDAO">
+
+	<select id="findGomeGmpResNeedBO" parameterType="GomeGmpResNeedVO" resultType="GomeGmpResNeedVO">
+	 SELECT 	 
+	    n.need_id,
+		n.title,
+		(select p.pro_id from gome_gmp_res_project p where p.demand_id = n.need_id limit 1) proId,
+		(select p.title from gome_gmp_res_project p where p.demand_id = n.need_id limit 1) proTitle,
+		n.unit_bs_id,
+		(select org_name from gome_gmp_res_org where org_id = n.unit_bs_id) unitBsName,
+		key_user_id,
+		(select user_name from gome_gmp_res_user where id = n.key_user_id) keyUser,
+		priority_id,
+		(select item_name from gome_gmp_dict_item where group_type = 'priorityId' and item_id = n.priority_id) priorityName,
+		pay_user_id,
+		(select user_name from gome_gmp_res_user where id = n.pay_user_id) payUserName,
+		pre_pay_user_id,
+		post_time,plan_time AS planTime,
+		create_time,
+		oa_id AS oaId,
+        (select item_name from gome_gmp_dict_item where group_type = 'status' and item_id = n.states) statesName,
+		states,
+		create_user,
+    	(select user_name from gome_gmp_res_user where id = n.create_user) createUserName,
+	    n.pay_unit_id,
+		(select org_name from gome_gmp_res_org where org_id = n.pay_unit_id) payUnitName,
+		type,deny,reason,
+        pro_remark as proRemark,
+        function_desc AS functionDesc,
+        need_target AS needTarget
+		FROM gome_gmp_res_need n
+		<where>
+		 <if test="title != null">
+			and n.title like CONCAT('%',#{title},'%')
+		 </if>
+	     <if test="startTime != null">  
+			<![CDATA[
+        		AND n.plan_time >=STR_TO_DATE(#{startTime},'%Y-%m-%d') 
+        	]]>
+		 </if>
+	     <if test="endTime != null">  
+			<![CDATA[
+        		AND n.plan_time <=STR_TO_DATE(#{endTime},'%Y-%m-%d')
+        	]]>
+		 </if>
+		 <if test="states != null">  
+        	and states =#{states}
+	     </if>
+	     <if test="needId != null">  
+        	and n.need_id =#{needId}
+	     </if>
+	    </where>
+		order By n.create_time desc
+	</select>
+
+	<insert id="saveGomeGmpResNeedBO" parameterType="GomeGmpResNeedVO">
+		INSERT INTO
+		gome_gmp_res_need(need_id,title,unit_bs_id,key_user_id,priority_id,pay_user_id,pay_unit_id,post_time,plan_time,pt_id,oa_id,pro_remark,function_desc,need_target,states,create_user,create_time,type,deny,reason)
+		VALUES(#{needId},#{title},#{unitBsId},#{keyUserId},#{priorityId},#{payUserId},#{payUnitId},#{postTime},#{planTime},#{ptId},#{oaId},#{proRemark},#{functionDesc},#{needTarget},#{states},#{createUser},#{createTime},#{type},#{deny},#{reason})
+	</insert>
+	
+	<delete id="deleteGomeGmpResNeedBOById" parameterType="String">
+		DELETE FROM gome_gmp_res_need WHERE need_id=#{needId}
+	</delete>
+	
+	<update id="updateGomeGmpResNeedBO" parameterType="GomeGmpResNeedVO">
+		UPDATE gome_gmp_res_need
+		SET need_id=#{needId},update_time=now()
+		<if test="title!=null and title!=''">,title=#{title}</if>
+		<if test="unitBsId!=null">,unit_bs_id=#{unitBsId}</if>
+		<if test="keyUserId!=null">,key_user_id=#{keyUserId}</if>
+		<if test="priorityId!=null">,priority_id=#{priorityId}</if>
+		<if test="payUserId!=null">,pay_user_id=#{payUserId}</if>
+		<if test="prePayUserId!=null">,pre_pay_user_id=#{prePayUserId}</if>
+	    <if test="payUnitId!=null">,pay_unit_id=#{payUnitId}</if>
+		<if test="postTime!=null">,post_time=#{postTime}</if>
+		<if test="planTime!=null">,plan_time=#{planTime}</if>
+		<if test="ptId!=null and ptId!=''">,pt_id=#{ptId}</if>
+		<if test="oaId!=null and oaId!=''">,oa_id=#{oaId}</if>
+		<if test="proRemark!=null and proRemark!=''">,pro_remark=#{proRemark}</if>
+		<if test="functionDesc!=null and functionDesc!=''">,function_desc=#{functionDesc}</if>
+		<if test="needTarget!=null and needTarget!=''">,need_target=#{needTarget}</if>
+		<if test="states!=null">,states=#{states}</if>
+		<if test="createUser!=null and createUser!=''">,create_user=#{createUser}</if>
+		<if test="createTime!=null">,create_time=#{createTime}</if>
+		<if test="type!=null">,type=#{type}</if>
+		<if test="deny!=null and deny!=''">,deny=#{deny}</if>
+		<if test="reason!=null and reason!=''">,reason=#{reason}</if>
+		,update_user=#{updateUser}
+		WHERE need_id=#{needId}
+	</update>
+
+	<select id="findGomeGmpResNeedBOById" parameterType="GomeGmpResNeedVO">
+        SELECT
+        n.need_id,
+		n.title,
+		(select p.pro_id from gome_gmp_res_project p where p.demand_id = n.need_id limit 1) proId,
+		n.unit_bs_id,
+		(select org_name from gome_gmp_res_org where org_id = n.unit_bs_id) unitBsName,
+		key_user_id,
+		(select user_name from gome_gmp_res_user where id = n.key_user_id) keyUser,
+		priority_id,
+		(select item_name from gome_gmp_dict_item where group_type = 'priorityId' and item_id = n.priority_id) priorityName,
+		pay_user_id,
+		(select user_name from gome_gmp_res_user where id = n.pay_user_id) payUserName,
+		post_time,plan_time AS planTime,
+		oa_id AS oaId,
+        (select item_name from gome_gmp_dict_item where group_type = 'status' and item_id = n.states) statesName, 
+        states,
+    	(select user_name from gome_gmp_res_user where id = n.create_user) createUser,
+	    create_user,
+	    n.pay_unit_id,
+		(select org_name from gome_gmp_res_org where org_id = n.pay_unit_id) payUnitName,
+		type,deny,reason,
+        pro_remark as proRemark,
+        function_desc AS functionDesc,
+        need_target AS needTarget,
+        create_time	
+		FROM gome_gmp_res_need n 
+		<where>
+		n.need_id=#{needId}
+		</where>
+	</select>
+	
+	<select id="findAcceptCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		select count(1) from gome_gmp_res_need n 
+		<where>
+			n.pay_user_id = #{loginUserId} and n.states in ('4','5')
+		</where>
+	</select>
+
+</mapper>

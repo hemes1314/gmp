@@ -1,0 +1,78 @@
+#parse("common/header.vm")
+    <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+				#parse("project/projectHeader.vm")
+                <div class="GomeProject_tab-content">
+                    <div class="GomeProject_nav_title">
+	                 	<div class="breadCrumbHolder module">
+				    		<div  class="breadCrumb module">
+			                    <ul id="workHourCrumbUl">
+			                    
+					        </ul>
+					         
+					    </div>
+					</div>
+                    </div>
+                    <h3 class='work_hours_desc'>
+      				<a href="javascript:void(0)" class="work_hours_desc_title">实际工时统计</a>
+      				<a href="javascript:void(0)" class="work_hours_desc_desc">$!{gomeGmpTJHourVO.realHour}H</a>
+      				<a href="javascript:void(0)" class="work_hours_desc_title">计划工时</a>
+      				<a href="javascript:void(0)" class="work_hours_desc_desc">$!{gomeGmpTJHourVO.planHour}H</a>
+      				<a href="javascript:void(0)" class="work_hours_desc_title">实际工时/计划工时</a>
+      				<a href="javascript:void(0)" class="work_hours_desc_desc">$!{gomeGmpTJHourVO.percentage}%</a>
+      				</h3>
+                    <div class="project_info_table" style="margin-top:12px">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>日期</td>
+                                    <td>工时统计</td>
+                                    <td>工时</td>
+                                    <td>工作内容</td>
+                                    <td>人员</td>
+                                    <td>项目职责</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            	#set($dateTmp="")
+                            	#foreach($item in $gomeGmpTJHourVO.details)
+	                                <tr>
+	                                	#if($item.hourDate != $dateTmp)
+	                                    <td rowspan="$!{item.rowspanNum}">$!{item.hourDate}</td>
+	                                    <td rowspan="$!{item.rowspanNum}">$!{item.totalHour}H</td>
+	                                    #end
+	                                    <td>$!{item.hours}H</td>
+	                                    <td style="text-align: left">&nbsp;&nbsp;$!{item.workContent}</td>
+	                                    <td>$!{item.createUserName}</td>
+	                                    <td>$!{item.roleName}</td>
+	                                    #set($dateTmp=$item.hourDate)
+	                                </tr>
+                                #end
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#workHourCrumbUl'));
+	// add for crumb end
+});
+var url = document.referrer;
+var array = url.split('/');
+var from = array[array.length - 1];
+
+if(from.indexOf('project') != -1
+		|| from.indexOf('agile') != -1){
+	$('#ulDetail').hide();
+	$('#ulList').show();
+}else{
+	$('#ulDetail').show();
+	$('#ulList').hide();
+}
+</script>

@@ -1,0 +1,91 @@
+#parse("common/header.vm")
+<div class='wrapper'>
+<input id="pageId" type="hidden" value="commitNeed">
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class="big_tab"><a href="${contextPath}/datas/toProTJ">总数据统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toOnlineTJ">上线分布统计</a></span>
+                    <span class="big_tab"><a href="${contextPath}/datas/toUnitTJ">各部门数据表现</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="location.href='${contextPath}/tj/status';return false;">状态分布</a></span>
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='/gmp/hourCount/scheduleStatistics;return false'">工时统计</a></span>
+                    <span class="selected big_tab"><a href="${contextPath}/datas/todataList">提报需求统计</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                	<div class='GomeProject_nav_title'>
+				<div class="breadCrumbHolder module">
+						    <div class="breadCrumb module">
+						        <ul  id="commitNeedCrumbUl">
+						        </ul>
+						    </div>
+						</div>
+                     	<a href="${contextPath}/datas/exportD" class='export_data button'>导出</a>	
+                     	<div class="clear"></div>
+                    </div>
+                    <!-- searchBar -->
+                    <form action="">
+                        <div class='project_search_bar' style="height:72px;"><!-- 注意要-2 （减掉border的宽度）  -->
+                            <div class="form_div">
+                                <div class="form-group">
+                                    <label for="req">时间周期:</label>
+                                    <input type="text" class="form-control laydate-icon" id='start' value="$!date.format('yyyy-MM-dd',$!{gomeGmpResNeedVO.startTimes})" name="startTime"  use='laydate'>
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">至:</label>
+                                    <input type="text" class="form-control  laydate-icon" id='end' name="endTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResNeedVO.endTimes})"  use='laydate'>
+                                </div>
+                                <div class="form-group">
+                                    <label for="req">提报部门:</label>
+                                    <select name="orgIds" id="orgIds">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <a href="javascript:void(0)" class='search_project searchBtn search_data'>查询</a>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- searchbar end-->
+                    <!-- charts -->
+                    <!-- chartsEnd -->
+                    <div class='project_info_table demand_statistics_table'  style="margin-top:12px">
+                        <table class="detail">
+                            <thead>
+                                <tr>
+                                    <td>部门</td>
+                                    <td>提报需求</td>
+                                    <td>已受理需求</td>
+                                    <td>已拒绝需求</td>
+                                    <td>待受理需求</td>
+                                    <td>已完成需求</td>
+                                    <td>月内上线需求</td>
+                                    <td>操作</td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <!--  tableend  -->
+                    <div id='GomeProjectPage' class='GomeProjectPage'></div>
+                    <script id='record_temp' type='text/html'>
+                        <tr>
+                            <td class='td_01'>$orgName$</td>
+                            <td>$tbNeed$项</td>
+                            <td>$slNeed$项</td>
+                            <td>$juNeed$项</td>
+                            <td>$dslNeed$项</td>
+                            <td>$wcNeed$项</td>
+                            <td>$yNeed$项</td>
+                       
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/echarts.js'></script>
+<script src='${contextPath}/static/js/jquery.selectlist.js'></script>
+<script src='${contextPath}/static/js/view_demand.js'></script>
+<script src='${contextPath}/static/js/common.js'></script>
+

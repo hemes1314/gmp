@@ -1,0 +1,36 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/business/scheduleCalendar.css"/>
+<link rel="stylesheet" href="${contextPath}/static/css/jquery/jquery.inputbox.css"/>
+<link rel="stylesheet" href="${contextPath}/static/css/common/calender.css"/>
+   <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+            #parse("project/projectHeader.vm")
+                <div class="GomeProject_tab-content">
+                	<div class="GomeProject_nav_title">
+						<select class="select" id="selectYear" style="float:left;margin-top:10px;margin-left:10px;font-size:14px;"></select>
+						<a class="button" href="javascript:void(0)" onclick="window.location.href='${contextPath}/daily/getDaily;return false'">写日报</a>
+
+						<div class='calendar-title' style="background:#fff;float:left;margin-left:15px;margin-top:10px;height:28px!important;line-height:28px!important">
+							<a style="width:19px;display:inline-block;text-align:center;" href="javascript:void(0)" class="lastMonth">&lt;</a>
+							<div style="width:40px;" class="calendar-title-date"></div>
+							<a style="width:19px;display:inline-block;text-align:center;" href="javascript:void(0)" class="nextMonth">&gt;</a>
+						</div>
+						<div class="clear"></div>
+					</div>
+            		<div class="calendar" style="margin:0 14px 14px 14px;border:0px">
+                        <div class='calendar-calendar'>
+                            <table id="calendar"></table>
+                        </div>
+                    </div>
+                    <div class='project_info_table' style="margin-top:12px">
+                        <table id='work_hour_content'>
+                        </table>
+                        <div id="page"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/select_calender.js'></script>

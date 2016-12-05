@@ -1,0 +1,37 @@
+<div class="GomeProject_tab_title">
+	<span 
+		#if($proViewType == 1)
+        	class="selected small_tab"
+        #else
+        	class="small_tab"
+        #end
+	>
+		<a href="javascript:void(0)" onclick="window.location.href='${contextPath}/project/toProjectView?proType=1&listType=init'">项目</a>
+	</span>
+    <span 
+		#if($proViewType == 2)
+        	class="selected small_tab"
+        #else
+        	class="small_tab"
+        #end
+	>
+		<a href="javascript:void(0)" onclick="window.location.href='${contextPath}/project/toProjectView?proType=2&listType=init'">敏捷需求</a>
+	</span>
+	<span 
+		#if($proViewType == 3)
+        	class="selected big_tab"
+        #else
+        	class="big_tab"
+        #end
+	 >
+	 <a href="javascript:void(0)" onclick="window.location.href='${contextPath}/calendar/scheduleCalendar'">日报工时统计</a></span>
+    <span 
+		#if($proViewType == 4)
+        	class="selected small_tab"
+        #else
+        	class="small_tab"
+        #end
+	 >
+	 <a href="javascript:void(0)" onclick="window.location.href='${contextPath}/calendar/calendar'">日历管理</a>
+	</span>
+</div>

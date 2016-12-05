@@ -1,0 +1,130 @@
+@charset 'utf-8';
+.calendar table {
+    margin: 0 auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar table tr {
+    line-height: 48px;
+}
+
+.calendar table tr:nth-child(1) {
+    border-top: 1px solid #E6E6E6;
+}
+
+.calendar table td {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+    width:14.28%!important;
+}
+
+.calendar table .selected {
+    background: url(../../images/calender_bg.png) no-repeat;
+    background-position: 50% -1px;
+}
+
+.calendar table th {
+    text-align: center;
+}
+
+.calendar a {
+    text-decoration: none;
+    color: #666;
+}
+
+.calendar td a {
+    display: block;
+    width: 102%;
+    border-bottom: 1px solid #E6E6E6;
+}
+
+.calendar {
+    margin:0;
+    padding:0;
+    border: 1px solid #E6E6E6;
+    /* border-radius: 6px; */
+    background: #fff;
+}
+
+.calendar .calendar_date {
+    color: #000;
+    font-weight: bold;
+}
+
+.calendar .disable {
+    color: #ccc;
+    font-weight: bold;
+}
+
+.calendar .calendar_content {
+    color: #96A0F0;
+    font-weight: bold;
+}
+
+.today {
+    background-color: #C1D9FF;
+    color: red;
+}
+
+.recentEvent {
+    height: 140px;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.recentEvent-Date {
+    float: left;
+    padding: 10px 10px;
+}
+
+.recentEvent-Day {
+    font-size: 66px;
+    color: #333;
+}
+
+.recentEvent-Month {
+    font-size: 22px;
+    color: #bfbfbf;
+    margin-left: 10px;
+}
+
+.recentEvent-content {
+    width: 60%;
+    float: left;
+}
+
+.recentEvent-content p {
+    margin-top: 50px;
+    color: #656565;
+}
+
+.recentEvent-content a:hover {
+    text-decoration: underline;
+}
+
+.calendar-title {
+    border-radius: 5px;
+    display: table;
+    border: 1px solid #e6e6e6;
+}
+
+.calendar-title-date {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.nextMonth {
+    display: table-cell;
+    vertical-align: middle;
+    border-left: 1px solid #e6e6e6;
+}
+
+.lastMonth {
+    display: table-cell;
+    vertical-align: middle;
+    border-right: 1px solid #e6e6e6;
+}

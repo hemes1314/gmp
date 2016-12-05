@@ -1,0 +1,127 @@
+#parse("common/header.vm")
+    <link rel="stylesheet" href="${contextPath}/static/css/demand_management.css">
+    <link rel="stylesheet" href="${contextPath}/static/css/validate.css">
+    <link rel="stylesheet" href="${contextPath}/static/css/content_textarea.css">
+    <div class='wrapper'>
+      <div class="GomeProject_tab_title_zw">
+		    </div>
+        <div class="GomeProjectContent">
+        <div class="GomeProject_nav_title">
+			<div class="breadCrumbHolder module">
+				<div  class="breadCrumb module">
+					<ul id="saveDemandCrumbUl">
+					
+					</ul>
+				</div>
+			</div>	
+        </div>
+        	<form id='saveForm' action="${contextPath}/demand/save" method="post" enctype="multipart/form-data">
+                <div class='project_search_bar' style="height:702px;"><!-- 注意要-2 （减掉border的宽度）  -->
+                    <div class="form_div">
+                    <div class="form-group-edit title need">
+                        <label for="">标题</label>
+                        <input type="text" name="title" class='title' id='reg' reg="required" maxlength='30' />
+                    </div>
+                    
+                    <div class="form-group-edit need search">
+                        <label for="">关键用户</label>
+                        <input type="hidden" name="keyUserId" id="keyUserId" value="$!{gomeGmpResNeedVO.keyUserId}">
+                        <input type="text" name="key_user_name" id="key_user_name" value="$!{gomeGmpResNeedVO.keyUser}" class='autocomplete_input' reg="required">
+                       
+                    </div>
+                    <div class="form-group-edit need">
+                        <label for="" class='label_for_left'>优&nbsp&nbsp先&nbsp&nbsp级</label>
+                        <select name="priorityId" id="priorityId" reg="required">
+                            <option value="">请选择</option>
+                            #foreach($item in $gomeGmpResNeedVO.priorityIdsV)
+                            <option value="$!{item.itemId}">$!{item.itemName}</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class="form-group-edit need right_im">
+                        <label for="">期望上线时间</label>
+                        <input type="text" name="planTime" reg="required" readonly="readonly" id="planTime" value="$!date.format('yyyy-MM-dd',$!{gomeGmpResNeedVO.planTime})" style="width:100px; margin-right:10px;">
+                    </div>
+                </div>
+                <div class="form_div">
+                	<div class="form-group-edit need">
+                		#set ($orgLevelFirst = $gomeGmpResNeedVO.resUnitV)
+                		#set ($required = true)
+                		#parse("common/unitBsSelect.vm")
+                	</div>
+                    <div class="form-group-edit" style="margin-left: 30px;">
+                        <label for="">OA审批号</label>
+                        <input type="text" name="oaId" id="oaId" value=''>
+                    </div>
+                </div>
+                <div class="form_div">
+                	<div class="form-group-edit need">
+                		#parse("common/payUnitSelect.vm")
+                	</div>
+                    <div class="form-group-edit need search" style="margin-left: 22px;">
+                        <label for="">交付人员</label>
+                        <input type="hidden" name="payUserId" id="payUserId">
+                        <input type="hidden" name="createUser" id="createUser" value="$!{gomeGmpResNeedVO.createUser}">
+                        <input type="text" name='pay_user_name' id='pay_user_name' class='autocomplete_input' reg="required">
+                       
+                    </div>
+                </div>
+                
+                <div class="form_div">
+                	
+                    <div class="form-group-edit form_file">
+                        <label for="upload">上传资料</label>
+                        <input type="file" multiple="multiple" id='upload' name='file'>
+                        <p id="content"></p>
+                    </div>
+                </div>
+                
+                
+                <div class='Requirements_Area'>
+                    <div class='demand_resume textarea_need'>
+                        <div class="left_desc">需求简述</div>
+                        <div class='right_input'>
+                            <textarea name="proRemark" id="proRemark" maxlength="500" reg="required"></textarea>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div class='demand_resume textarea_need'>
+                        <div class="left_desc">功能描述</div>
+                        <div class='right_input'>
+                            <textarea name="functionDesc" id="functionDesc" maxlength="500" reg="required"></textarea>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div class='demand_resume textarea_need'>
+                        <div class="left_desc">需求目标</div>
+                        <div class='right_input'>
+                            <textarea name="needTarget" id="needTarget" maxlength="500" reg="required"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form_div">
+                <h2><a href='javascript:void(0)' class="btn-default" type="ajax">提交</a></h2>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.browser.js'></script>
+<script src='${contextPath}/static/js/jquery.bgiframe.min.js'></script>
+<script src='${contextPath}/static/js/easy_validator.pack.js'></script>
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/limitTextArea.js'></script>
+<script src="${contextPath}/static/js/new_demand.js"></script>
+<script src="${contextPath}/static/js/jquery.form.js"/></script>
+<script src='${contextPath}/static/js/demand_management.js'></script>
+<script src='${contextPath}/static/js/orgChangeRadio.js'></script>
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#saveDemandCrumbUl'));
+	// add for crumb end
+});
+
+</script>

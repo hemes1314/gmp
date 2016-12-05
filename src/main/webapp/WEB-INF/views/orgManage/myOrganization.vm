@@ -1,0 +1,161 @@
+#parse("common/header.vm")
+<link rel="stylesheet" href="${contextPath}/static/css/business/org.css" type="text/css"/>
+   <div class='wrapper'>
+        <div class="GomeProjectContent">
+            <div class="GomeProject_sidebar_tab">
+                <div class="GomeProject_tab_title">
+                    <span class="small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/orgManage/myAccount;return false'">我的账户</a></span>
+                    <span class="selected small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/orgManage/myOrganization;return false'">我的组织</a></span>
+                </div>
+                <div class="GomeProject_tab-content">
+                	<div class='GomeProject_nav_title'>
+<div class="breadCrumbHolder module">
+				    		<div  class="breadCrumb module">
+			                    <ul id="myOrganizationCrumbUl">
+			                    
+			                    </ul>
+			            	</div>
+			            </div>
+                     	<div class="clear"></div>
+                    </div>
+                    <div class="org_op">
+                        <h3>组织机构管理</h3>
+						<div style="width:1200px;">
+                            <ul class="org_op_ul" orgLevel = "1">
+                                <li class='title'>
+    								<span>中心</span>管理
+                                    <a href="javascript:void(0)" class="org_add" style="display: none">添加</a>
+                                    <a href="javascript:void(0)" class="org_edit" style="display: none">编辑</a>
+                                </li>
+                                #foreach($item in $gomeGmpResOrgVO.gomeGmpResOrgVOList)
+                                  	#if($!{item.orgLevel} == 1)
+    	                    			<li>
+                                    	<p>$!{item.orgName}</p>
+                                    	#if($!{item.leaderId})
+                                    	<p class="org_op_p_preson" user='$!{item.leaderId}' userId ='$!{item.orgLeader}' >$!{item.leaderName}</p>
+                                    	#else
+                                    	<p class="org_op_p_preson" user='' userId ='' >&nbsp;</p>
+                                    	#end
+                                    	<p class='org_op_p' orgId ='$!{item.orgId}'><span>$!{item.orgName}</span><span>$!{item.leaderName}</span><a href="javascript:void(0)" class='org_depart_edit'>修改</a><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                                		</li>
+    	                    		#end
+    							#end
+                            </ul>
+                            <ul class="org_op_ul" orgLevel = "2">
+                                <li class='title'>
+    								<span>部门</span>管理
+                                    <a href="javascript:void(0)" class="org_add" style="display: none">添加</a>
+                                    <a href="jacascript:void(0)" class="org_edit" style="display: none">编辑</a>
+                                </li>
+                                #foreach($item in $gomeGmpResOrgVO.gomeGmpResOrgVOList)
+                                   	#if($!{item.orgLevel} == 2)
+    	                    			<li>
+                                    	<p>$!{item.orgName}</p>
+                                    	#if($!{item.leaderId})
+                                    	<p class="org_op_p_preson" user='$!{item.leaderId}' userId ='$!{item.orgLeader}' >$!{item.leaderName}</p>
+                                    	#else
+                                    	<p class="org_op_p_preson" user='' userId ='' >&nbsp;</p>
+                                    	#end
+                                    	<p class='org_op_p' orgId = '$!{item.orgId}'><span>$!{item.orgName}</span><span>$!{item.leaderName}</span><a href="javascript:void(0)" class='org_depart_edit'>修改</a><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                                		</li>
+    	                    		#end
+    							#end
+                            </ul>
+                            <ul class="org_op_ul" orgLevel = "3">
+                                <li class='title'>
+    								<span>子部门</span>管理
+                                    <a href="javascript:void(0)" class="org_add" style="display: none"=>添加</a>
+                                    <a href="jacascript:void(0)" class="org_edit" style="display: none">编辑</a>
+                                </li>
+                                #foreach($item in $gomeGmpResOrgVO.gomeGmpResOrgVOList)
+                                	#if($!{item.orgLevel} == 3)
+    	                    			<li>
+                                    	<p>$!{item.orgName}</p>
+                                    	#if($!{item.leaderId})
+                                    	<p class="org_op_p_preson" user='$!{item.leaderId}' userId ='$!{item.orgLeader}' >$!{item.leaderName}</p>
+                                    	#else
+                                    	<p class="org_op_p_preson" user='' userId ='' >&nbsp;</p>
+                                    	#end
+                                    	<p class='org_op_p' orgId ='$!{item.orgId}'><span>$!{item.orgName}</span><span>$!{item.leaderName}</span><a href="javascript:void(0)" class='org_depart_edit'>修改</a><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                                		</li>
+    	                    		#end
+    							#end
+                            </ul>
+                            <ul class="org_op_ul" orgLevel = "4">
+                                <li class='title'>
+    								<span>小组</span>管理
+                                    <a href="javascript:void(0)" class="org_add" style="display: none">添加</a>
+                                    <a href="jacascript:void(0)" class="org_edit" style="display: none">编辑</a>
+                                </li>
+                               #foreach($item in $gomeGmpResOrgVO.gomeGmpResOrgVOList)
+                                   	#if($!{item.orgLevel} == 4 && !$!{item.id})
+    	                    			<li>
+                                    	<p>$!{item.orgName}</p>
+                                    	#if($!{item.leaderId})
+                                    	<p class="org_op_p_preson" user='$!{item.leaderId}' userId ='$!{item.orgLeader}' >$!{item.leaderName}</p>
+                                    	#else
+                                    	<p class="org_op_p_preson" user='' userId ='' >&nbsp;</p>
+                                    	#end
+                                    	<p class='org_op_p' orgId ='$!{item.orgId}'><span>$!{item.orgName}</span><span>$!{item.leaderName}</span><a href="javascript:void(0)" class='org_depart_edit'>修改</a><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                                		</li>
+    	                    		#end
+    							#end
+                            </ul>
+                            <ul class="org_op_ul" orgLevel = "5">
+                                <li class='title'>
+    								<span>组员</span>管理
+                                    <a href="javascript:void(0)" class="member_add" style="display: none">添加</a>
+                                    <a href="jacascript:void(0)" class="org_edit" style="display: none">编辑</a>
+                                </li>
+                                 #foreach($item in $gomeGmpResOrgVO.gomeGmpResOrgVOList)
+                                   	#if($!{item.orgLevel} == 4 && $!{item.id})
+    	                    			<li style="height:50px">
+    	                    			<p class="org_op_p_preson" user='$!{item.id}' userId ='$!{item.userId}' style="display: block;margin-top: 12px;">$!{item.userName}</p>
+                                    	<p class='org_op_p'  orgId = '' style="display: none;"><span>$!{item.userName}</span><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                                		</li>
+    	                    		#end
+    							#end
+                            </ul>
+						</div>
+                    </div>
+                </div>
+                <script id="org_tpl" type="text/html" style="">
+                    <div class="dialog_org">
+                        <p>
+							<span>部&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp门：</span>
+                            <input type="text" class="depart_name">
+                        </p>
+                        <p>
+							<span>人&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp员：</span>
+                            <input id="userSelect"  type="text" class="autocomplete_input">
+                        </p>
+                        <span class="error_tips"></span>
+                    </div>
+                </script>
+                <script id="panel_tpl" type="text/html">
+                    <li>
+                        <p></p>
+                        <p class="org_op_p_preson"></p>
+                        <p class='org_op_p'><span></span><span></span> <a href="javascript:void(0)" class='org_depart_edit'>修改</a><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                    </li>
+                </script>
+                <script id="panel_member_tpl" type="text/html">
+	                   <li style="height:50px">
+	                   <p class="org_op_p_preson" style="display: block;margin-top: 12px;"></p>
+                       <p class='org_op_p'  orgId = '' style="display: none;"><span style="line-height:50px;height:35px;"></span><a href="jacascript:void(0)" class="org_del">删除</a></p>
+                       </li>
+                </script>
+            </div>
+        </div>
+    </div>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/jquery.autocomplete.js'></script>
+<script src='${contextPath}/static/js/jquery.cookie.js'></script>
+<script src='${contextPath}/static/js/org.js'></script>
+<script>
+$(document).ready(function() {
+	// add for crumb start
+	initCrumb($('#myOrganizationCrumbUl'));
+	// add for crumb end
+});
+</script>

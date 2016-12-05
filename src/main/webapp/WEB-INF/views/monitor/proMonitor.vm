@@ -1,0 +1,213 @@
+#parse("common/header.vm")
+#parse("common/explain/explain.vm")
+<style>
+.monitor_type_count{
+	display: block; 
+	margin-left: -20%; 
+	width: 140%; 
+	height: 100%;
+}
+</style>
+<div class='wrapper'>
+	<div class="GomeProjectContent">
+		<div class="GomeProject_sidebar_tab">
+			<div class="GomeProject_tab_title">
+				<span class="selected small_tab"><a href="javascript:void(0)" onclick="window.location.href='${contextPath}/proMonitor/toProMonitor;return false'">项目监控</a></span>
+				<span class="small_tab"><a href="${contextPath}/proMonitor/toUpeProMonitor"><i>更新监控</i></a></span>
+			</div>
+			<div class="GomeProject_tab-content">
+				<div class='GomeProject_nav_title'>
+					<input type="hidden" value="proMonitor" class="explainKey">
+					<img src="../static/images/explain.png" class="explainImgLabel"/>
+					<div class="breadCrumbHolder module">
+			    		<div  class="breadCrumb module">
+		                    <ul id="proMonitorCrumbUl">
+		                    
+		                    </ul>
+		            	</div>
+		            </div>
+					<a class="export_data button export" style="margin-right: 10px" id="exportBtn">导出</a>
+					<div class="clear"></div>
+				</div>
+				<form action="">
+					<div class='project_search_bar' style="height: 50px;">
+						<!-- 注意要-2 （减掉border的宽度）  -->
+						<div class="form_div">
+							部门 
+							<select name="orgIds" id="orgIds">
+							</select> </a> 
+							子部门 
+							<select name="childOrgIds" id="childOrgIds">
+								<option>全部</option>
+							</select> 
+					        </a> 小组 
+							<select name="groupIds" id="groupIds">
+								<option>全部</option>
+							</select>
+							<div class="form-group">
+								<label for="req">年度:</label> <select name="year" id="years">
+									#foreach($item in $gomeGmpResProjectVO.years)
+									<option value="$!{item}">$!{item}</option> #end
+								</select>
+							</div>
+							 </a> <a href="javascript:void(0)" class='search_project searchBtn search'>查询</a>
+						</div>
+					</div>
+				</form>
+				<input type="hidden" id="monitorType" />
+				<input type="hidden" id="proType" />
+				<div class="project_info_table monitor_content" style="margin-top: 12px">
+					<table class="detail" id="monitor_detail">
+						<thead>
+							<tr>
+								<td>内容</td>
+								<td>全部任务</td>
+								<td>近期上线</td>
+								<td>即将上线</td>
+								<td>风险任务</td>
+								<td>已延期任务</td>
+								<td>新增任务</td>
+							</tr>
+						</thead>
+						<tbody class="procontr">
+							<tr id="pro">
+								<td data=1 protype="1" class="content_head">项目</td>
+								<td>
+									<span id="allPro_1" class="monitor_type_count" >
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="nearOnline_1" class="monitor_type_count" >
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="soonOnline_1" class="monitor_type_count" >
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="riskPro_1" class="monitor_type_count">
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="delayPro_1" class="monitor_type_count">
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="newlyPro_1" class="monitor_type_count">
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+							</tr>
+							<tr id="minpro">
+								<td data=2 protype="2" class="content_head">敏捷</td>
+								<td>
+									<span id="allPro_2" class="monitor_type_count">
+										<a	href="javascript:void(0)">122</a>
+									</span>
+								</td>
+								<td>
+									<span id="nearOnline_2" class="monitor_type_count">
+										<a href="javascript:void(0)">222</a>
+									</span>
+								</td>
+								<td>
+									<span id="soonOnline_2" class="monitor_type_count">
+										<a href="javascript:void(0)">333</a>
+									</span>
+								</td>
+								<td>
+									<span id="riskPro_2" class="monitor_type_count">
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="delayPro_2" class="monitor_type_count">
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+								<td>
+									<span id="newlyPro_2" class="monitor_type_count">
+										<a href="javascript:void(0)"></a>
+									</span>
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<div class='project_info_table monitor_detail' style="margin-top: 12px" id="monitor_detail_id">
+					<table class="detail">
+						<thead>
+							<tr>
+								<td>项目ID</td>
+								<td>项目名称</td>
+								<td>
+								   <select id="statusId" class="monitor_search_selects" details="任务状态">
+										<option value="" project_type="">任务状态</option>
+                                        #foreach($item in $gomeGmpResProjectVO.taskStatusV)
+											<option value="$!{item.itemId}">$!{item.itemName}</option>
+                                        #end
+                                    </select>
+                                    <input type="hidden" id="statusIdSelect" />
+								</td>
+								<td>
+									<select id='priorityId' class="monitor_search_selects" details="优先级">
+										<option value="" project_type="">优先级</option>
+										 #foreach($item in $gomeGmpResProjectVO.priorityIdsV)
+											<option value="$!{item.itemId}">$!{item.itemName}</option>
+										#end
+    								</select> 
+    								<input type="hidden" id="priorityIdSelect" />
+								</td>
+								<td>
+									<select id='scheduleId' class="monitor_search_selects" details="状态进度">
+										<option value="" project_type="" >状态进度</option> 
+										#foreach($item in $gomeGmpResProjectVO.scheduleIdsV)
+											<option value="$!{item.itemId}">$!{item.itemName}</option>
+										#end
+									</select> 
+									<input type="hidden" id="scheduleIdSelect" />
+								</td>
+								<td>
+									<select id="actualize" class="monitor_search_selects" details="实施阶段">
+										<option value="" project_type="" >实施阶段</option> 
+										#foreach($item in $gomeGmpResProjectVO.actualizesV)
+											<option value="$!{item.itemId}">$!{item.itemName}</option>
+										#end
+									</select> 
+									<input type="hidden" id="actualizeSelect" />
+								</td>
+								<td>完成度</td>
+								<td>上线时间</td>
+								<td>项目经理</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+#parse("common/footer.vm")
+<script src='${contextPath}/static/js/monitor_project.js'></script>
+<script src='${contextPath}/static/js/proMonitor.js'></script>
+<script src='${contextPath}/static/js/explainDialog.js'></script>

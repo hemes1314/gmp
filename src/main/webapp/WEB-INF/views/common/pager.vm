@@ -1,0 +1,127 @@
+#** 自定义的分页指令。
+ 属性说明：
+ pageNo      当前页号(int类型)
+ pageSize    每页要显示的记录数(int类型)
+ toURL       点击分页标签时要跳转到的目标URL(string类型)
+ total 总记录数(int类型)
+ 使用方式：
+ #if total
+ <#import "/pager.vm" as q>
+ <@q.pager pageNo=pageNo pageSize=pageSize total=total url="testpager.do"/>
+ #end
+ *#
+#macro (pager $pageModel $url $useAjax $target)
+	#** 定义局部变量pageCount保存总页数 *#
+    #set ($pageCount=$pageModel.pages)
+    #set ($pageNo=$pageModel.pageNum)
+    #set ($pageSize=$pageModel.pageSize)
+	#set ($pageTotal=$pageModel.total)
+    #set ($params=$pageModel.params)
+	#set ($paginationDivStyle = "")
+	
+    #** 输出分页样式 *#
+    <style type="text/css">
+        .pagination {margin:5px;padding:3px;float:right;font-size:12px;}
+        .pagination a, .pagination a:link, .pagination a:visited {padding:2px 5px;margin:2px;border:1px solid #aaaadd;text-decoration:none;color:#006699;}
+        .pagination a:hover, .pagination a:active {border: 1px solid #3252db;color: #000;text-decoration: none;}
+        .pagination span.pageNo {padding: 2px 5px;margin: 2px;border: 1px solid #3252db;font-weight: bold;background-color: #3252db;color: #FFF;}
+        .pagination span.disabled {padding: 2px 5px;margin: 2px;border: 1px solid #eee; color: #ddd;}
+    </style>
+	
+    #** 如果数据为空，控制div高度为0 *#
+	#if($pageCount <1)
+		#set($paginationDivStyle = "height:0px;")
+	#end
+	
+    #** 输出分页表单 *#
+    <div class="pagination" style="${paginationDivStyle}">
+        <form method="post" action="" name="qPagerForm" id="qPagerForm">
+        #** 把请求中的所有参数当作隐藏表单域(无法解决一个参数对应多个值的情况) *#
+            #foreach($key in $params.keySet())
+                #if ($key != "pageNum" && $key != "pageNum" && $key != "pageSize" && $params.get($key))
+                    <input type="hidden" name="${key}" value="$params.get($key)"/>
+                #end
+            #end
+            <input type="hidden" name="pageNum" value="$pageNo"/>
+            <input type="hidden" name="pageSize" value="$pageSize"/>
+            
+        #if($pageCount>0)
+        #** 上一页处理 *#
+            #if ($pageNo == 1)
+                <span class="disabled">&laquo;&nbsp;上一页</span>
+            #else
+                #set( $vPageNo = $pageNo - 1 )
+                <a href="javascript:gotoPage($vPageNo);">&laquo;&nbsp;上一页</a>
+            #end
+        #** 如果前面页数过多,显示... *#
+            #set ($start=1)
+            #if ($pageNo > 4)
+                #set ($start=($pageNo - 1))
+                <a href="javascript:gotoPage(1)">1</a>
+                <a href="javascript:gotoPage(2)">2</a>&hellip;
+            #end
+        #** 显示当前页号和它附近的页号 *#
+            #set ($end=($pageNo + 1))
+            #if ($end > $pageCount)
+                #set ($end = $pageCount)
+            #end
+            #foreach ($i in [$start..$end])
+                #if ($pageNo == $i)
+                    <span class="pageNo">$i</span>
+                #else
+                    <a href="javascript:gotoPage($i)">$i</a>
+                #end
+            #end
+        #** 如果后面页数过多,显示... *#
+            #if ($end < $pageCount - 2)
+                &hellip;
+            #end
+            #if ($end < $pageCount - 1)
+                #set( $vPageNo = $pageCount - 1 )
+                <a href="javascript:gotoPage($vPageNo)">$vPageNo</a>
+            #end
+            #if ($end < $pageCount)
+                <a href="javascript:gotoPage($pageCount)">$pageCount</a>
+            #end
+        #** 下一页处理 *#
+            #if ($pageNo == $pageCount)
+                <span class="disabled">下一页&nbsp;&raquo;</span>
+            #else
+                #set( $vPageNo = $pageNo + 1 )
+                <a href="javascript:gotoPage($vPageNo)">下一页&nbsp;&raquo;</a>
+            #end
+            <span>共 $pageTotal 条记录</span>
+        #end
+        
+        </form>
+        <script language="javascript">
+            function gotoPage(no){
+                if (no != undefined){
+                    if(no>$pageCount){no=$pageCount;}
+                    if(no<1){no=1;}
+                    document.qPagerForm.pageNum.value=no;
+                }
+                //给qPagerForm追加随机数，避免浏览器缓存
+                var randomEle = document.createElement("input");
+                randomEle.type = "hidden";
+                randomEle.name = "r";
+        		randomEle.value = Math.random();
+        		qPagerForm.appendChild(randomEle);
+                document.qPagerForm.action = "${url}";
+                #if ($useAjax)
+                    $("#qPagerForm").ajaxSubmit({
+                        url: '$url',
+                        type: 'post',
+                        cache: false,
+                        success: function(result){
+                            $("#$target").html(result);
+                        }
+                    });
+                #else
+                    document.qPagerForm.submit();
+                #end
+            }
+        </script>
+    </div>
+
+#end

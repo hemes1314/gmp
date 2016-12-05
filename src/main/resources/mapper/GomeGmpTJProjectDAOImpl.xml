@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpTJProjectDAO">
+
+	<select id="stateDistribution" parameterType="GomeGmpResProjectVO" resultType="java.util.LinkedHashMap">
+	  SELECT LPAD(p.schedule_id,2,'0') id,
+			 i.item_name name,
+			 count(p.schedule_id) value
+		FROM gome_gmp_res_project p, GOME_GMP_DICT_ITEM i
+	   WHERE i.group_type = 'scheduleId' 
+	     AND i.item_id = p.schedule_id 
+		 AND p.schedule_id is not null
+		 AND p.pro_type = #{proType}
+        <if test="orgIds != null">  
+        		AND EXISTS (SELECT u.id FROM gome_gmp_res_user u,gome_gmp_res_org o WHERE u.org_id = o.org_id AND u.id = p.bp_id and  
+        	<foreach collection="orgIds" item="item" index="index" open="(" separator="or" close=")">
+        		o.org_id LIKE CONCAT(#{item},'%')  
+			</foreach> 
+        	)
+        </if>
+        <if test="taskStatus != null and taskStatus.length > 0">  
+        	and status_id in 
+	        <foreach collection="taskStatus" item="item" index="index" 
+				open="(" separator="," close=")">#{item}</foreach> 
+		</if>
+	   GROUP BY p.schedule_id
+	   ORDER BY p.schedule_id
+	</select>
+	
+	<!-- plan_hour:计划工时/工期*开始时间截止到当前日期的天数(排除休息日) -->
+	<select id="workHour" parameterType="GomeGmpTJHourVO" resultType="GomeGmpTJHourVO">
+		select x.pro_id,
+			<!-- IFNULL(x.real_hour,0) real_hour, -->
+			IFNULL(x.plan_hour,0) plan_hour
+			<!-- IFNULL(round(x.real_hour/x.plan_hour*100),0) percentage  -->
+		  from gome_gmp_v_pro_hour x 
+		 where x.pro_id = #{proId}
+	</select>
+	
+	<select id="workHourDetail" parameterType="GomeGmpTJHourVO" resultType="GomeGmpResDailyVO">
+	select base.hour_date,base.total_hour,detail.hours,detail.work_content,detail.create_user_name,role_name
+	from
+	(
+		select hour_date,sum(hours) total_hour
+		from(
+			select t.*,date_format(t.start_time,'%Y-%m-%d') hour_date
+			from gome_gmp_res_daily t, gome_gmp_res_task s
+			where t.pro_id = s.pro_id and t.create_user = s.user_id and t.pro_id =
+			#{proId}
+		) d
+		group by d.hour_date
+	) base
+	,
+	(
+		select date_format(t.start_time,'%Y-%m-%d') hour_date,hours,create_user,
+			(select u.user_name from gome_gmp_res_user u where u.id = create_user) create_user_name,
+			concat(date_format(t.start_time,'%H:%i'),'-',date_format(t.end_time,'%H:%i'),' ',IFNULL(work_content,'')) work_content,
+			(select r.rebuke from gome_gmp_res_task r where r.pro_id = t.pro_id and r.user_id = t.create_user limit 1) role_name
+		  from gome_gmp_res_daily t
+		 where t.pro_id = #{proId}
+	) detail
+	where base.hour_date = detail.hour_date order by hour_date
+	</select>
+</mapper>

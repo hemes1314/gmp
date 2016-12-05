@@ -1,0 +1,563 @@
+@charset 'utf-8';
+
+
+.GomeProjectContent .GomeProject_tab_title h3 {
+    color: #666;
+    font-size: 15px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 .selected {
+    color: #549df6;
+    background: #fff;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 span {
+    cursor: pointer;
+    background: #291C1C;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+    color: #fff;
+}
+
+.GomeProjectContent .GomeProject_tab-content .hide {
+    display: none;
+}
+
+.GomeProject_tab-content-log {
+	margin-top: 20px;
+}
+
+/* searchBar */
+
+.GomeProjectContent .data_statistics_serach {
+    height: 66px;
+    display: table;
+    line-height: 66px;
+}
+
+.GomeProjectContent .data_statistics_serach li {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 11px;
+    padding: 0 10px;
+}
+
+.GomeProjectContent .data_statistics_serach li .searchCondition {
+    width: 260px;
+    height: 28px;
+    border: 1px solid #e8e8e8;
+}
+
+.GomeProjectContent .data_statistics_serach li .search_button {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 68px;
+    text-align: center;
+    border-radius: 15px;
+    background: url(../images/serach_button.png) no-repeat;
+    background-position: 6px;
+}
+
+.GomeProjectContent .data_statistics_serach li .export {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 68px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.GomeProjectContent .data_statistics_serach li .new_built {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 110px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.GomeProjectContent .data_statistics_serach li .sb {
+    border: solid 1px #cfcfcf;
+    cursor: pointer;
+    background-color: #ffffff;
+    position: relative;
+    float: none;
+    margin: 0 10px 0 0;
+    display: inline-block;
+    -moz-border-radius: 4px;
+    top: 11px;
+}
+
+.basic_content {
+    height: 350px;
+    margin: 10px 10px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    width: 98%;
+}
+
+.basic_content h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.relationEmployee {
+    min-height: 220px;
+    margin: 10px 10px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    overflow: auto;
+    width:98%
+}
+
+.relationEmployee h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.relationEmployee ul {
+    padding: 10px 20px;
+}
+
+.relationEmployee ul li {
+    width: 340px;
+    padding: 15px 10px;
+    float: left;
+}
+
+.relationEmployee ul li span {
+    display: inline-block;
+}
+
+.relationEmployee ul li .delete_li {
+    cursor: pointer;
+    padding-left: 20px;
+}
+
+.relationEmployee ul li span input {
+    height: 26px;
+}
+
+.relationEmployee ul li .need {
+    display: inline-block;
+    padding-left: 20px;
+    background: url(../images/red_star.png) no-repeat;
+    background-position: 5px;
+}
+
+.relationEmployee ul li .title {
+    width: 360px;
+}
+
+.relationEmployee input {
+    width: 180px;
+}
+
+.relationEmployee ul li .search {
+    position: relative;
+}
+
+/* .relationEmployee ul li .search .auto_search {
+    position: absolute;
+    background: url(../images/auto_search_button.png) no-repeat;
+    display: inline-block;
+    width: 36px;
+    height: 12px;
+    right: 3px;
+    top: 9px;
+} */
+
+.search a {
+    display: inline-block;
+    /*width: 65px;*/
+}
+
+.relationEmployee .addEmployee {
+    float: right;
+    display: inline-block;
+    background: url(../images/addEmp.png) no-repeat;
+    width: 120px;
+    height: 30px;
+    background-position: right 7px;
+}
+
+.dialog_name p {
+    margin: 10px 0;
+    font-weight: bold;
+    line-height: 50px;
+}
+
+.dialog_name p input {
+    margin-left: 25px;
+    width: 260px;
+    height: 30px;
+}
+
+.Project_schedule {
+    min-height: 220px;
+    border-radius: 5px;
+}
+
+.Project_schedule h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.Project_schedule ul {
+    display: table;
+}
+
+.Project_schedule ul li {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 11px;
+    padding: 10px 10px;
+}
+
+.Project_schedule ul li input {
+    height: 28px;
+    border: 1px solid #e8e8e8;
+}
+
+.Project_schedule table {
+    border-collapse: collapse;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    width: 95%;
+}
+
+.Project_schedule thead tr {
+    background: #fefbf5;
+}
+
+.Project_schedule table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+}
+
+.Project_schedule table tr td {
+    text-align: center;
+    border: 1px solid #e8e8e8;
+}
+
+.Project_schedule table tr .task_number {
+    text-align: center;
+    cursor: pointer;
+}
+
+.Project_schedule table tr td input {
+    border: none;
+    width: 80px;
+}
+
+.tableOp li {
+    border: 1px solid #ccc;
+    padding: 3px;
+    margin: 3px;
+    cursor: pointer;
+}
+
+.project_resume {
+    height: 85px;
+}
+
+.project_resume dl {
+    height: 80px;
+    margin: 10px 0 30px 30px;
+    border: 1px solid #ccc;
+}
+
+.project_resume dl dt {
+    width: 13px;
+    font-size: 13px;
+    padding: 0 10px;
+    border-right: 1px solid #ccc;
+    float: left;
+}
+
+.project_resume dl dd {
+    float: left;
+}
+
+.recent_work {
+    height: 110px;
+}
+
+.recent_work dl {
+    float: left;
+    width: 500px;
+    height: 120px;
+    margin: 10px 0 30px 30px;
+    border: 1px solid #ccc;
+}
+
+.recent_work dl dt {
+    width: 13px;
+    font-size: 11px;
+    padding: 0 10px;
+    border-right: 1px solid #ccc;
+    float: left;
+}
+
+.recent_work dl dd {
+    float: left;
+}
+
+.edit_box {
+    width: 1050px;
+    min-height: 77px;
+    max-height: 300px;
+    _height: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    outline: 0;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    _overflow-y: visible;
+}
+
+.small_edit_box {
+    width: 400px;
+    min-height: 80px;
+    max-height: 300px;
+    _height: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    outline: 0;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    _overflow-y: visible;
+}
+
+.bootom_op {
+    margin: 10px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.bootom_op a {
+    display: inline-block;
+    width: 82px;
+    border: 1px solid #FFB000;
+    border-radius: 15px;
+    background: #FFB000;
+    color: #fff;
+    font-weight: bold;
+}
+
+.record_content {
+    min-height: 303px;
+    margin: 10px 0 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.record_content h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.record_content p {
+    line-height: 46px;
+    font-size: 14px;
+    text-indent: 2em;
+}
+
+.record_content p span {
+    margin: 0 5px;
+}
+
+.main_area {
+    margin: 0 10px;
+    border-radius: 5px;
+}
+
+.main_area {
+    width: 98%;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 30px;
+    min-height: 700px;
+}
+
+
+/*form group */
+
+.form-group label {
+    padding: 5px 0 5px 0;
+    display: inline-block;
+    line-height: 50px;
+    font-size: 13px;
+    font-weight: bolder;
+}
+
+.form-group {
+    float: left;
+    margin: 10px 5px;
+    /*min-width: 250px;*/
+    position: relative;
+}
+.form-group-unitBs label {
+    padding: 5px 0 5px 0;
+    display: inline-block;
+    line-height: 18px;
+    font-size: 13px;
+    font-weight: bolder;
+}
+.form-group-unitBs {
+	float: left;
+    margin: 10px 5px;
+    /*min-width: 250px;*/
+    position: relative;
+}
+.form-group-unitBs select {
+	width: 155px;	
+	padding: 6px 5px;
+}
+.form-group:after {
+    clear: both;
+    display: block;
+}
+
+.form-control {
+    height: 28px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+}
+
+.form_div {
+    height: 60px;
+    margin-left: 30px;
+    width: 100%;
+    line-height: 60px;
+    float: left;
+}
+
+.form-group input {
+    height: 28px;
+    min-width: 190px;
+}
+
+.form-group select {
+    width: 195px;
+    padding: 6px 5px;
+}
+
+.need {
+    background: url(../images/red_star.png) no-repeat;
+    padding-left: 15px;
+    background-position: 5px 20px;
+}
+
+.title {
+    width: 420px;
+}
+
+.title input {
+    width: 300px;
+}
+
+.search {
+    position: relative;
+}
+
+/* .search .auto_search {
+    position: absolute;
+    background: url(../images/auto_search_button.png) no-repeat;
+    display: inline-block;
+    width: 36px;
+    height: 12px;
+    right: 9px;
+    top: 9px;
+    z-index: 1;
+} */
+
+.search input {
+    min-width: 190px;
+}
+
+.span_svn input {
+    /*width: 232px;*/
+}
+
+.form_div .long_select {
+    width: 192px;
+}
+
+#upload {
+    opacity: 0; 
+    position: absolute;
+    right: 0px;
+    width: 93%;
+    z-index: 1000;
+    top: 1px;
+    border: 1px solid #f0f;
+}
+
+.form-group p {
+    display: inline-block;
+    width: 1000px;
+    background: url(../images/upload.png) no-repeat;
+    background-position: right;
+    padding-right: 10px;
+    border: 1px solid #ccc;
+    background-position-x: 99%;
+}
+
+.form_file{
+    position:relative;
+}
+
+.form_file p {
+    float: right;
+    height: 30px;
+    margin-top: 15px;
+    display: inline-block;
+}
+
+.file_delete {
+	color:red;
+	cursor:pointer;
+}

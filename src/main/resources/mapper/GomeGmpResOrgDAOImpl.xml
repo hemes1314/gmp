@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gome.gmp.dao.GomeGmpResOrgDAO">
+	<!-- 添加组织 -->
+	<insert id="addGomeGmpResOrg" parameterType="GomeGmpResOrgBO">
+		INSERT INTO gome_gmp_res_org(org_id,org_name,org_parent,org_level,org_leader) VALUES(#{orgId},#{orgName},#{orgParent},#{orgLevel},#{orgLeader})
+	</insert>
+	
+	<!-- 根据参数获取组织列表 -->
+	<select id="getOrgListByParms" parameterType="java.util.Map" resultType="GomeGmpResOrgVO">
+		select 	
+			org.org_id orgId,
+			org.org_name orgName, 
+			org.org_parent orgParent,
+			org.org_level orgLevel,
+			uo.user_tid orgLeader,
+			u.user_id userId,
+			u.user_name userName,
+			u.user_id leaderId,
+			u.user_name leaderName
+		from 
+			gome_gmp_res_org org LEFT JOIN gome_gmp_res_user_org uo ON org.org_id=uo.org_id 
+			LEFT JOIN gome_gmp_res_user u ON uo.user_tid=u.id
+		<where>
+			<if test="queryType != null and queryType=='myOrg'">
+				and org.org_level = 1
+				<if test="orgId != null and orgId !='' ">
+					or org.org_id = #{orgId}
+				</if>
+				<if test="orgParents != null and orgParents.length > 0">
+				 or
+					<foreach collection="orgParents" item="item" index="index" open="(" separator="or" close=")">
+		        		 org.org_parent = #{item}
+		        	</foreach> 				
+				</if>
+			</if>
+			<if test="queryType == null or queryType==''">
+				<if test="orgId != null and orgId !='' ">
+					and org.org_id=#{orgId}
+				</if>
+				<if test="orgLevel != null and orgLevel !='' ">
+					and org.org_level=#{orgLevel}
+				</if> 
+			</if>
+		</where> 
+		ORDER BY org.org_level,org.org_id
+	</select>
+	
+	<!-- 根据父级部门获取下级组织 -->
+	<select id="getLowerLeverOrgByParent" parameterType="String" resultType="GomeGmpResOrgVO">
+		 SELECT 	
+					org.org_id orgId,
+					org.org_name orgName, 
+					org.org_parent orgParent,
+					org.org_level orgLevel,
+				  	u.id orgLeader,
+					u.user_id leaderId,
+					u.user_name leaderName
+		FROM      	gome_gmp_res_org org 
+					LEFT JOIN gome_gmp_res_user_org uo ON org.org_id=uo.org_id
+					LEFT JOIN gome_gmp_res_user u ON uo.user_tid=u.id
+		WHERE     	org.org_parent=#{orgParent}
+		ORDER BY 	org.org_level,org.org_id
+	</select>
+	
+	<select id="getOrgById" parameterType="String" resultType="GomeGmpResOrgBO">
+		SELECT
+				org.org_id,
+				org.org_name, 
+				org.org_parent,
+				org.org_level,
+				GROUP_CONCAT(uo.user_tid separator ';') orgLeader
+		FROM    gome_gmp_res_org org LEFT JOIN gome_gmp_res_user_org uo ON org.org_id=uo.org_id
+		WHERE   org.org_id=#{orgId} group by org.org_id,org.org_name,org.org_parent,org.org_level
+	</select>
+	
+	<select id="getAllOrgListByOrgParent" parameterType="String" resultType="GomeGmpResOrgVO">
+		SELECT  org_id FROM gome_gmp_res_org WHERE org_parent=#{orgParent}	ORDER BY org_id 
+	</select>
+	
+	<delete id="deleteOrgByOrgId" parameterType="String">
+		DELETE FROM gome_gmp_res_org WHERE org_id=#{orgId}
+	</delete>
+	
+	<update id="updateOrgByOrgId" parameterType="GomeGmpResOrgBO">
+		UPDATE gome_gmp_res_org
+		SET
+		<if test="orgName!=null and orgName!=''">org_name=#{orgName}</if>
+		<if test="orgLeader!=null and orgLeader!=''">,org_leader=#{orgLeader}</if>
+		<if test="orgLeader==null or orgLeader==''">,org_leader=null</if>
+ 		WHERE org_id=#{orgId}
+	</update>
+	
+	<select id="findTeamMembers" parameterType="String" resultType="GomeGmpResOrgVO">
+		SELECT     org_t.org_id,
+				   org_t.org_name,
+				   org_t.org_parent,
+				   org_t.org_level,
+				   org_t.org_leader,
+				   user_t.id,
+				   user_t.user_id,
+				   user_t.user_name
+		FROM       gome_gmp_res_org AS org_t 
+				   RIGHT JOIN gome_gmp_res_user AS user_t ON org_t.org_id = user_t.org_id AND ( org_t.org_leader not LIKE CONCAT('%',user_t.id,'%') OR org_t.org_leader IS NULL)
+		WHERE      org_t.org_id=#{orgId}
+	</select>
+		
+	<select id="getOrgFrameworkList"  parameterType="GomeGmpResOrgVO" resultType="GomeGmpResOrgVO">
+		SELECT  org_id orgId, org_name orgName FROM gome_gmp_res_org 
+		<where>
+			<if test="orgIdList == null">AND LENGTH(org_parent) = 2</if>
+			<if test="queryType == null and orgIdList != null">  
+	        	AND org_parent in
+		        <foreach collection="orgIdList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="queryType == 'thisLevel' and orgIdList != null">  
+	        	AND org_id in
+		        <foreach collection="orgIdList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		ORDER BY org_name 
+	</select>
+</mapper>

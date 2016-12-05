@@ -1,0 +1,380 @@
+@charset 'utf-8';
+
+
+.GomeProjectContent .GomeProject_tab_title h3 {
+    color: #666;
+    font-size: 15px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 .selected {
+    color: #549df6;
+    background: #fff
+}
+
+.GomeProjectContent .GomeProject_tab_title h3 span {
+    cursor: pointer;
+    background: #291C1C;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+    color: #fff;
+}
+
+.GomeProjectContent .GomeProject_tab-content .hide {
+    display: none;
+}
+
+
+/* searchBar */
+
+.GomeProjectContent .data_statistics_serach {
+    height: 66px;
+    display: table;
+    line-height: 66px;
+}
+
+.GomeProjectContent .data_statistics_serach li {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 11px;
+    padding: 0 10px;
+}
+
+.GomeProjectContent .data_statistics_serach li .searchCondition {
+    width: 260px;
+    height: 28px;
+    border: 1px solid #e8e8e8;
+}
+
+.GomeProjectContent .data_statistics_serach li .search_button {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 68px;
+    text-align: center;
+    border-radius: 15px;
+    background: url(../images/serach_button.png) no-repeat;
+    background-position: 6px;
+}
+
+.GomeProjectContent .data_statistics_serach li .export {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 68px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.GomeProjectContent .data_statistics_serach li .new_built {
+    display: inline-block;
+    border: 1px solid #e8e8e8;
+    height: 26px;
+    line-height: 26px;
+    width: 110px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.GomeProjectContent .data_statistics_serach li .sb {
+    border: solid 1px #cfcfcf;
+    cursor: pointer;
+    background-color: #ffffff;
+    position: relative;
+    float: none;
+    margin: 0 10px 0 0;
+    display: inline-block;
+    /* border-radius: 4px; */
+    -moz-border-radius: 4px;
+    /* -webkit-border-radius: 4px; */
+    top: 11px;
+}
+
+
+/* basic content */
+
+.basic_content {
+    /*height: 323px;*/
+    margin: 10px 10px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.main_area {
+    /*background: #fff;*/
+    margin: 10px 10px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background:#fff;
+}
+
+.basic_content h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.details_edit {
+    float: right;
+    background: url(../images/edit_icon.png) no-repeat;
+    padding-right: 10px;
+    background-position: 5px;
+}
+
+.basic_content table {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.basic_content thead tr {
+    background: #fefbf5;
+}
+
+.basic_content table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+    border-left: none;
+    border-right: none;
+}
+
+.basic_content table tr td {
+    text-align: left;
+    padding: 0 26px;
+    border: 1px solid #e8e8e8;
+}
+
+.basic_content table tr td a {
+    padding: 0 26px;
+}
+
+.basic_content table .table_name {
+    background: #FEEBF5;
+    min-width: 70px;
+    text-align: center;
+}
+
+.basic_content table tr td .word_type {
+    background: url(../images/word_type_icon.png) no-repeat;
+    background-position: 5px;
+}
+
+.basic_content table tr td .zip_type {
+    background: url(../images/zip_type_png.png) no-repeat;
+    background-position: 5px;
+}
+
+
+/* 项目排期 */
+
+.project_scheduling {
+    height: auto;
+    /*margin: 10px 0 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background:#fff;*/
+}
+
+.project_scheduling h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.gantt_pic {
+    float: right;
+    background: url(../images/gantt_icon.png) no-repeat;
+    padding-right: 10px;
+    background-position: 5px;
+}
+
+.project_scheduling table {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.project_scheduling thead tr {
+    background: #fefbf5;
+}
+
+.project_scheduling table tr {
+    border: 1px solid #e8e8e8;
+    height: 38px;
+    line-height: 38px;
+    border-left: none;
+    border-right: none;
+}
+
+.project_scheduling table tr td {
+    text-align: left;
+    padding: 0 26px;
+    border: 1px solid #e8e8e8;
+}
+
+.project_scheduling table tr td a {
+    padding: 0 26px;
+}
+
+.project_scheduling table .table_name {
+    background: #FEEBF5;
+}
+
+.project_scheduling .project_scheduling_detail_info td {
+    padding: 0 06px;
+}
+
+
+/* 近期完成工作 */
+
+.project_resume {
+    height: 100px;
+    width: 97%;
+}
+
+.project_resume dl {
+    height: 80px;
+    margin: 10px 0 30px 20px;
+    border: 1px solid #ccc;
+}
+
+.project_resume dl dt {
+    width: 1%;
+    font-size: 13px;
+    padding: 0 10px;
+    border-right: 1px solid #ccc;
+    float: left;
+}
+
+.project_resume dl dd {
+    float: left;
+    width: 97%;
+}
+
+.recent_work {
+    height: 110px;
+}
+
+.recent_work dl {
+    float: left;
+    width: 47%;
+    height: 120px;
+    margin: 10px 0 30px 20px;
+    border: 1px solid #ccc;
+}
+
+.recent_work dl dt {
+ 	width: 1%;
+    font-size: 11px;
+    padding: 0 10px;
+    border-right: 1px solid #ccc;
+    float: left;
+}
+
+.recent_work dl dd {
+    float: left;
+    width: 95%;
+}
+
+.edit_box {
+    width: 1106px;
+    min-height: 71px;
+    max-height: 74px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    outline: 0;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.small_edit_box {
+    width: 100%;
+    min-height: 80px;
+    max-height: 114px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    outline: 0;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+}
+
+.bootom_op {
+    margin: 10px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.bootom_op a {
+    display: inline-block;
+    width: 82px;
+    border: 1px solid #FFB000;
+    border-radius: 15px;
+    background: #FFB000;
+    color: #fff;
+    font-weight: bold;
+}
+
+.detail_button {
+    display: inline-block;
+    float: right;
+    width: 65px;
+    height: 26px;
+    line-height: 26px;
+    top: 12px;
+    border: 1px solid #EBEBEB;
+    border-radius: 15px;
+    text-align: center;
+    background: #fff;
+    font-size: 14px;
+    position: relative;
+}
+
+
+/* å˜æ›´è®°å½• */
+
+.record_content {
+    height: 303px;
+    margin: 10px 0 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.record_content h2 {
+    height: 38px;
+    line-height: 38px;
+    color: #7F7F84;
+    font-size: 13px;
+    font-weight: bold;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.record_content p {
+    line-height: 46px;
+    font-size: 14px;
+    text-indent: 2em;
+}
+
+.record_content p span {
+    margin: 0 5px;
+}
